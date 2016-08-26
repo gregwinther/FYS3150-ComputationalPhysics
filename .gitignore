@@ -1,2 +1,17 @@
 # Course info folder
 info/
+
+# Stupid files
+*.o
+
+# temporary files:
+*.pyc
+*.bak
+*.swp
+*~
+.*~
+*.old
+tmp*
+temp*
+.#*
+\#*
