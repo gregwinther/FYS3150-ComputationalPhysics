@@ -18,4 +18,4 @@ temp*
 
 # Tutorial folder
 tut/*
-tut/!*.cpp
+!tut/*.cpp
