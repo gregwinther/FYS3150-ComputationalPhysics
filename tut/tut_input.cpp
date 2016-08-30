@@ -1,8 +1,13 @@
-#include <iostream.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
 int main() {
+
+	string numberGuessed;
+	int intNumberGuessed;
 
 	do {
 		
@@ -12,8 +17,12 @@ int main() {
 
 		intNumberGuessed = stoi(numberGuessed);
 
+		cout << intNumberGuessed << endl;
+
 
 	} while(intNumberGuessed != 4);
+
+	cout << "You win" << endl;
 
 
 	return 0;
