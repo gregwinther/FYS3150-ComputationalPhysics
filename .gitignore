@@ -3,6 +3,7 @@ info/
 
 # Stupid files
 *.o
+*.exe
 
 # temporary files:
 *.pyc
