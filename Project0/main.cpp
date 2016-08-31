@@ -8,6 +8,7 @@ double newtonDiff() {
 }
 
 int main ()
+
 {
 
 	cout << "Hello" << endl;
