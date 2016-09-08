@@ -22,6 +22,7 @@ temp*
 *.aux
 *.toc
 *.out
+*.gz
 
 # Tutorial folder
 tut/*
