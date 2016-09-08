@@ -17,6 +17,12 @@ temp*
 .#*
 \#*
 
+# tex stuff
+*.log
+*.aux
+*.toc
+*.out
+
 # Tutorial folder
 tut/*
 !tut/*.cpp
