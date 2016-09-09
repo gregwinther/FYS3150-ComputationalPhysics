@@ -1,6 +1,9 @@
 # Course info folder
 info/
 
+# Project build folder
+build-Project*-Desktop_Qt_5_7_0_clang_64bit-Debug
+
 # Stupid files
 *.o
 *.exe
