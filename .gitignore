@@ -4,7 +4,8 @@ info/
 # Project things
 build-Project*-Desktop_Qt_5_7_0_clang_64bit-Debug
 build-Project*-Desktop_Qt_5_7_0_GCC_64bit-Debug
-Project1/Project1.pro.*
+Project*/Project*.pro.*
+Project*/Project*.pro.user*
 
 # Stupid files
 *.o
