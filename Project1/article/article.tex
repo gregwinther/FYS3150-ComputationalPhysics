@@ -41,14 +41,44 @@ By substituting $\Phi(r)=\phi(r)/r$ the Poisson equation is reduced to
 \end{equation}
 and by letting $\phi \rightarrow u$ and $r \rightarrow x$ one is left with the very simple equation
 \begin{equation}
--u''(x)=f(x)
+-u''(x)=f(x) \label{eq:2nd}
 \end{equation}
 
-The inhomogenous term $f$, or source term, is given by the charge distribution $\rho$ multiplied by $r$ and the constant $-4\pi$. In this study, however, the source term will be $f(x)=100e^{-10x}$ and the results can be compared to the analytical solution $u(x)=1-(1-e^{-10})x-e^{-10x}$.
+The inhomogenous term $f$, or source term, is given by the charge distribution $\rho$ multiplied by $r$ and the constant $-4\pi$. In this study, however, the source term will be $f(x)=100e^{-10x}$ and the results can be compared to the analytical solution $u(x)=1-(1-e^{-10})x-e^{-10x}$. 
 
 
 \subsection{Approximation of the Second Derivative}
-In this study the one-dimensional Poisson equation will be solved with Dirichlet boundary conditions by rewrting
+In this study the one-dimensional Poisson equation will be solved with Dirichlet boundary conditions by rewriting it as a set of linear equations. The discretized approximation of $u$ is defined as $v_i$ with grid points $x_i=ih$, step size of $h=\frac{1}{n+1}$, in the interval $x_0=0$ to $x_{n+1}=1$ and with boundary conditions $v_0=v_n+1=0$. The interior solution $v_i \forall i \in {1,...,n}$ is to be found. The second order derivative is approximated with the three point formula such that equation \ref{eq:2nd} becomes
+\begin{equation}
+-\frac{v_{i+1}-2v_i+v{i-1}}{h²}=f_i \label{eq:2approx}
+\end{equation}
 
+By defining $\tilde{\vb{b}}=h^2f_i$ one can rewrite equation \ref{eq:2approx} as $-v_{i+1}-2v_i+v{i-1}=h^2f_i$. If we ignore the end points, $i=0$ and $i=n+1$, this equation can be represented as a matrix equation.
+\begin{equation}
+\begin{bmatrix}
+2 & -1 & 0 & 0 & \cdots & 0 & 0 & 0 \\
+-1 & 2 & -1 & 0 & \cdots & 0 & 0 & 0 \\
+0 & -1 & 2 & -1 & \cdots & 0 & 0 & 0 \\ 
+& & \vdots &  & \ddots &  & \vdots & \\
+0 & 0 & 0 & 0 & \cdots & -1 & 2 & -1 \\
+0 & 0 & 0 & 0 & \cdots & 0 & -1 & 2 
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\
+v_2 \\
+v_3 \\
+\vdots \\
+v_{n-1} \\
+v_n
+\end{bmatrix}=
+\begin{bmatrix}
+b_1 \\
+b_2 \\
+b_3 \\
+\vdots \\
+b_{n-1} \\
+b_n
+\end{bmatrix}
+\end{equation}
 
 \end{document}
