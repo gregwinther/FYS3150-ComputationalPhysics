@@ -5,6 +5,9 @@ info/
 build*
 *.pro.user
 
+# data
+*.txt
+
 # Stupid files
 *.o
 *.exe

@@ -8,3 +8,6 @@ SOURCES += main.cpp \
 
 HEADERS += \
     problems.h
+
+DISTFILES += \
+    plot.py
