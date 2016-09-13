@@ -176,18 +176,60 @@ pattern of the algorithm.
 \right]
 \end{align}
 
-This pattern can be summarized quite elegantly by the following
-difference equations.
+This pattern can be summarized nicely by the following
+difference equations. This computation will from now on be referred to
+as the ``forward substitution''. 
 \begin{equation}
 \beta_i=b_i-\frac{c_{i-1}}{\beta_{i-1}}, \quad
 \tilde{f}_i=(\beta_i-\tilde{f}_{i-1}a_i)/\beta_i, \quad i \in [2,n], \quad
 \end{equation}
+
+The Gaussian elimination is not fully complete until a ``backward
+substitution'' has been performed as well. This ensures that all
+eliments in the row reduced matrix are pivot elements. 
+
+\begin{equation}
+\left[
+\begin{array}{cccc|c}
+1 & c_1/\beta_1 & 0 & 0 & \tilde{f}_1 \\
+0 & 1 & c_2/\beta_2 & 0  & \tilde{f}_2 \\
+0 & 0 & 1 & c_3/\beta_3 & \tilde{f}_3 \\
+0 & 0 & 0 & 1 & \tilde{f}_4
+\end{array}
+\right] \sim
+\left[
+\begin{array}{cccc|c}
+1 & c_1/\beta_1 & 0 & 0 & \tilde{f}_1 \\
+0 & 1 & c_2/\beta_2 & 0  & \tilde{f}_2 \\
+0 & 0 & 1 & 0 & \tilde{f}_3 -\frac{c_3}{\beta_3}\tilde{f}_4 \\
+0 & 0 & 0 & 1 & \tilde{f}_4
+\end{array}
+\right]
+\end{equation}
+
+The notation is updated again to $v_3 =\tilde{f}_3 -
+\frac{c_3}{\beta_3}\tilde{f}_4$. By continuing this iterative process
+all the was to the beginning of the matrix by backward substitution
+leaves us with a new recurence relation.
+\begin{equation}
+v_i=\tilde{f}_i - \frac{c_i}{\beta_i}\tilde{f}_{i+1}, \quad i \in \{n-1,n-2,\dots,1\}
+\end{equation}
+
+\subsection{LU Decomposition}
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
 
 \begin{thebibliography}{10}
   \bibitem{thomasalgo}{Thomas, L.H. (1949), \emph{Elliptic
         Problems in Linear Differential Equations over a
         Network}. Watson Sci. Comput. Lab Report, Columbia University,
       New York.}
+    \bibitem{morten}{Hjorth-Jensen, M. (2016). \emph{Computational
+        Physics - Lecture Notes 2016}. University of Oslo}
 \end{thebibliography}
 
 \end{document}
