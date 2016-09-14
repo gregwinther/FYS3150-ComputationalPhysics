@@ -1,19 +1,9 @@
 #include <iostream>
 #include <vector>
-#include <iostream>
-#include <string>
 #include <fstream>
 #include <math.h>
-#include <algorithm>
 #include <iomanip>
-#include <time.h>
-#include <new>
-#include <cstdio>
-#include <cstdlib>
-#include <cmath>
-#include <cstring>
 #include <chrono>
-
 #include <armadillo>
 
 using namespace std;
@@ -181,7 +171,7 @@ int problem1c(int n)
     }
     //Finding maximum element in error array
     double max = eps[0];
-    for (int i; i<n; i++){
+    for (int i=0; i<n; i++){
         if(abs(eps[i])>abs(max)) max=eps[i];
     }
     //Printing max rel. error
