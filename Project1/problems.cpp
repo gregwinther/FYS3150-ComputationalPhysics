@@ -65,15 +65,14 @@ void problem1ab(int n)
     // GAUSSIAN ELIMINATION
     // Forward substitution
     f_tilde[1] = f[1];
-    for (int i=2;i<n+1;i++){
-       // Updating right hand side of matrix equation:
+    for (int i=2; i<n+1; i++){
        b_vec[i] = b_vec[i]-a_vec[i]*c_vec[i-1]/b_vec[i-1];
        f_tilde[i] = f[i] - a_vec[i]*f_tilde[i-1]/b_vec[i-1];
     }
 
     // Backward substition:
     v[n] = f_tilde[n]/b_vec[n];
-    for (int i=n-1;i>=1;i--){
+    for (int i=n-1; i>=1; i--){
         v[i] = (f_tilde[i]-c_vec[i]*v[i+1])/b_vec[i];
     }
 
@@ -147,7 +146,7 @@ int problem1c(int n)
     // GAUSSIAN ELIMINATION
     // Forward substitution
     f_tilde[1] = f[1];
-    for (int i=2;i<n+1;i++){
+    for (int i=2; i<n+1; i++){
        // Updating right hand side of matrix equation:
        b_vec[i] -= 1/b_vec[i-1];
        f_tilde[i] = f[i] +f_tilde[i-1]/b_vec[i-1];
