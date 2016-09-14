@@ -3,8 +3,37 @@
 \usepackage[]{graphicx}
 \usepackage[]{hyperref}
 \usepackage[]{physics}
-
+\usepackage[]{listings}
 \usepackage[T1]{fontenc}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=c++,                 % the language of the code
+  otherkeywords={*,...},           % if you want to add more keywords to the set
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+}
 
 \title[Solving the Poisson-equation in one dimension]{Solving the Poisson-equation in one dimension \\
   \hrulefill\small{ FYS3150: Computational Physics }\hrulefill}
@@ -59,6 +88,7 @@ By defining $\vb{f}=h^2f_i$ one can rewrite equation
 end points, $i=0$ and $i=n+1$, this equation can be represented as a
 matrix equation.
 \begin{equation}
+\label{eq:matrix}
 A\vb{v}=\vb{f}
 \end{equation}
 \begin{equation}
@@ -106,7 +136,7 @@ a_ix_{i-1} + b_ix_i + c_ix_{i+1} = \vb{f}
 with $a_i=-1,b_i=2$ and $c_i=-1$, except for $a_1=0$ and $c_n=0$. Row
 reducing a matrix will reveal how the algorithm functions. Limiting
 the problem to four dimensions for easier reading and to save the
-rainforest\footnote{Writing out a general case will take up more paper
+rainforest\footnote{Writing out a general case will also take up more paper
 space}.
 
 \begin{equation}
@@ -180,9 +210,15 @@ This pattern can be summarized nicely by the following
 difference equations. This computation will from now on be referred to
 as the ``forward substitution''. 
 \begin{equation}
-\beta_i=b_i-\frac{c_{i-1}}{\beta_{i-1}}, \quad
-\tilde{f}_i=(\beta_i-\tilde{f}_{i-1}a_i)/\beta_i, \quad i \in [2,n], \quad
+\label{eq:forward1}
+\beta_i=b_i-\frac{a_ic_{i-1}}{\beta_{i-1}}, \quad
+\tilde{f}_i=f_i-a_i\tilde{f}_{i-1}/\beta_{i-1}, \quad i \in [2,n], \quad
 \end{equation}
+
+In c++, this part of the algorithm is implemented just below. Notice
+that $b_i$ is overwritten instead of initializing a seperate vector
+for $\beta$. 
+\lstinputlisting[language=c++, firstline=65, lastline=71]{../problems.cpp}
 
 The Gaussian elimination is not fully complete until a ``backward
 substitution'' has been performed as well. This ensures that all
@@ -210,12 +246,61 @@ eliments in the row reduced matrix are pivot elements.
 The notation is updated again to $v_3 =\tilde{f}_3 -
 \frac{c_3}{\beta_3}\tilde{f}_4$. By continuing this iterative process
 all the was to the beginning of the matrix by backward substitution
-leaves us with a new recurence relation.
+leaves us with a second recurrence relation.
 \begin{equation}
-v_i=\tilde{f}_i - \frac{c_i}{\beta_i}\tilde{f}_{i+1}, \quad i \in \{n-1,n-2,\dots,1\}
+\label{eq:backward1}
+v_i=(\tilde{f}_i - c_iv_{i+1})/\beta_i, \quad i \in \{n-1,n-2,\dots,1\}
 \end{equation}
 
+The backward substitution is implemented in C++ like so:
+\lstinputlisting[language=c++, firstline=73,
+lastline=77]{../problems.cpp}
+
+An ever-important aspect of any algorithm is how efficient the algorithm is. It
+is therefor worthwhile to consider how many floating point operations
+the algorithm requires\footnote{The number of $+$,$-$,$*$ and $/$
+  operations are counted}. For the forward substitution there are $6$
+FLOPS in each iteration and $n-1$ iterations, resulting in $6(n-1)$
+FLOPS for the entire loop. Additionally, $1(n-1)$ FLOPS are required
+for the backward substitution, adding up to 
+\begin{equation}
+N_{tridiag}=8(n-1)=\mathcal{O} (8n).
+\end{equation}
+
+\subsubsection{Optimizing the algorithm}
+
+Our case is special, because the elements in each of the diagonal arrays in the
+tridiagonal matrix, $A$, are equal. $a_i=-1,b_i=2$ and $c_i=-1$,
+except for $a_1=0$ and $c_n=0$. This is an advantage, because the
+algorithm can be adjusted, and the number of FLOPS consequently reduced.
+
+The algorithm for the forward substitution, in equation
+\ref{eq:forward1}, can be simplified to
+\begin{equation}
+\beta_i= b_i - 1/\beta_{i-1} \quad \tilde{f}_i=f_i-\tilde{f}_{i-1}/\beta_{i-1}
+\end{equation}
+and the backward substitution, in equation \ref{eq:backward1}, can be
+simplified to
+\begin{equation}
+v_i = (\tilde{f}_i+v_{i+1})/\beta_i
+\end{equation}
+
+This results in some new and sleeker C++ code
+\lstinputlisting[language=c++, firstline=146,
+lastline=158]{../problems.cpp}
+
+One can see that this new and improved algorithm only requires
+$6(n-1)$ FLOPS. In general, a Gaussian row reduction algorithm
+requires $\frac{2}{3}n^3+\mathcal{O}(n^2)$ FLOPS \cite{morten}, a
+great improvement!
+
 \subsection{LU Decomposition}
+
+The LU decompositon method is a method where the matrix $A$ in
+equation \ref{eq:matrix} ($A\vb{v}=\vb{f}$) can be rewritten as a product of two matrices
+$L$ and $U$, where $L$ is lower triangular and and $U$ is upper
+triangular. This method only works for non-singular, invertible
+matrices, which the matrix $A$ certainly is. 
 
 \section{Results}
 

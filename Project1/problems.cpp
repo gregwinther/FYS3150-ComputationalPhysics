@@ -48,7 +48,7 @@ void problem1ab(int n)
     // Saving start time
     auto start = chrono::high_resolution_clock::now();
 
-    // Linspace
+    // 'linspace'
     for (int i=0; i<n+2; i++) {
         x[i] = i*h;
         a_vec[i] = -1;
@@ -147,15 +147,14 @@ int problem1c(int n)
     // Forward substitution
     f_tilde[1] = f[1];
     for (int i=2; i<n+1; i++){
-       // Updating right hand side of matrix equation:
-       b_vec[i] -= 1/b_vec[i-1];
-       f_tilde[i] = f[i] +f_tilde[i-1]/b_vec[i-1];
+        b_vec[i] -= 1/b_vec[i-1];
+        f_tilde[i] = f[i] + f_tilde[i-1]/b_vec[i-1];
     }
 
     // Backward substition:
     v[n] = f_tilde[n]/b_vec[n];
-    for (int i=n-1;i>=1;i--){
-        v[i] = (f_tilde[i]+v[i+1])/b_vec[i];
+    for (int i=n-1; i>=1; i--){
+        v[i] = (f_tilde[i] + v[i+1])/b_vec[i];
     }
 
     //Finish timing

@@ -3,11 +3,11 @@
 
 int main() {
 
-    int n = pow(10,4);
+    int n = pow(10,1);
 
     problem1ab(n);
     problem1c(n);
-    problem1e(n);
+    //problem1e(n);
 
     return 0;
 }
