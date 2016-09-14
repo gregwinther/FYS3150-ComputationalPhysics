@@ -1,5 +1,5 @@
 #include <iostream>
-//#include <vector>
+#include <vector>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -7,6 +7,14 @@
 #include <algorithm>
 #include <iomanip>
 #include <time.h>
+#include <new>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+#include <cstring>
+#include <chrono>
+
+#include <armadillo>
 
 using namespace std;
 ofstream ofile;
@@ -26,9 +34,6 @@ void problem1ab(int n)
      * Allocating n+2 spaces, the first and last index
      * are for the boundary conditions
      */
-
-    // Timer variables
-    clock_t start, finish;
 
     // Diagonals of matrix
     double *a_vec = new double[n+2];
@@ -51,7 +56,7 @@ void problem1ab(int n)
     double *f_tilde = new double[n+2];
 
     // Saving start time
-    start = clock();
+    auto start = chrono::high_resolution_clock::now();
 
     // Linspace
     for (int i=0; i<n+2; i++) {
@@ -61,7 +66,7 @@ void problem1ab(int n)
         c_vec[i] = -1;
     }
 
-    // Contruction 'matrix'
+    // Contructing 'matrix'
     for (int i=0; i<n+2; i++) {
         f[i] = h*h*input_func(x[i]);
         u[i] = analytic_solution(x[i]);
@@ -83,11 +88,11 @@ void problem1ab(int n)
     }
 
     // Register stop time
-    finish = clock();
+    auto finish = chrono::high_resolution_clock::now();
 
     // Printing time elapsed
-    cout << "Elapsed time: ";
-    cout << ((double) (finish - start) / CLOCKS_PER_SEC) << endl;
+    cout << "Elapsed time, tridiagonal Gaussian: ";
+    cout << chrono::duration_cast<chrono::nanoseconds>(finish-start).count()/pow(10,9) << " seconds" << endl;
 
     // Open file and write results to file:
     ofile.open("dataproj1ab.txt");
@@ -120,9 +125,6 @@ int problem1c(int n)
      * are for the boundary conditions
      */
 
-    //Declaring time variable
-    clock_t start, finish;
-
     // Diagonal of matrix
     double *b_vec = new double[n+2];
 
@@ -142,7 +144,7 @@ int problem1c(int n)
     double *f_tilde = new double[n+2];
 
     //Start timing
-    start = clock();
+    auto start = chrono::high_resolution_clock::now();
 
     // Contructing 'matrix'
     for (int i=0; i<n+2; i++) {
@@ -166,10 +168,26 @@ int problem1c(int n)
     for (int i=n-1;i>=1;i--){
         v[i] = (f_tilde[i]+v[i+1])/b_vec[i];
     }
+
     //Finish timing
-    finish = clock();
-    cout << "Elapsed time: ";
-    cout << ((double) (finish - start)/CLOCKS_PER_SEC) << endl;
+    auto finish = chrono::high_resolution_clock::now();
+    cout << "Elapsed time, optimized tridiag Gaussion elim.: ";
+    cout << chrono::duration_cast<chrono::nanoseconds>(finish-start).count()/pow(10,9)<< " seconds"<< endl;
+
+    //Calculating relative error
+    double eps[n+2];
+    for (int i=2; i<n+1; i++){
+        eps[i] = log10(abs((v[i]-u[i])/u[i]));
+    }
+    //Finding maximum element in error array
+    double max = eps[0];
+    for (int i; i<n; i++){
+        if(abs(eps[i])>abs(max)) max=eps[i];
+    }
+    //Printing max rel. error
+    cout << "n= "<< n << endl;
+    cout << "log10(h): "<< log10(h) <<endl;
+    cout << "Max rel. err.: " << max <<endl;
 
 
     // Open file and write results to file:
@@ -194,3 +212,58 @@ int problem1c(int n)
 
     return 0;
 }
+
+void problem1e(int n){
+
+    arma::mat A = arma::zeros<arma::mat>(n+2,n+2);
+    arma::vec a(n+2); a.fill(-1);
+    arma::vec b(n+2); b.fill(2);
+    arma::vec c(n+2); c.fill(-1);
+    arma::vec x(n+2);
+    arma::vec f(n+2);
+    double h = 1.0/(n+1.0);
+
+    //Constructing the Tridiagonal A
+    for (int i = 0; i < n+2; i++) {
+        if (i > 0)   A(i, i-1) = a(i);
+                 A(i, i)   = b(i);
+        if (i < n+1) A(i, i+1) = c(i);
+    }
+
+
+    for (int i=0; i<n+2; i++) {
+        x[i] = i*h; //linspace
+        f[i] = h*h*input_func(x[i]);
+    }
+
+
+    // Registering start time
+    auto start = chrono::high_resolution_clock::now();
+
+    // solve Av = f
+    arma::vec v = arma::solve(A,f);
+
+    // find LU decomp of
+    arma::mat L, U;
+    arma::lu(L,U,A);
+
+    // Register finish time
+    auto finish = chrono::high_resolution_clock::now();
+    cout << "Elapsed time LU decomposition: ";
+    cout << chrono::duration_cast<chrono::nanoseconds>(finish-start).count()/pow(10,9)<< " seconds"<< endl;
+
+    // Test of LU decomposition
+    /*
+    // print A,v,f
+    A.print("A=");
+    v.print("v =");
+    f.print("f=");
+    // print l
+    L.print(" L= ");
+    // print U
+    U.print(" U= ");
+    //Check that A = LU
+    (A-L*U).print("Test of LU decomposition");
+    */
+}
+

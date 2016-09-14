@@ -5,10 +5,11 @@ using namespace std;
 
 int main() {
 
-    int n = pow(10,5);
+    int n = pow(10,4);
 
-    //problem1ab();
+    problem1ab(n);
     problem1c(n);
+    problem1e(n);
 
     return 0;
 }
