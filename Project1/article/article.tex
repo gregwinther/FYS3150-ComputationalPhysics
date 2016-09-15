@@ -321,12 +321,76 @@ u_{11} & u_{12} & u_{13} & \dots & u_{1n-1} & u_{1n} \\
 \end{bmatrix}
 \end{equation}
 
-The previous equation can be solved in two steps
+The equation $A\vb{v}=LU\vb{v}=\vb{f}$ can be solved in two steps
 \begin{equation}
 L\vb{w}=\vb{f}, \quad U\vb{v}=\vb{w}
 \end{equation}
+Written out, the full set of these linear equations will look like
+\begin{align}
+w_1 &= f_1 \label{eq:LU1}\\
+l_{21}w_1 + w_2 &= f_2 \\
+l_{31}w_1 + l_{32}w_2 +w_3 &= f_3 \\
+ & \vdots \\
+l_{n-11}w_1 + l_{n-12}w_2 + l_{n-13}w_3 + \dots + w_{n-1}  &=
+                                                                    f_{n-1}\\
+l_{n1}w_1 + l_{n2}w_2 + l_{n3}w_3 + \dots + l_{nn-1}w_{n-1} + w_n &=
+                                                                    f_n
+  \label{eq:LU2}\\  
+u_{11}v_1 + u_{12}v_2 + u_{13}v_3 + \dots + u_{1n-1}v_{n-1} +
+  u_{1n}v_n &= w_1  \label{eq:LU4}\\  
+u_{22}v_2 + u_{23}v_3 + \dots + u_{2n-1}v_{n-1} + u_{2n}v_n &= w_2 \\
+u_{33}v_3 + \dots+u_{3n-1}v_{n-1} + u_{3n}v_n &= w_3 \\
+ & \vdots \\
+u_{n-1n-1}v_{n-1} &=  w_{n-1} \\
+u_{nn}v_n &= w_n \label{eq:LU3}
+\end{align}
+First $\vb{w}$ can be determined by iterating forwards through
+equations \ref{eq:LU1} to \ref{eq:LU2}. Then $\vb{v}$ can be found be
+iterating backwards from equation \ref{eq:LU3} to equation
+\ref{eq:LU4}. 
+
+In this study the Armadillo library
+is employed instead of implementing the LU decomposition
+algorithm from scratch. The LU method is used as a benchmark against which the
+speed of the tridiagonal method is measured. The number of FLOPS
+required by the LU is $2n^3/3$, by any alogorithm used to implement
+it\cite{golub}. Additionally, $n^2$ FLOPS is required by the forward
+and backwards substitution.
+\begin{equation}
+N_{LU}=\frac{2}{3}n^3-2n^2=\mathcal{O}(\frac{2}{3}n^3)
+\end{equation}
+Using LU computation results in a quadratic slowdown compared to the
+tridiagonal matrix algorithm.
 
 \section{Results}
+
+\begin{table}[h]
+\caption{Elapsed time for different $n$}
+\begin{tabular}{lcc}
+\hline
+n & TDMA [s] & LU [s] \\ \hline
+10 & 0.0000035 & 0.00312535 \\
+100 & 0.0000116 & 0.00193754 \\
+1000 & 0.000077892 & 0.0677764 \\
+10000 & 0.000878769 & 21.9247 \\
+100000 & 0.00757418 & n/a \\
+1000000 & 0.08616075 & n/a \\
+10000000 & 0.76534 & n/a
+\end{tabular}
+\label{tab:solver_times}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/10.png}
+  \caption{Numerical approximation for $n=10$}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/100.png}
+  \caption{Numerical approximation for $n=100$}
+\end{figure}
 
 \section{Discussion}
 
@@ -339,6 +403,8 @@ L\vb{w}=\vb{f}, \quad U\vb{v}=\vb{w}
       New York.}
     \bibitem{morten}{Hjorth-Jensen, M. (2016). \emph{Computational
         Physics - Lecture Notes 2016}. University of Oslo}
+    \bibitem{golub}{Golub, G.H., van Loan, C.F. (1996). \emph{Matrix
+          Computations} (3rd ed.), Baltimore: John Hopkins.}
 \end{thebibliography}
 
 \end{document}

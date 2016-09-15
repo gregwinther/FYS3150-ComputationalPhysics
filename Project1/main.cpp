@@ -3,9 +3,9 @@
 
 int main() {
 
-    int n = pow(10,1);
+    int n = pow(10,2);
 
-    problem1ab(n);
+    //problem1ab(n);
     problem1c(n);
     //problem1e(n);
 

@@ -15,4 +15,5 @@ HEADERS += \
     problems.h
 
 DISTFILES += \
-    plot.py
+    plot.py \
+    relerrorplot.py

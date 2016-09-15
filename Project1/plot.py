@@ -24,10 +24,10 @@ for line in f:
     k += 1
 
 # Plotting
-plt.plot(x, u, '-b', label="Amalytic solution")
+plt.plot(x, u, '-b', label="Analytic solution")
 plt.plot(x, v, '--r', label="Numerical solution")
 plt.title('n =' + str(n), fontsize=18)
 plt.xlabel(r'$x_i$', fontsize=20)
-plt.ylabel(r'$u(x_i) \quad \& \quad  v_i$', fontsize=20)
+plt.ylabel(r'$u_i \quad \& \quad  v_i$', fontsize=20)
 plt.legend(fontsize=18)
 plt.show()
