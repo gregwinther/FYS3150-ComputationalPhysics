@@ -364,13 +364,21 @@ tridiagonal matrix algorithm.
 
 \section{Results}
 
+The run time for the optimized tridiagonal matrix algorithm and the LU
+decomposition solver is in table \ref{tab:solver_times}. The reason
+run times are not given for $n>10000$ for the LU method is because the
+method uses too much memory for the solver to even
+function. Regardless, the message of table \ref{tab:solver_times} is
+quite clear, the specialized tridiagonal matrix method is vastly more
+efficient.
+
 \begin{table}[h]
-\caption{Elapsed time for different $n$}
+\caption{Elapsed time for increasing $n$}
 \begin{tabular}{lcc}
 \hline
 n & TDMA [s] & LU [s] \\ \hline
-10 & 0.0000035 & 0.00312535 \\
-100 & 0.0000116 & 0.00193754 \\
+10 & 0.0000035 & 0.00106083 \\
+100 & 0.0000116 & 0.0022319 \\
 1000 & 0.000077892 & 0.0677764 \\
 10000 & 0.000878769 & 21.9247 \\
 100000 & 0.00757418 & n/a \\
@@ -380,18 +388,38 @@ n & TDMA [s] & LU [s] \\ \hline
 \label{tab:solver_times}
 \end{table}
 
+Tables \ref{fig:n10} and \ref{fig:n100} show the fit of the
+tridiagonal matrix solver for $n=10$ and $n=100$, respectively. One
+can easily see that already at $n=100$ the fit is already very
+good.  
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/10.png}
-  \caption{Numerical approximation for $n=10$}
+  \caption{Numerical approximation of the tridiagonal matrix algorithm for $n=10$}
+  \label{fig:n10}
 \end{figure}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\linewidth]{figures/100.png}
-  \caption{Numerical approximation for $n=100$}
+  \caption{Numerical approximation of the tridiagonal matrix algorithm for $n=100$}
+  \label{fig:n100}
 \end{figure}
 
+Figure \ref{fig:relerror} shows a plot of the maximum relative error of the
+tridiagonal solver as a function of step size. One can see that the
+relative error falls as the step size falls, but only to a certain
+point. By decreasing the step size further the error increases, most
+likely because of decreasing numerical precision because of the
+computers difficulty in representing very small numbers.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/relerror.png}
+  \caption{Plot of maximum relative error as a function of step size}
+  \label{fig:relerror}
+\end{figure}
 \section{Discussion}
 
 \section{Conclusion}
