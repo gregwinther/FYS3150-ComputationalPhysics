@@ -296,11 +296,35 @@ great improvement!
 
 \subsection{LU Decomposition}
 
-The LU decompositon method is a method where the matrix $A$ in
+The LU decomposition method is a method where the matrix $A$ in
 equation \ref{eq:matrix} ($A\vb{v}=\vb{f}$) can be rewritten as a product of two matrices
 $L$ and $U$, where $L$ is lower triangular and and $U$ is upper
 triangular. This method only works for non-singular, invertible
 matrices, which the matrix $A$ certainly is. 
+\begin{equation}
+A = LU =
+\begin{bmatrix}
+1 & 0 & 0 & \dots & 0 & 0 \\
+l_{21} & 1 & 0 & \dots & 0 & 0 \\
+l_{31} & l_{32} & 1 & \dots & 0 & 0 \\
+  &\vdots & & \ddots & \vdots  & \\
+l_{n-11} & l_{n-12} & l_{n-13} & \dots & 1 & 0 \\  
+l_{n1} & l_{n2} & l_{n3} & \dots & l_{nn-1} & 1
+\end{bmatrix}
+\begin{bmatrix}
+u_{11} & u_{12} & u_{13} & \dots & u_{1n-1} & u_{1n} \\
+0 & u_{22} & u_{23} & \dots & u_{2n-1} & u_{2n} \\
+0 & 0 & u_{33} & \dots & u_{3n-1} & u_{3n} \\
+  &\vdots & & \ddots & \vdots  & \\
+0 & 0 & 0 & \dots & u_{n-1n-1} & u_{n-1n} \\  
+0 & 0 & 0 & \dots & 0 & u_{nn}
+\end{bmatrix}
+\end{equation}
+
+The previous equation can be solved in two steps
+\begin{equation}
+L\vb{w}=\vb{f}, \quad U\vb{v}=\vb{w}
+\end{equation}
 
 \section{Results}
 
