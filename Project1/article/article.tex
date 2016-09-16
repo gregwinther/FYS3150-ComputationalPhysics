@@ -66,7 +66,7 @@ The Poisson equation is a classical equation from electromagnetism. The electros
 \begin{equation}
 \laplacian\Phi=-4\pi \rho(\vb{r})
 \end{equation}
-where $\laplacian$ is the Laplace operator. In three dimensions the Laplace operator can be expressed using spherical coordinates, but in this study I am assuming that $\Phi$ and $\rho$ are spherically symmetric, thus reducing the equation to a one-dimensional problem. only dependent on radius $r$.
+where $\laplacian$ is the Laplace operator. In three dimensions the Laplace operator can be expressed using spherical coordinates, but in this study we are assuming that $\Phi$ and $\rho$ are spherically symmetric, thus reducing the equation to a one-dimensional problem. only dependent on radius $r$.
 \begin{equation}
 \laplacian=\frac{1}{r^2}\frac{d}{dr}\left(r^2\frac{d\Phi}{dr} \right)
 \end{equation}
@@ -127,11 +127,11 @@ f_n
 Two main methods are implemented and compared. The first method is
 gaussian elimination of the tridiagonal matrix $A$, also known as the
 \emph{Thomas Algorithm} \cite{thomasalgo}. This is a simplified form of Gaussian
-elimination that can ve used to solve tridiagonal systems of
+elimination that can be used to solve tridiagonal systems of
 equations. The method is improved upon in order to take into account
 the fact that the matrix we are dealing with has the same numbers
 along the diagonals. The second method is the LU-decomposistion
-method. Code snippets are included in this section, for the full programs follow the link to github at the first page of this article.
+method. Code snippets are included in this section, for the full programs, follow the link to github at the first page of this article.
 
 \subsection{Tridiagonal Matrix Algorithm}
 Our tridiagonal system can be represented by 
@@ -227,7 +227,7 @@ for $\beta$.
 
 The Gaussian elimination is not fully complete until a ``backward
 substitution'' has been performed as well. This ensures that all
-eliments in the row reduced matrix are pivot elements. 
+elements in the row reduced matrix are pivot elements. 
 
 \begin{equation}
 \left[
@@ -429,7 +429,7 @@ computers difficulty in representing very small numbers.
 \section{Discussion}
 When choosing a suitible value for $n$, one must take into account both precision and speed. Our intuition tells us that a larger $n$ should result in a higher precision for the numerical derivative. We can conclude from figure \ref{fig:relerror} that this is only true up to a certain point, because of loss in numerical representation accuracy within the computer. An ideal n will be in the magnitude of $10^5$ which is equivalent to $h=10^-5$. Increasing this value will not increase run time dratically for the tridiagnoal matrix algorithm. Choosing $n=10^5$ gives us the ability to calculate with a high certainty of 5 decimals points and with low memory cost. 
 
-By looking at the results one is led to believe that there are more reasons to prefer the tridiagonal matrix algorithm for this kind of problem. When using the LU decomposition method the short term memory is quickly filled with nothing but the matrix $A$. Choosing $n=10^5$ is equivalent to $8\times10^{10}$ bytes$=80$GB of memory! A brand new computer ships with around $8$ GB of memory today, which is a tenth of the space required. Obviously, this inhibits our ability to perform the calculation. 
+By looking at the results one is led to believe that there are more reasons to prefer the tridiagonal matrix algorithm for this kind of problem. When using the LU decomposition method the short term memory is quickly filled with nothing but the matrix $A$. Choosing $n=10^5$ is equivalent to $8\times10^{10}$ bytes $=80$GB of memory! A brand new computer ships with around $8$ GB of memory today, which is a tenth of the space required. Obviously, this inhibits our ability to perform the calculation. 
 
 \section{Conclusion}
 As we have seen, there is significant advantage to fine-tuning and picking the correct algorithm before solving a problem numerically. We have experienced the restrictions in memory when computing, and have been made aware of the problem this poses when doing numerical calculations. The specialised tridiagonal matrix algorithm was able to solve the one-dimensional Poisson equation more than $20000$ times faster than the more general LU decomposition method. This can be explained by the fact that the LU decomposition method require $\mathcal{O}(\frac{2}{3}n^3)$ FLOPS while the specialized tridiagonal matrix algorithm will do with a meager $\mathcal{O}(8n)$ FLOPS.
