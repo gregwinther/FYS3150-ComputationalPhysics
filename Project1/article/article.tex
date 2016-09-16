@@ -424,17 +424,18 @@ computers difficulty in representing very small numbers.
 \section{Discussion}
 When choosing a suitible value for $n$, one must take into account both precision and speed. Our intuition tells us that a larger $n$ should result in a higher precision for the numerical derivative. We can conclude from figure \ref{fig:relerror} that this is only true up to a certain point, because of loss in numerical representation accuracy within the computer. An ideal n will be in the range of $n\approx 10^5$ which is equivalent to $h=10^-5$. Increasing this value will not increase run time dratically for the tridiagnoal matrix algorithm. Choosing $n=10^5$ leaves us with the ability to calculate with a high certainty of 5 decimals points and with low memory cost. 
 
-By looking at the results one is led to believe that there are more reasons to prefer the tridiagonal matrix algorithm for this kind of problem. When using the LU-decomposition method the short term memory is quickly filled with nothing but the matrix $A$. Choosing $n=10^5$ is equivalent to $8\times10^{10}$ bytes$=80$GB of memory! A brand new computer ships with around $8$ GB of memory today, which is a tenth of the space required. Obviously, this inhibits our ability to perform the calculation. 
+By looking at the results one is led to believe that there are more reasons to prefer the tridiagonal matrix algorithm for this kind of problem. When using the LU decomposition method the short term memory is quickly filled with nothing but the matrix $A$. Choosing $n=10^5$ is equivalent to $8\times10^{10}$ bytes$=80$GB of memory! A brand new computer ships with around $8$ GB of memory today, which is a tenth of the space required. Obviously, this inhibits our ability to perform the calculation. 
 
 \section{Conclusion}
+As we have seen, there is significant advantage to fine-tuning and picking the correct algorithm before solving a problem numerically. We have experienced the restrictions in memory when computing, and have been made aware of the problem this poses when doing numerical calculations. The specialised tridiagonal matrix algorithm was able to solve the one-dimensional Poisson equation more than $20000$ times faster than the more general LU decomposition method. This can be explained by the fact that the LU decomposition method require $\mathcal{O}(\frac{2}{3}n^3)$ FLOPS while the specialized tridiagonal matrix algorithm will do with a meager $\mathcal{O}(8n)$ FLOPS.
 
 \begin{thebibliography}{10}
   \bibitem{thomasalgo}{Thomas, L.H. (1949), \emph{Elliptic
         Problems in Linear Differential Equations over a
         Network}. Watson Sci. Comput. Lab Report, Columbia University,
       New York.}
-    \bibitem{morten}{Hjorth-Jensen, M. (2016). \emph{Computational
-        Physics - Lecture Notes 2016}. University of Oslo}
+    \bibitem{morten}{Hjorth-Jensen, M. (2015). \emph{Computational
+        Physics - Lecture Notes 2015}. University of Oslo}
     \bibitem{golub}{Golub, G.H., van Loan, C.F. (1996). \emph{Matrix
           Computations} (3rd ed.), Baltimore: John Hopkins.}
 \end{thebibliography}
