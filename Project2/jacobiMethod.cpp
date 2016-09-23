@@ -26,7 +26,10 @@ double offDiagonals(arma::mat A, int n) {
     return max;
 }
 
-void jacobiRotation(double matrix) {
+void jacobiRotation(mat A, mat S) {
+    // A is the input matrix and S is the Givens rotation matrix
+
+
 
 }
 
