@@ -4,7 +4,7 @@
 
 using namespace std;
 
-double offDiagonals(arma::mat A, int n) {
+double maxOffDiagonals(arma::mat &A, int &k, int &l, int n) {
 
     double max;
 
@@ -19,19 +19,20 @@ double offDiagonals(arma::mat A, int n) {
 
             if (aij > max) {
                 max = aij;
+                k = i;
+                l = j;
             }
         }
     }
 
     return max;
 }
-
+/*
 void jacobiRotation(mat A, mat S) {
     // A is the input matrix and S is the Givens rotation matrix
 
-
-
 }
+*/
 
 void jacobiMethod() {
 

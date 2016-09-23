@@ -1,6 +1,6 @@
 #ifndef JACOBIMETHOD_H
 #define JACOBIMETHOD_H
 
-double offDiagonals(arma::mat A, int n);
+double maxOffDiagonals(arma::mat &A, int &k, int &l, int n);
 
 #endif // JACOBIMETHOD_H
