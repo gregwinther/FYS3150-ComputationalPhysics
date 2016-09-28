@@ -8,12 +8,15 @@ double maxOffDiagonals(arma::mat &A, int &k, int &l, int n) {
 
     double max;
 
+    k = 0;
+    l = 0;
+
     for (int i = 0; i < n; ++i) {
 
         // Indexing will only include upper triangular part
         // This assumes that matrix is symmetric
         // Advantage: excludes diagonal, which is what we want
-        for (int j = i+1; j < n; ++ j) {
+        for (int j = i+1; j < n; ++j) {
 
             double aij = fabs(A(i,j));
 
@@ -25,13 +28,19 @@ double maxOffDiagonals(arma::mat &A, int &k, int &l, int n) {
                 l = j;
             }
         }
+        cout << "Largest off-diagonal element is: " << maxOffDiagonals(A, k, l, n) << endl;
+
     }
 
     return max;
 }
 
-void jacobiRotation(arma::mat &A, int &k, int &l, int n) {
-    // A is the input matrix and S is the Givens rotation matrix
+void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
+    // A is the input matrix and S is the matrix with eigenvectors after
+    // enough rotations
+
+    // Initiating variables
+    double tau, t, c, s;
 
     /* -----------------------------------------------
      * COMPUTING c = cosine(angle) AND s = sine(angle)
@@ -53,14 +62,14 @@ void jacobiRotation(arma::mat &A, int &k, int &l, int n) {
     // No. 2: t
     // t can be either + or - depending on t**2 + 2*tau*t
     if (tau >= 0) {
-        t = -tau + sqrt(1 + tau*tau);
+        t = -tau + sqrt(1 + tau*tau); 		// tan(angle)
     } else {
-        t = -tau - sqrt(1 + tau*tau);
+        t = -tau - sqrt(1 + tau*tau);		// tan(angle)
     }
 
     // No. 3:
-    c = 1.0 / (sqrt(1 + t*t));
-    s = c*t;
+    c = 1.0 / (sqrt(1 + t*t));				// cos(angle)
+    s = c*t;								// sin(angle)
 
     /* ----------------------------------------------
      * ROTATING
@@ -82,10 +91,16 @@ void jacobiRotation(arma::mat &A, int &k, int &l, int n) {
     // Declaring variables
     double a_kk, a_ll, a_il, a_ik;
 
+    a_kk = A(k, k);
+    a_ll = A(l, l);
+    A(k ,k) = a_kk*c*c - 2*A(k, l)*c*s + a_ll*s*s; // 4)
+    A(l, l) = a_ll*c*c + 2*A(k, l)*c*s + a_kk*s*s; // 5)
+    A(l, k) = 0.0; // Hard-coding non-diagonal elements,
+    A(k, l) = 0.0; // these should be equal to zero
 
     for (int i = 0; i < n; i++) {
         // i neq k, i neq l
-        if (i != k && i !=l) {
+        if (i != k && i != l) {
             a_ik = A(i, k);
             a_il = A(i, l);
             A(i, k) = a_ik*c - a_il*s; // 2)
@@ -93,27 +108,32 @@ void jacobiRotation(arma::mat &A, int &k, int &l, int n) {
             A(i, l) = a_il*c - a_ik*s; // 3)
             A(l, i) = A(l, i);
         }
+
+    // The new eigenvectors
+    double r_ik = R(i, k);
+    double r_il = R(i, l);
+    R(i, k) = c*r_ik - s*r_il;
+    R(i, l) = c*r_il + s*r_ik;
+
     }
 
-    a_kk = A(k, k);
-    a_ll = A(l, l);
-    A(k ,k) = a_kk*c*c - 2*A(k, l)*c*s + a_ll*s*s; // 4)
-    A(l, l) = a_ll*c*c + 2*A(k, l)*c*s + a_kk*s*s; // 5)
-    A(l, k) = 0.0;
-    A(k, l) = 0.0;
+
 }
 
 
-void jacobiMethod() {
+void jacobiMethod(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
 
     // Tolerance for the non-diagonals
     double eps = 1.0E-8;
 
-    double max_nondiagonal;
+    double max_nondiagonal = maxOffDiagonals(A, k, l, n);
 
     // The Jacobi rotation algorithm
     while (max_nondiagonal > eps) {
         int p, q;
-
+        max_nondiagonal = maxOffDiagonals(A, p, q, n);
+        jacobiRotation(A, R, k, l, n);
+        cout << R << endl;
     }
+
 }

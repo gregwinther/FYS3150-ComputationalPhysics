@@ -1,0 +1,35 @@
+\documentclass[10pt, a4paper]{amsart}
+
+\usepackage[]{graphicx}
+\usepackage[]{hyperref}
+\usepackage[]{physics}
+\usepackage[]{listings}
+\usepackage[utf8]{inputenc}
+
+\lstset{
+	frame = single,
+	language = C++,
+	showstringspaces = false,
+	tabsize = 2,
+	otherkeywords = {self},
+	keywordstyle = \color{blue},
+	identifierstyle=\color{deepgreen},
+ 	stringstyle=\color{orange},
+ 	backgroundcolor=\color{mygray}
+}
+
+\title[Schrödinger's Equation in 3D]{Schrödinger's Equation in a Three-Dimensional Harmonic Oscillator Well \\
+  \hrulefill\small{ FYS3150: Computational Physics }\hrulefill}
+  
+\begin{document}
+
+\begin{titlepage}
+\begin{abstract}
+THIS IS NOT THE ABSTRACT FOR THIS PROJECT :)
+A one-dimensional version of the Poisson equation with Dirichlet boundary conditions is solved using two different algorithms. The two algorithms employed are the tridiagonal matrix algorithm and the LU decomposition method. We find that a fine-tuned version of the tridiagonal matrix algorithm is $10^5$ times faster than the general LU decomposition method and $10$ times as precise.
+\end{abstract}
+\maketitle
+\tableofcontents
+\end{titlepage}
+
+\end{document}
