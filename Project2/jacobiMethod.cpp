@@ -62,9 +62,9 @@ void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
     // No. 2: t
     // t can be either + or - depending on t**2 + 2*tau*t
     if (tau >= 0) {
-        t = -tau + sqrt(1 + tau*tau); 		// tan(angle)
+        t = 1.0/(tau + sqrt(1 + tau*tau)); 		// tan(angle)
     } else {
-        t = -tau - sqrt(1 + tau*tau);		// tan(angle)
+        t = -1.0(-tau + sqrt(1 + tau*tau));		// tan(angle)
     }
 
     // No. 3:
@@ -116,7 +116,6 @@ void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
     R(i, l) = c*r_il + s*r_ik;
 
     }
-
 
 }
 
