@@ -1,6 +1,9 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
+#include <vector>
+#include <assert.h>
+#include <iomanip>
 
 using namespace std;
 
