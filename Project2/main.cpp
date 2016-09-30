@@ -8,7 +8,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    int n = 300;
+    int n = 5;
 
     arma::mat A(n,n);
     arma::mat R; R.eye(n,n);
@@ -21,5 +21,7 @@ int main(int argc, char *argv[])
       << 1 << 0 << 3 << 0 << 0 << arma::endr
       << 0 << 1 << 0 << 3 << 0 << arma::endr
       <<-1 <<-1 << 0 << 0 << 3 << arma::endr;
-      tests(A,R,n);
+    // tests(A, R, n);
+    // jacobiEigTest(A, R, n);
+    jacobiMaxoffTest(A, n);
 }

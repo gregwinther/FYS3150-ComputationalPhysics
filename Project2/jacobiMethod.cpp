@@ -239,7 +239,7 @@ void jacobiEigTest(arma::mat &A, arma::mat &R, int n){
     lambda_exact[4] = 6.0;
 
     // Defining tolerance
-    double eps = 1.0E-8;
+    double eps = 1.0E-6;
 
     // fill A with eigenvalues
     jacobiMethod(A, R, n);
