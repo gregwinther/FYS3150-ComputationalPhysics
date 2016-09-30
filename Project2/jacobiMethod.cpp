@@ -26,7 +26,7 @@ arma::mat constructA(double &rho_min, double &rho_max, int n, int interacting, d
 
         // Potential or not?
         if (interacting){
-            V = Omega_r*Omega_r*rho*rho + 1/(rho);
+            V = omega_r*omega_r*rho*rho + 1/(rho);
         } else {
             V = rho*rho;
         }
@@ -100,7 +100,7 @@ void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
     if (tau >= 0) {
         t = 1.0/(tau + sqrt(1 + tau*tau)); 		// tan(angle)
     } else {
-        t = -1.0(-tau + sqrt(1 + tau*tau));		// tan(angle)
+        t = -1.0/(-tau + sqrt(1 + tau*tau));		// tan(angle)
     }
 
     // No. 3:
@@ -172,7 +172,7 @@ void writeToFile(double rho_max , double rho_min, int n, arma::mat &R, double Om
      ofile.close();
 }
 
-void jacobiMethod(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
+void jacobiMethod(arma::mat &A, arma::mat &R, int n) {
 
     // If interacting, true
     bool interacting = true;
@@ -195,10 +195,17 @@ void jacobiMethod(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
     int k = 0;
     int l = 0;
 
+    // No. of iterations counter
+    int iterations = 0;
+
+    // Finding maximum off-diagonals
     double max_nondiagonal = maxOffDiagonals(A, k, l, n);
 
+    // Constructing matrix A
+    A = constructA(rho_min, rho_max, n, interacting, omega_r);
+
     // The Jacobi rotation algorithm
-    while (max_nondiagonal > eps) {
+    while (max_nondiagonal > eps && iterations <= max_iter) {
 
         max_nondiagonal = maxOffDiagonals(A, k, l, n);
         jacobiRotation(A, R, k, l, n);
@@ -216,7 +223,7 @@ void jacobiMethod(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
     lambda = sort(lambda);
 
     // Writing to file
-    writeToFile(rho_max, rho_min, n, R,Omega_r,lowestvalueindex);
+    writeToFile(rho_max, rho_min, n, R, omega_r, lowestvalueindex);
 }
 
 // TEST FUNCITONS
@@ -274,7 +281,7 @@ void jacobiOrthogTest(arma::mat &A,arma::mat &R,int n){
     arma::mat compare = abs(R_trans*R - I);
 
     if (arma::all(all(compare < eps, 1))) {
-        s4 = true;
+        s = true;
     }
 
     assert(s);
@@ -295,11 +302,12 @@ void jacobiMaxOffTest(arma::mat &A, int n) {
 
     assert(s);
     cout << "Max value found" << endl;
+
 }
 
 void tests(arma::mat &A, arma::mat &R, int n) {
 
-    jacobiMaxoffTest(A, n);
+    jacobiMaxOffTest(A, n);
     jacobiEigTest(A, R, n);
     jacobiOrthogTest(A, R, n);
     cout << "All tests succeeded" << endl;
