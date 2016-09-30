@@ -5,6 +5,7 @@
 \usepackage[]{physics}
 \usepackage[]{listings}
 \usepackage[utf8]{inputenc}
+\usepackage[toc,page]{appendix}
 
 \lstset{
 	frame = single,
@@ -31,5 +32,131 @@ A one-dimensional version of the Poisson equation with Dirichlet boundary condit
 \maketitle
 \tableofcontents
 \end{titlepage}
+
+\section{Introduction}
+
+The aim of this study is to solve Schrödinger's equation for two electrons in a three-dimensional  harmonic oscillator well with and without repulsive Coulomb interaction. The equation is reformulated to a discretized in order to be represented as a matrix eigenvalue problem that can be solved with Jacobi's method. 
+
+\section{Theory}
+We assume that electrons confined in a small area move in a three-dimensional harmonic oscillator potential and repel each other via the static Coulomb interaction. To simplify the problem, spherical symmetry is assumed. 
+
+\subsection{A single electron}
+The radial part of Schrödinger's equation for a single electron reads
+\begin{equation}
+\label{eq:schr1}
+-\frac{\hbar^2}{2m}\left(\frac{1}{r^2}\frac{d}{dr}r^2\frac{d}{dr}-\frac{l(l+1)}{r^2} \right)R(r) + V(r)R(r) = ER(r)
+\end{equation}
+where $V(r)$ is the harmonic oscillator potential\footnote{One can in theory insert any potential into the Schrödinger equation, but in this case the harmonic oscillator potential is employed.}, $V(r)=\frac{1}{2}kr^2$ where $k=m\omega^2$, and consequently $E$ is the energy of the harmonic oscillator in three dimensions. The angular frequency of the oscillator is given by $\omega$ and is related to the energy of the system as follows
+\begin{equation}
+E_{nl}=\hbar\omega\left(2n + l  + \frac{3}{2} \right), \quad n,l \in \mathbb{N} 
+\end{equation}
+However, we will consider cases with zero angular momentum only ($l=0$). Moreover, by a somewhat lengthy substitutive exercise will culminate in a rewriting of Schrödinger's equation in \ref{eq:schr1} to a dimensionless form
+\begin{equation}
+\label{eq:schr2}
+-\frac{d^2}{d\rho^2}u(\rho) + \rho^2u(\rho) = \lambda u(\rho)
+\end{equation}
+where $u(r) = R(r)/r$ and $\rho = r/\alpha$ is a dimensionless parameter for length. The constant $\alpha$ is $\alpha = \sqrt{\hbar^2/mk}$ and the energy parameter (eigenvalues) are $\lambda = 2m\alpha^2E/\hbar^2$. The three first eigenvalues will be $\lambda_0= 3$, $\lambda_1 = 7$ and $\lambda_0=11$.
+
+The second derivative in equation \ref{eq:schr2} will be approximated by the well-known central finite difference method for the second derivative,
+\begin{equation}
+\frac{du^2}{d\rho^2}=\frac{u(\rho+h)-2u(\rho)+u(\rho-h)}{h^2}+\mathcal{O}(h^2)
+\end{equation}
+where $h = (\rho_N-\rho_0)/h$ is the step size. By denoting $u(\rho_0+ih)$ by $u_i$, equation \ref{eq:schr2} can be further rewritten to
+\begin{align}
+-\frac{1}{h^2}u_{i-1}+\left(\frac{2}{h^2} + \rho_i^2 \right)u_i-\frac{1}{h^2}u_{i+1}=\lambda u_i \label{eq:schr3}\\
+A\vb{u} = \lambda \vb{u} \label{eq:mat1}
+\end{align} 
+where the matrix in \ref{eq:mat1} is
+\begin{equation}
+\begin{bmatrix}
+\frac{1}{h^2} + \rho_i^2 & -\frac{1}{h^2} & 0 & 0 & 0 & \dots & 0 \\
+-\frac{1}{h^2} & \frac{1}{h^2} + \rho_i^2 & -\frac{1}{h^2} & 0 & 0 & \dots & 0 \\
+0 & -\frac{1}{h^2} & \frac{1}{h^2} + \rho_i^2 & -\frac{1}{h^2} & 0 & \dots & 0  \\
+\vdots & \vdots & \vdots &\ddots & \ddots & \ddots & \vdots \\
+0 & 0 & 0 & \dots &  -\frac{1}{h^2} & \frac{1}{h^2} + \rho_i^2 & -\frac{1}{h^2} \\
+0 & 0 & 0 & 0 & \dots & -\frac{1}{h^2} & \frac{1}{h^2} + \rho_i^2 
+\end{bmatrix}
+\end{equation}
+
+By finding the eigenvectors, or the energies, corresponding to the eigenvalues $\lambda_i$  equation \ref{eq:schr3} above, one has found the wave function that describe the behavior of the electron for a particular state $i$. To have something to compare against it is useful to state the exact, analytical wave function for the three lowest states. The general form of these radial wave functions is 
+\begin{equation}
+\label{eq:radialschr1}
+R_{n,l=0}(r)=N_ne^{-\frac{m\omega}{2\hbar}r^2}\sqrt{L_n}\left(-\frac{m\omega}{2\hbar} r^2 \right)
+\end{equation}
+where $L_n$ refers to a particular Laguerre polynomial. More on the Laguerre polynomials can be found in appendix \ref{app:laguerre}. Reevaluating this function for the three lowest energy states and normalizing yields the following equations
+\begin{align}
+\abs{u_0(\rho)}^2 &= \frac{4}{\sqrt{\pi}}\rho^2e^{-\rho^2} \\
+\abs{u_1(\rho)}^2 &= \frac{8}{3\sqrt{\pi}}\rho^2\left( \frac{3}{2}-\rho^2 \right)e^{-\rho^2} \\
+\abs{u_2(\rho)}^2 &= \frac{8}{15\sqrt{\pi}}\rho^2\left( \frac{15}{4}-5\rho^2 +\rho^4\right)e^{-\rho^2}
+\end{align}
+It is only sensible to deal with the absolute squared values of the wave functions, because this is a probability density function for the position of the electron.
+
+\subsection{Two electrons}
+Now  there are two harmonic oscillating electrons in the well. At first these are assumed to be non-interacting. The radial part of the Schrödinger equation for this situation reads
+\begin{equation}
+\left(-\frac{\hbar^2}{2m}\frac{d^2}{dr_1^2} \right)
+\end{equation}
+
+\subsection{Preservation of orthogonality and dot product in unitary transform}
+
+Consider a basis of vectors 
+\begin{equation}
+\vb{v}_i = \begin{bmatrix}
+v_{i1} \\
+\vdots \\
+v_{in}
+\end{bmatrix}
+\end{equation}
+We assume that the basis is orthogonal, that is
+\begin{equation}
+\vb{v}_j^T\vb{v}_i=\delta_{ij}.
+\end{equation}
+It can be shown that a unitary transformation $\vb{w}_i = U\vb{v}_i$, where $U$ is a unitary matrix such that $U^TU=I$, the dot product and orthogonality is preserved. 
+\begin{align}
+\vb{w}_i^T\vb{w}_j &= (U\vb{v}_i)^T  U\vb{v}_i= \vb{v}_i^TU^T U\vb{v}_j = \vb{v}_i^T I \vb{v}_j \nonumber \\
+&\rightarrow \vb{w}_i^T\vb{w}_j = \vb{v}_i^T\vb{v}_j = \delta_{ij},
+\end{align}
+which means that both the dot product and orthogonality is preserved.
+
+\begin{thebibliography}{9}
+
+\bibitem{morten2}
+	Hiorth-Jensen, M.,
+	\emph{Project 2, Computational Physics I FYS3150/FYS4150},
+	University of Oslo,
+	2016.
+
+\end{thebibliography}
+
+\begin{appendix}
+\section{Laguerre Polynomials}
+\label{app:laguerre}
+Generally, the name Laguerre polynomials is used for solutions to 
+\begin{equation}
+x\frac{d^2y}{dx^2}+(\alpha+1-x)\frac{dy}{dx} + ny = 0.
+\end{equation}
+These polynomials, usually denoted, $L_0$, $L_1$, $L_2$ etc are a polynomial sequence which may be defined by the Rodriguez formula
+\begin{equation}
+L_n(x) = \frac{e^x}{n!}\frac{d^n}{dx^n}(e^{-x}x^n)=\frac{1}{n!}\left(\frac{d}{dx} -1 \right)x^n
+\end{equation}
+The first few Laguerre polynomials are shown in table \ref{tab:laguerre}.
+
+\begin{table}[ht]
+	\centering
+	\caption{The first few Laguerre polynomials}
+	\begin{tabular}{cl} \hline
+	$n$ & $L_n(x)$  \\ \hline
+	$0$ & $1$ \\
+	$1$ & $-x+1$ \\
+	$2$ & $\frac{1}{2}(x^2-4x+2)$ \\
+	$3$ & $\frac{1}{6}(-x^3+9x^2-18x+6)$ \\
+	$4$ & $\frac{1}{24}(x^4-16x^3+72x^2-96x+24$ \\
+	$5$ & $\frac{1}{120}(-x^5+25x^4-200x^3+600x^2-600x+120) $ \\
+	$6$ & $\frac{1}{720}(x^6-36x^5+450x^4-2400x^3+5400x^2-4320x+720)$ \\ \hline
+	\end{tabular}
+	\label{tab:laguerre}
+\end{table}
+
+\end{appendix}
 
 \end{document}
