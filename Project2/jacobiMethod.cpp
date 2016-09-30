@@ -4,6 +4,41 @@
 
 using namespace std;
 
+arma::mat constructA(double &rho_min, double &rho_max, int n, int interacting, double omega_r) {
+
+    // Step size
+    double h = (rho_max - rho_min)/(n+1);
+
+    // Constants in tri-diagonal elements
+    arma::mat A = arma::zeros<arma::mat>(n,n);
+    double d = 2/(h*h);
+    double e = -1/(h*h);
+
+    // Declaring potential variable
+    double V;
+
+    // Creating the tridiagonal matrix
+    for (int i = 0; i < (n); i++) {
+        double rho = (i+1)*h;
+
+        // Potential or not?
+        if (interacting){
+            V = Omega_r*Omega_r*rho*rho + 1/(rho);
+        } else {
+            V = rho*rho;
+        }
+
+       // Inputting potential on diagonal
+       A(i,i) = d + V;
+       if (i < n-1){
+           A(i,i+1) = A(i+1,i) = e;
+        }
+    }
+
+    // Return constructed matrix
+    return A;
+}
+
 double maxOffDiagonals(arma::mat &A, int &k, int &l, int n) {
 
     double max;
@@ -28,14 +63,12 @@ double maxOffDiagonals(arma::mat &A, int &k, int &l, int n) {
                 l = j;
             }
         }
-        cout << "Largest off-diagonal element is: " << maxOffDiagonals(A, k, l, n) << endl;
-
     }
-
     return max;
 }
 
 void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
+
     // A is the input matrix and S is the matrix with eigenvectors after
     // enough rotations
 
@@ -119,20 +152,153 @@ void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
 
 }
 
+void writeToFile(double rho_max , double rho_min, int n, arma::mat &R, double Omega_r,int lowestvalueindex) {
+    ofstream ofile;
+    ofile.open("dataNoint.txt");
+    ofile <<"Omega_r " << setw(15) << setprecision(8) << Omega_r << endl;
+    ofile <<"rho_min " << setw(15) << setprecision(8) << rho_min << endl;
+    ofile <<"rho_max " << setw(15) << setprecision(8) << rho_max << endl;
+    ofile <<"n  " << setw(20) << n << endl;
+    ofile << "Eigenvector corresponding to lowest eigenvalue:" << endl;
+
+    for (int i = 0; i < n; i++) {
+        ofile << R(i,lowestvalueindex) << endl;
+     }
+     ofile <<endl;
+
+     ofile.close();
+}
 
 void jacobiMethod(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
 
+    // If interacting, true
+    bool interacting = true;
+
+    // Angular frequency
+    double omega_r = 1;
+
     // Tolerance for the non-diagonals
     double eps = 1.0E-8;
+
+    // Maximum no. of iterations
+    int max_iter = n*n*n;
+
+
+    // Dimensionless radial component
+    double rho_min = 0;
+    double rho_max = 5.0;
+
+    // Position of max offdiag
+    int k = 0;
+    int l = 0;
 
     double max_nondiagonal = maxOffDiagonals(A, k, l, n);
 
     // The Jacobi rotation algorithm
     while (max_nondiagonal > eps) {
-        int p, q;
-        max_nondiagonal = maxOffDiagonals(A, p, q, n);
+
+        max_nondiagonal = maxOffDiagonals(A, k, l, n);
         jacobiRotation(A, R, k, l, n);
-        cout << R << endl;
+        iterations++;
+
     }
+
+    // Storing eigenvalues
+    arma::vec lambda = A.diag();
+
+    // Storing index of minimum (used for printing)
+    int lowestvalueindex = lambda.index_min();
+
+    // Sorting eigenvalues
+    lambda = sort(lambda);
+
+    // Writing to file
+    writeToFile(rho_max, rho_min, n, R,Omega_r,lowestvalueindex);
+}
+
+// TEST FUNCITONS
+
+void jacobiEigTest(arma::mat &A, arma::mat &R, int n){
+
+    // Defining the exact eigenvalues for a chosen matrix
+    double * lambda_exact = new double[n];
+    lambda_exact[0] = 2.0;
+    lambda_exact[1] = 2.0;
+    lambda_exact[2] = 3.0;
+    lambda_exact[3] = 4.0;
+    lambda_exact[4] = 6.0;
+
+    // Defining tolerance
+    double eps = 1.0E-8;
+
+    // fill A with eigenvalues
+    jacobiMethod(A, R, n);
+
+    // Initiating test booleans
+    bool s1 = false;
+    bool s2 = false;
+    bool s3 = false;
+    bool s4 = false;
+    bool s5 = false;
+
+    // Checking difference between exact and numerical to tolerance
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++){
+            s1 = s1 or ( abs( A(i,j) - lambda_exact[0]) < eps);
+            s2 = s2 or ( abs( A(i,j) - lambda_exact[1]) < eps);
+            s3 = s3 or ( abs( A(i,j) - lambda_exact[2]) < eps);
+            s4 = s4 or ( abs( A(i,j) - lambda_exact[3]) < eps);
+            s5 = s5 or ( abs( A(i,j) - lambda_exact[4]) < eps);
+        }
+    }
+
+    // Assertion
+    assert(s1);
+    assert(s2);
+    assert(s3);
+    assert(s4);
+    assert(s5);
+    cout << "Successfully calculated eigenvalues" << endl;
+}
+
+void jacobiOrthogTest(arma::mat &A,arma::mat &R,int n){
+
+    jacobiMethod(A, R, n);
+    double eps = 1e-14;
+    arma::mat R_trans = arma::trans(R);
+    arma::mat I; I.eye(n,n);
+    bool s = false;
+    arma::mat compare = abs(R_trans*R - I);
+
+    if (arma::all(all(compare < eps, 1))) {
+        s4 = true;
+    }
+
+    assert(s);
+    cout << "Orthogonality conserved" << endl;
+}
+
+void jacobiMaxOffTest(arma::mat &A, int n) {
+
+    int k = 0;
+    int l = 0;
+    double max = maxOffDiagonals(A, k, l, n);
+
+    bool s = false;
+
+    if (max == 1) {
+        s = true;
+    }
+
+    assert(s);
+    cout << "Max value found" << endl;
+}
+
+void tests(arma::mat &A, arma::mat &R, int n) {
+
+    jacobiMaxoffTest(A, n);
+    jacobiEigTest(A, R, n);
+    jacobiOrthogTest(A, R, n);
+    cout << "All tests succeeded" << endl;
 
 }
