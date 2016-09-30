@@ -94,8 +94,19 @@ It is only sensible to deal with the absolute squared values of the wave functio
 \subsection{Two electrons}
 Now  there are two harmonic oscillating electrons in the well. At first these are assumed to be non-interacting. The radial part of the Schrödinger equation for this situation reads
 \begin{equation}
-\left(-\frac{\hbar^2}{2m}\frac{d^2}{dr_1^2} \right)
+\left(-\frac{\hbar^2}{2m}\frac{d^2}{dr_1^2} -\frac{\hbar^2}{2m}\frac{d^2}{dr_2^2} +\frac{1}{2}kr_1^2+\frac{1}{2}kr_1^2 \right)u(r_1,r_2)=E^{(2)}u(r_1,r_2)
 \end{equation}
+
+We now introduce the relative coordinate $\vb{r} = \vb{r}_1 - \vb{r}_2$ and the center of mass coordinate $R=\frac{1}{2}(\vb{r}_1+\vb{r}_2)$ as well as assuming separation of variables $u(r,R)=\psi(r)\phi(R)$. When the energy is given as a sum of the relative energy and center of mass energy, $E^{(2)}=E_r+E_R$ we get
+\begin{equation}
+\label{eq:radialschr2}
+\left(-\frac{\hbar^2}{m}\frac{d^2}{dr^2}+\frac{1}{4}kr^2+\frac{\beta e^2}{r} \right)\psi(r)=E_r\psi(r)
+\end{equation}
+when also including the repulsive Coulomb interaction, $V(r) = \beta e^2/\abs{\vb{r}_1+\vb{r}_2}= \beta e^2/r$. By once again introducing a dimensionless variable $\rho=r/\alpha$ with $\alpha=\hbar^2/(m\beta e^2)$. By, in addition, including the relative angular frequency $\omega_r^2=(\frac{2\omega}{2\hbar}\alpha^2)^2$ and an energy parameter $\lambda=\frac{m\alpha^2}{\hbar^2}E_r$, we arrive at an equation comparable to \ref{eq:schr3}
+\begin{equation}
+-\frac{d\psi(\rho)}{d\rho^2}+\left(\omega^2_r\rho^2 + \frac{1}{\rho} \right) \psi(\rho)= \lambda\psi(\rho)
+\end{equation}
+It is easy to see that the only difference from the situation with two electrons and a single electron is that the potential is changed from $\rho^2$ to $\omega_r^2\rho^2+1/\rho$. In discretization, this is achieved by changing the diagonal of the matrix in \ref{eq:mat1} to $d_i = \frac{2}{hbar^2} \omega_r^2\rho^2+\frac{1}{\rho_i}$.
 
 \subsection{Preservation of orthogonality and dot product in unitary transform}
 
