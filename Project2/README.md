@@ -1,5 +1,5 @@
-## Project 2 - Computational Physics
-# Solving the Schrödinger equation for two electron in a harmonic oscillator well
+# Project 2 - Computational Physics
+## Solving the Schrödinger equation for two electronss in a harmonic oscillator well
 
 The armadillo library must be included in compilation. Example: `g++ main.cpp -o schrodinger.x -larmadillo`. 
 
