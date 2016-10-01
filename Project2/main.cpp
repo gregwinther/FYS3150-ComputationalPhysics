@@ -2,14 +2,16 @@
 #include <math.h>
 #include <armadillo>
 #include <string>
+#include <ctime>
 
-#include <jacobimethod.h>
+#include "jacobimethod.h"
+#include "jacobiMethod.cpp"
+
 
 using namespace std;
 
 int main(int argc, char *argv[])
-{ 
-    /*
+{  /*
     cout << argv[1] << endl;
     cout << argv[2] << endl;
     cout << argv[3] << endl;
@@ -30,7 +32,7 @@ int main(int argc, char *argv[])
              << endl;
     } else {
 
-        cout << "DU GREIDE DET!!" << endl;
+        cout << "Computing. Please wait." << endl;
 
         // Parsing n
         int n = atoi(argv[1]);
@@ -53,15 +55,27 @@ int main(int argc, char *argv[])
         arma::mat A(n,n);
         arma::mat R; R.eye(n,n);
 
+        // Ground state index
+        int minIndex;
+
+        // Timer start
+        clock_t start = clock();
+
         // Constructing second derivative approximation matrix
         A = constructA(rho_min, rho_max, n, interacting, omega_r);
 
         // Computing ..
-        jacobiMethod(A, R, n);
+        jacobiMethod(A, R, n, minIndex);
 
         // Writing data to file
-        writeToFile(R, n, output_file);
+        writeToFile(R, n, output_file, minIndex);
 
+        // Timer stop
+        clock_t stop = clock();
+
+        cout << "Computation finished. Elapsed time: ";
+        cout << ( stop - start ) / (double) CLOCKS_PER_SEC << " seconds" << endl;
+        cout << "Data written to " << output_file.c_str() << "\n" << endl;
     }
 
 }

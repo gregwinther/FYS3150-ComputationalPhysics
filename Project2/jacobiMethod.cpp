@@ -27,9 +27,9 @@ arma::mat constructA(double &rho_min, double &rho_max, int n, bool interacting, 
 
         // Potential or not?
         if (interacting) {
-            V += omega_r*omega_r*rho*rho + 1/(rho);
+            V = omega_r*omega_r*rho*rho + 1/(rho);
         } else {
-            V += rho*rho;
+            V = rho*rho;
         }
 
        // Inputting potential on diagonal
@@ -158,20 +158,14 @@ void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
 
 }
 
-void writeToFile(arma::mat &R, int n, string filename){
+void writeToFile(arma::mat &R, int n, string filename, int minIndex){
 
     // Unnecessary arguments? : double rho_max , double rho_min, int n,
     // , double Omega_r,int lowestvalueindex
 
     ofstream ofile;
-    ofile.open(filename);
-//    ofile <<"Omega_r " << setw(15) << setprecision(8) << Omega_r << endl;
-//    ofile <<"rho_min " << setw(15) << setprecision(8) << rho_min << endl;
-//    ofile <<"rho_max " << setw(15) << setprecision(8) << rho_max << endl;
-//    ofile <<"n  " << setw(20) << n << endl;
-//    ofile << "Eigenvector corresponding to lowest eigenvalue:" << endl;
-
-    int lowestvalueindex = 1;
+    ofile.open(filename.c_str());
+    int lowestvalueindex = minIndex;
 
     for (int i = 0; i < n; i++) {
         ofile << R(i, lowestvalueindex) << endl;
@@ -181,13 +175,7 @@ void writeToFile(arma::mat &R, int n, string filename){
      ofile.close();
 }
 
-void jacobiMethod(arma::mat &A, arma::mat &R, int n) {
-
-    // If interacting, true
-    // bool interacting = false;
-
-    // Angular frequency
-    //double omega_r = 0.01;
+void jacobiMethod(arma::mat &A, arma::mat &R, int n, int &minIndex) {
 
     // Tolerance for the non-diagonals
     double eps = 1.0E-8;
@@ -214,21 +202,21 @@ void jacobiMethod(arma::mat &A, arma::mat &R, int n) {
 
     }
 
-    // cout << "No. of iterations: " << iterations << endl;
+    // Finding column where smallest eigenvalue is.
+    // This is the ground state
 
-    // Storing eigenvalues
-    arma::vec lambda = A.diag();
+    int groundStateCol = 0;
+    for (int i = 0; i < n; i ++) {
+        if (A(groundStateCol,groundStateCol) < A(i,i)) {
+            groundStateCol = i;
+        }
+    }
 
-    // Storing index of minimum (used for printing) 
-    //int lowestvalueindex = lambda.index_min();
+    // Passing to global
+    minIndex = groundStateCol;
 
-    // Sorting eigenvalues
-    lambda = sort(lambda);
-    //cout << lambda << endl;
-
-    // Writing to file
-    // writeToFile(rho_max, rho_min, n, R, omega_r, lowestvalueindex);
 }
+
 
 // TEST FUNCTIONS
 
@@ -259,8 +247,11 @@ void jacobiEigTest(){
     // Defining tolerance
     double eps = 1.0E-6;
 
+    // Minimum index variable. Not to be used
+    int index = 0;
+
     // fill A with eigenvalues
-    jacobiMethod(A, R, n);
+    jacobiMethod(A, R, n, index);
 
     // Initiating test booleans
     bool s1 = false;
@@ -287,7 +278,7 @@ void jacobiEigTest(){
     assert(s4);
     assert(s5);
 
-    cout << " SUCCESS!!\n" << endl;
+    cout << " SUCCESS!\n" << endl;
 }
 
 void jacobiOrthogTest() {
@@ -306,7 +297,10 @@ void jacobiOrthogTest() {
       << 0 << 1 << 0 << 3 << 0 << arma::endr
       <<-1 <<-1 << 0 << 0 << 3 << arma::endr;
 
-    jacobiMethod(A, R, n);
+    // Min index variable
+    int index = 0;
+
+    jacobiMethod(A, R, n, index);
 
     double eps = 1e-14;
 
