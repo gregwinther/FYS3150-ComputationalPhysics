@@ -3,7 +3,10 @@
 
 The armadillo library must be included in compilation. Example: `g++ main.cpp -o schrodinger.x -larmadillo`. 
 
-Running the program without any command line arguments will automaticall run the unit tests implemented in the program. Additionally, this will provide instructions for usage. Example: `./schrodinger.x` will yield `AUTOMATIC TESTING: 
+Running the program without any command line arguments will automaticall run the unit tests implemented in the program. Additionally, this will provide instructions for usage. Example: `./schrodinger.x` will yield 
+
+```bash
+AUTOMATIC TESTING: 
 
 TEST: Calculating known eigenvalues.. SUCCESS!
 
@@ -14,4 +17,5 @@ TEST: Orthogonality preservation..  SUCCESS!
 
 General Usage:
  ./schrodinger.x n rho_max Coulomb omega_r output_filename
-`
+```
+Example of usage: `./schrodinger.x 250 5 1 0.1 data.txt`
