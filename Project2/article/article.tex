@@ -22,6 +22,10 @@
 \title[Schrödinger's Equation in 3D]{Schrödinger's Equation in a Three-Dimensional Harmonic Oscillator Well \\
   \hrulefill\small{ FYS3150: Computational Physics }\hrulefill}
   
+\author[Winther-Larsen \& Svalheim]{Sebastian G. Winther-Larsen \\ 
+Trygve L. Svalheim \\
+\href{https://github.com/gregwinther/FYS3150/}{\texttt{github.com/gregwinther}}}
+  
 \begin{document}
 
 \begin{titlepage}
@@ -78,7 +82,7 @@ where the matrix in \ref{eq:mat1} is
 \end{bmatrix}
 \end{equation}
 
-By finding the eigenvectors, or the energies, corresponding to the eigenvalues $\lambda_i$  equation \ref{eq:schr3} above, one has found the wave function that describe the behavior of the electron for a particular state $i$. To have something to compare against it is useful to state the exact, analytical wave function for the three lowest states. The general form of these radial wave functions is 
+By finding the eigenvectors, or the energies, corresponding to the eigenvalues $\lambda_i$  equation \ref{eq:schr3} above, one has found the wave function that describe the behavior of the electron for a particular state $i$. It is of interest to also state the exact, analytical wave function for the three lowest states, because the Schrödinger equation in general is only analytically solvable for a select few potentials, and the harmonic oscillator potential is amongst these. The general form of these radial wave function solutions is 
 \begin{equation}
 \label{eq:radialschr1}
 R_{n,l=0}(r)=N_ne^{-\frac{m\omega}{2\hbar}r^2}\sqrt{L_n}\left(-\frac{m\omega}{2\hbar} r^2 \right)
@@ -129,6 +133,99 @@ It can be shown that a unitary transformation $\vb{w}_i = U\vb{v}_i$, where $U$ 
 \end{align}
 which means that both the dot product and orthogonality is preserved.
 
+This proof is important to the algorithm which is described in the next section. As a result of Abel and Ruffini's theorem, regarding the impossibility of a solution to equations degree five and higher, a discretized problema s described herein is unsolvable by conventional, analytical means, and an iterative process is thus necessary.
+
+\section{Algorithm}
+
+\subsection{Jacobi's method}
+
+First, consider a simple two-dimensional, symmetric matrix
+\begin{equation}
+A = \begin{bmatrix}
+a_{11} & a_{12} \\
+a_{21} & a_{22}
+\end{bmatrix}
+\end{equation}
+where, because the matrix is symmetric, $a_{12}=a_{21}$. Second, consider an orhtogonal rotation matrix
+\begin{equation}
+R = \begin{bmatrix}
+\cos{\theta} & -\sin{\theta} \\
+\sin{\theta} & \cos{\theta}
+\end{bmatrix}
+\end{equation}
+which when multiplied with some vector $\vb{v}$, rotates the vector by an angle $\theta$. Now, we simplify the notation a bit by substituting the trigonometric functions $c=\cos{\theta}$ and $s=\sin{\theta}$. We can now write the similarity transform as
+\begin{equation}
+R^{-1}AR=\begin{bmatrix}
+a_{11}c^2+2a_{12}cs + a_{22}s^2 & (a_{22}-a_{11})cs+a_{12}(c^2-s^2) \\
+(a_{22}-a_{11})cs + a_{12}(c^2-s^2) & a_{11}s^2-2a_{12}s+a_{22}c^2
+\end{bmatrix}
+\end{equation}
+Notice that this matrix is symmetric as well. We want to roate in such a manner that the offdiagonal elemtes of the new matrix are zero. Hence we need to solve $(a_{22}-a_{11})cs + a_{12}(c^2-s^2)=0$, which gives
+\begin{equation}
+\tau = \cot{2\theta} = \frac{a_{11}-a_{22}}{2a_{12}}
+\end{equation}
+
+Now we can express all the trigonometric functions in terms of $\tau$. Setting $t = \tan{\theta}$, $c=\cos{\theta}=1/\sqrt{t^2+1}$ and $s=ct$. This yields $\cot{2\theta}=1/2(\cot{\theta}-\tan{\theta}) = 1/2(2^{-1}-t$, all boiling down the quadratic equation
+\begin{equation}
+t^2-2\tau t-1 =0
+\end{equation}
+which has two roots. Of these two roots we pickk the smallest in order to ensure maximum  numerical stability. To put it another way, we rotate a tiny angle rather than a large one at each iteration.
+
+The eigenvalues can now be expressed in terms of $t$. The diagonalized matrix will look like this
+\begin{equation}
+R^{-1}AR = \begin{bmatrix}
+a_{11} & 0 \\
+0 & a_{22}
+\end{bmatrix}
+\end{equation}
+Solving the characteristic equation provides the eigenvalues, while an inverse rotation of the identy matrix supplies the eigenvectors\footnote{Bear in mind that the eigenvectors and the eigenvalues will in this particular study represent the wave function and the corresponding energy levels respectively.}.
+
+The algorithm for the $2\times2$-case can easily be extended to a general case by using a $n\times n$-matrix instead. Such a matrix is called the Givens rotation matrix and looks like this
+\begin{equation}
+G(i,j,\theta) = \begin{bmatrix}
+1 & \hdots & 0 &\hdots & 0 & \hdots & 0 \\
+    \vdots & \ddots & \vdots & {} & \vdots & {} & \vdots \\
+    0 & \hdots & c &\hdots & -s & \hdots & 0 \\
+    \vdots & {} & \vdots & \ddots & \vdots & {} & \vdots \\
+    0 & \hdots & s &\hdots & c & \hdots & 0 \\
+    \vdots & {} & \vdots & {} & \vdots & \ddots & \vdots \\
+0 & \hdots & 0 &\hdots & 0 & \hdots & 1
+\end{bmatrix}
+\end{equation}
+where $c= \cos{\theta}$ and $s=\sin{\theta}$.
+
+Performing the corresponding tranform as the one above for a particular $i=k$ and $j=l$ yields the followin set of equations
+\begin{align}
+\begin{split}
+  a^{\prime}_{hk} &= a^{\prime}_{kh} = ca_{hk} - sa_{hl} \\
+  a^{\prime}_{hl} &= a^{\prime}_{lh} = ca_{hl} - sa_{hk} \\
+  a^{\prime}_{kl} &= a^{\prime}_{lk} = (c^2 - s^2)a_{kl} + sc(a_{kk} - a_{ll}) = 0\\
+  a^{\prime}_{kk} &= c^2a^{\prime}_{kk} + s^2a_{ll} - 2sca_{kl}\\
+  a^{\prime}_{ll} &= s^2a^{\prime}_{kk} + c^2a_{ll} + 2sca_{kl}
+\end{split}
+\end{align}
+
+\subsection{Implementation}
+HER SKAL DET NOE OM HVORDAN KODEN SER UT e.l.
+
+\section{Results}
+STORT SETT BARE KOMMENTARER TIL FIGURENE
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{../figures/interaction.png}
+	\caption{Plot showing the difference between the ground state with and without Coulomb repulsion.}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\textwidth]{../figures/omega.png}
+	\caption{Plot of the ground state with Coulomb repulsion and varying angular momentum}
+\end{figure}
+
+\section{Summary Remarks}
+KONKLUSJON OG OPPSUMMERING
+
 \begin{thebibliography}{9}
 
 \bibitem{morten2}
@@ -136,6 +233,14 @@ which means that both the dot product and orthogonality is preserved.
 	\emph{Project 2, Computational Physics I FYS3150/FYS4150},
 	University of Oslo,
 	2016.
+	
+\bibitem{abel}
+	Abel, N.H.,
+	Memoire sur le équations algébriques, ou l'on démontre l'impossibilité de la résolution de l'équation générale de cinquiéme degré,
+	In Sylow, L. and Lie, S., 
+	\emph{Æuvres Complètes de Niels Henrik Abel}, 2nd ed.,
+	Grøndahl \& Søn, pp. 28-33,
+	1881.
 
 \end{thebibliography}
 

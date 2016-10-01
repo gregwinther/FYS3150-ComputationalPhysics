@@ -10,6 +10,8 @@ from matplotlib import pyplot as plt
 
 n = 200
 
+rho = np.linspace(0,5,n)
+
 file1 = open('../data/omega0.01int.txt')
 file2 = open('../data/omega0.5int.txt')
 file3 = open('../data/omega1int.txt')
@@ -61,17 +63,22 @@ for line in allLines4:
 
 file4.close()
 
+u1 = u1[::-1]
+u2 = u2[::-1]
+u3 = u3[::-1]
+u4 = u4[::-1]
+
 u1 = np.abs(u1)**2
 u2 = np.abs(u2)**2
 u3 = np.abs(u3)**2
 u4 = np.abs(u4)**2
 
-plt.plot(u1, label=r"$\omega_r=0.01$")
-plt.plot(u2, label=r"$\omega_r=0.5$")
-plt.plot(u3, label=r"$\omega_r=1$")
-plt.plot(u4, label=r"$\omega_r=5$")
+plt.plot(rho, u1, label=r"$\omega_r=0.01$")
+plt.plot(rho, u2, label=r"$\omega_r=0.5$")
+plt.plot(rho, u3, label=r"$\omega_r=1$")
+plt.plot(rho, u4, label=r"$\omega_r=5$")
 
-plt.legend(loc=2)
+plt.legend()
 plt.title("Ground state with different angular momentum")
 plt.xlabel(r'$\rho$', fontsize=20)
 plt.ylabel(r'$ \mid{u(\rho)}\mid^2$', fontsize=20)

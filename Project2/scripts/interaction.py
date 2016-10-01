@@ -9,6 +9,8 @@ from matplotlib import pyplot as plt
 
 n = 200
 
+rho = np.linspace(0,5,n)
+
 file1 = open('../data/omega0.01int.txt')
 file2 = open('../data/omega0.01noint.txt')
 
@@ -36,14 +38,17 @@ for line in allLines2:
 
 file2.close()
 
+u1 = u1[::-1]
+u2 = u2[::-1]
+
 u1 = np.abs(u1)**2
 u2 = np.abs(u2)**2
 
 plt.title("Coulomb and no-interacting comparison "\
-	 + r'$\omega_r = 0.01, N=200$')
-plt.plot(u1, label="With Coulomb interaction")
-plt.plot(u2, label="No interaction")
+	 + r'$\omega_r = 0.01$')
+plt.plot(rho, u1, label="With Coulomb repulsion")
+plt.plot(rho, u2, label="No interaction")
 plt.xlabel(r'$\rho$', fontsize=20)
 plt.ylabel(r'$ \mid{u(\rho)}\mid^2$', fontsize=20)
-plt.legend(loc=2)
+plt.legend()
 plt.show()
