@@ -1,27 +1,68 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
+#include <string.h>
 
 #include <jacobimethod.h>
 
 using namespace std;
 
 int main(int argc, char *argv[])
-{
-    int n = 5;
+{ 
+    /*
+    cout << argv[1] << endl;
+    cout << argv[2] << endl;
+    cout << argv[3] << endl;
+    cout << argv[4] << endl;
+    cout << argv[5] << endl;
+    cout << argc << endl;
+    */
 
-    arma::mat A(n,n);
-    arma::mat R; R.eye(n,n);
+    if (argc != 6) {
+        cout << "AUTOMATIC TESTING: \n"  << endl;
+        jacobiEigTest();
+        jacobiMaxOffTest();
+        jacobiOrthogTest();
+
+        cout << "\nGeneral Usage:\n " << argv[0]
+             << " n" << " rho_max" << " Coulomb"
+             << " omega_r" << " output_filename\n"
+             << endl;
+    } else {
+
+        cout << "DU GREIDE DET!!" << endl;
+
+        // Parsing n
+        int n = atoi(argv[1]);
+
+        // Parsing rho_max and declaring rho_min
+        // This is the dimensionless radial component
+        double rho_min = 0.0;
+        double rho_max = atof(argv[2]);
+
+        // Coulomb interaction?
+        bool interacting = (bool) atoi(argv[3]);
+
+        // Parsing angular momentum
+        double omega_r = atof(argv[4]);
+
+        // Parsing output filename
+        string output_file = argv[5];
+
+        // Declaring and initializing matrices
+        arma::mat A(n,n);
+        arma::mat R; R.eye(n,n);
+
+        // Constructing second derivative approximation matrix
+        A = constructA(rho_min, rho_max, n, interacting, omega_r);
+
+        cout << interacting << endl;
+
+    }
 
     //jacobiMethod(A, R, n);
 
-    //A simple 5x5 test matrix
-    A << 4 << 1 << 1 << 0 <<-1 << arma::endr
-      << 1 << 4 << 0 << 1 <<-1 << arma::endr
-      << 1 << 0 << 3 << 0 << 0 << arma::endr
-      << 0 << 1 << 0 << 3 << 0 << arma::endr
-      <<-1 <<-1 << 0 << 0 << 3 << arma::endr;
     // tests(A, R, n);
-    // jacobiEigTest(A, R, n);
-    jacobiMaxoffTest(A, n);
+    // jacobiEigTest();
+    // jacobiMaxoffTest(A, n);
 }
