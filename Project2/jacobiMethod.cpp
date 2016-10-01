@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
-//#include <vector>
+#include <vector>
 #include <assert.h>
 #include <iomanip>
 
@@ -158,19 +158,25 @@ void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n) {
 
 }
 
-void writeToFile(double rho_max , double rho_min, int n, arma::mat &R, double Omega_r,int lowestvalueindex) {
+void writeToFile(arma::mat &R, int n, string filename){
+
+    // Unnecessary arguments? : double rho_max , double rho_min, int n,
+    // , double Omega_r,int lowestvalueindex
+
     ofstream ofile;
-    ofile.open("dataNoint.txt");
-    ofile <<"Omega_r " << setw(15) << setprecision(8) << Omega_r << endl;
-    ofile <<"rho_min " << setw(15) << setprecision(8) << rho_min << endl;
-    ofile <<"rho_max " << setw(15) << setprecision(8) << rho_max << endl;
-    ofile <<"n  " << setw(20) << n << endl;
-    ofile << "Eigenvector corresponding to lowest eigenvalue:" << endl;
+    ofile.open(filename);
+//    ofile <<"Omega_r " << setw(15) << setprecision(8) << Omega_r << endl;
+//    ofile <<"rho_min " << setw(15) << setprecision(8) << rho_min << endl;
+//    ofile <<"rho_max " << setw(15) << setprecision(8) << rho_max << endl;
+//    ofile <<"n  " << setw(20) << n << endl;
+//    ofile << "Eigenvector corresponding to lowest eigenvalue:" << endl;
+
+    int lowestvalueindex = 1;
 
     for (int i = 0; i < n; i++) {
-        ofile << R(i,lowestvalueindex) << endl;
+        ofile << R(i, lowestvalueindex) << endl;
      }
-     ofile <<endl;
+     ofile << endl;
 
      ofile.close();
 }
@@ -178,17 +184,16 @@ void writeToFile(double rho_max , double rho_min, int n, arma::mat &R, double Om
 void jacobiMethod(arma::mat &A, arma::mat &R, int n) {
 
     // If interacting, true
-    bool interacting = false;
+    // bool interacting = false;
 
     // Angular frequency
-    double omega_r = 0.01;
+    //double omega_r = 0.01;
 
     // Tolerance for the non-diagonals
     double eps = 1.0E-8;
 
     // Maximum no. of iterations
     int max_iter = n*n*n;
-
 
     // Position of max offdiag
     int k = 0;
@@ -215,7 +220,7 @@ void jacobiMethod(arma::mat &A, arma::mat &R, int n) {
     arma::vec lambda = A.diag();
 
     // Storing index of minimum (used for printing) 
-    // int lowestvalueindex = arma::index_min(lambda);
+    //int lowestvalueindex = lambda.index_min();
 
     // Sorting eigenvalues
     lambda = sort(lambda);

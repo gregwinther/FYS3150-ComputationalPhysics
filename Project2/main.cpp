@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
-#include <string.h>
+#include <string>
 
 #include <jacobimethod.h>
 
@@ -56,13 +56,12 @@ int main(int argc, char *argv[])
         // Constructing second derivative approximation matrix
         A = constructA(rho_min, rho_max, n, interacting, omega_r);
 
-        cout << interacting << endl;
+        // Computing ..
+        jacobiMethod(A, R, n);
+
+        // Writing data to file
+        writeToFile(R, n, output_file);
 
     }
 
-    //jacobiMethod(A, R, n);
-
-    // tests(A, R, n);
-    // jacobiEigTest();
-    // jacobiMaxoffTest(A, n);
 }

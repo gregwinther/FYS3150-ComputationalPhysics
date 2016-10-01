@@ -6,7 +6,7 @@ void jacobiRotation(arma::mat &A, arma::mat &R, int &k, int &l, int n);
 void jacobiMethod(arma::mat &A, arma::mat &R, int n);
 arma::mat constructA(double &rho_min, double &rho_max,int n, bool interacting, double omega_r);
 
-void writeToFile(double rho_max , double rho_min, int n, arma::mat &R,double Omega_r,int lowestvalueindex);
+void writeToFile(arma::mat &R, int n, std::string filename);
 
 void jacobiEigTest();
 void jacobiMaxOffTest();
