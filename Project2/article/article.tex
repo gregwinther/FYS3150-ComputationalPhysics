@@ -30,8 +30,7 @@ Trygve L. Svalheim \\
 
 \begin{titlepage}
 \begin{abstract}
-THIS IS NOT THE ABSTRACT FOR THIS PROJECT :)
-A one-dimensional version of the Poisson equation with Dirichlet boundary conditions is solved using two different algorithms. The two algorithms employed are the tridiagonal matrix algorithm and the LU decomposition method. We find that a fine-tuned version of the tridiagonal matrix algorithm is $10^5$ times faster than the general LU decomposition method and $10$ times as precise.
+In this project we have solved the three-dimensional Schrödinger equation for two particles with and without a repulsive Coulomb potential in an harmonic oscillator well. By discretizing the equation for one and later two electrons we could solve it numerically as an eigenvalue problem using the Jacobi method. By implementing the algorithm we observe that the numerical solution coincides well with the analytical prediction. Furthermore, the only difference between the cases with and without Coulomb repulsion is the potential term, hence we can conclude that our algorithm can be modified for any potential. 
 \end{abstract}
 \maketitle
 \tableofcontents
@@ -39,10 +38,10 @@ A one-dimensional version of the Poisson equation with Dirichlet boundary condit
 
 \section{Introduction}
 
-The aim of this study is to solve Schrödinger's equation for two electrons in a three-dimensional  harmonic oscillator well with and without repulsive Coulomb interaction. The equation is reformulated to a discretized in order to be represented as a matrix eigenvalue problem that can be solved with Jacobi's method. 
+The aim of this study is to solve Schrödinger's equation for two electrons in a three-dimensional  harmonic oscillator well with and without repulsive Coulomb interaction. The equation is reformulated to a discretized in order to be represented as a matrix eigenvalue problem that can be solved with Jacobi's method. Third, a brief discussion of how to implement the algorithm. To keep this article brief and to the point we have forgone to include any code snippets, but everything can be found at the github address stated above. Fourth and lastly, we present the results and give some concluding remarks.
 
 \section{Theory}
-We assume that electrons confined in a small area move in a three-dimensional harmonic oscillator potential and repel each other via the static Coulomb interaction. To simplify the problem, spherical symmetry is assumed. 
+We assume that electrons confined in a small area move in a three-dimensional harmonic oscillator potential and repel each other via the static Coulomb interaction. To simplify the problem, spherical symmetry is assumed. First, we give a brief theoretic outline of the radial Scchrödinger equation in order to av a theoretical base for the study. Second, we give a thorough description of how an algorithm for an eigenvalue problem must function. Third, we 
 
 \subsection{A single electron}
 The radial part of Schrödinger's equation for a single electron reads
@@ -194,8 +193,9 @@ G(i,j,\theta) = \begin{bmatrix}
 \end{equation}
 where $c= \cos{\theta}$ and $s=\sin{\theta}$.
 
-Performing the corresponding tranform as the one above for a particular $i=k$ and $j=l$ yields the followin set of equations
+Performing the corresponding tranform as the one above for a particular $i=k$ and $j=l$ yields the following set of equations
 \begin{align}
+\label{eq:rotation}
 \begin{split}
   a^{\prime}_{hk} &= a^{\prime}_{kh} = ca_{hk} - sa_{hl} \\
   a^{\prime}_{hl} &= a^{\prime}_{lh} = ca_{hl} - sa_{hk} \\
@@ -206,25 +206,35 @@ Performing the corresponding tranform as the one above for a particular $i=k$ an
 \end{align}
 
 \subsection{Implementation}
-HER SKAL DET NOE OM HVORDAN KODEN SER UT e.l.
+The implementation of the algorithm was done using the armadillo library. We start by constructing the matrix A, diagonalizing it using the Jacobi method and finally writing the eigenvector-results to file, while running unit tests along the way.
+
+\subsubsection{Constructing matrix A} In order to solve the eigenvalue problem we first construct the matrix A by filling in the elements along the $n\times n$-matrix' diagonal with the constant terms as well as the potential corresponding to the case we are studying.
+\subsubsection{Diagonalizing using the Jacobi Method} We start off by making an algorithm for locating the maximum value off the diagonal in the matrix. This is done in order to check if they have gone to zero, which is what the Jacobi rotation is trying to do. When all values off the diagonal have gone to zero within a reasonable tolerance, we are finished. 
+
+The \texttt{jacobiRotation} function works by calculating equation \ref{eq:rotation} straightforward and updating all matrix elements. Lastly the eigenvectors are saved to the matrix R.
 
 \section{Results}
-STORT SETT BARE KOMMENTARER TIL FIGURENE
 
 \begin{figure}[ht]
+	\label{fig:ConoCo}
 	\centering
 	\includegraphics[width=0.9\textwidth]{../figures/interaction.png}
 	\caption{Plot showing the difference between the ground state with and without Coulomb repulsion.}
 \end{figure}
 
+Knowing that the $|u(\rho)|^2$ describes the position of the particles, it is easy to see that the Coulomb repulsion results in the two particles being farther apart. This conclusion is quite intuitive when describing two repulsing particles. From \ref{fig:ConoCo} we observe this effect, as the "no interaction"-curve is sharper that with Coulomb repulsion.
+
 \begin{figure}[ht]
+	\label{fig:Co}
 	\centering
 	\includegraphics[width=0.9\textwidth]{../figures/omega.png}
 	\caption{Plot of the ground state with Coulomb repulsion and varying angular momentum}
 \end{figure}
 
+In from figure \ref{fig:Co} we are looking at the case of Coulomb repulsion for varying frequencies $\omega_i$. Right away, we see that by increasing the oscillator frequency, we get sharper curves, meaning a more well defined position. This follows by the fact that $\omega_r$ determines the strength of the well resulting in the two electrons being forced closer together.
+
 \section{Summary Remarks}
-KONKLUSJON OG OPPSUMMERING
+solving the Schrödinger equation as an eigenvalue problem. We have concluded that the behaviour of the two particles examined coincide well with that predicted from quantum mechanics. Furthermore, we have successfully implemented unit tests into our code, allowing us to locate errors in our code more efficiently. We have however not discussed the efficiency of our code, but can assume from what we learned in project 1 that a specialized algorithm for the given matrix would have resulted in a faster program. 
 
 \begin{thebibliography}{9}
 
