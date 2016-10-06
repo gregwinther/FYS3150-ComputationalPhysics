@@ -21,6 +21,17 @@ void EulerCromer::integrateOneStep(std::vector<Particle*> particles) {
          * Remember that the positions and velocities of all the particles are
          * vec3 vectors, which you can use the +=, -=, etc. operators on.
          */
+
+        // Acceleration vector
+        vec3 a = (p->getForce()) / (p->getMass());
+
+        // Velocity update
+        p->getVelocity() = p->getPosition() + m_dt*a;
+
+        // Position update
+        p->getPosition() = p->getPosition() + m_dt*p->getVelocity();
+
+
     }
 }
 

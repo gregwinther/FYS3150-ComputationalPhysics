@@ -17,14 +17,22 @@ void System::computeForces() {
      * method which takes pointers to two Particles as input. I.e. the forces
      * between particle i and particle j should be computed by
      *
-     *      m_potential->computeForces(m_particles.at(i), m_particles.at(j));
+     *      m_potential->computeForces(*m_particles.at(i), *m_particles.at(j));
      *
      * Note: It is important that you do not sum over each particle pair more
-     * than once. A simple way to ensure this is done is by a double foor loop,
+     * than once. A simple way to ensure this is done is by a double for loop,
      * one running from i=0...n, and the other running from j=i+1...n. You
      * should convince yourself that this is true before you implement this
      * loop.
      */
+
+    int n = m_numberOfParticles;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+            m_potential->computeForces(*m_particles.at(i), *m_particles.at(j));
+        }
+    }
     resetAllForces();
     m_potential->resetPotentialEnergy();
 }
@@ -82,7 +90,12 @@ double System::computeKineticEnergy() {
      * Remember also that the Particle class has a built in method
      * Particle::velocitySquared which can be used here.
      */
+
     m_kineticEnergy = 0;
+
+    for (int i = 0; i < m_numberOfParticles; i++) {
+        m_kineticEnergy += m_particles.at(i)->velocitySquared() * m_particles.at(i)->getMass();
+    }
     return m_kineticEnergy;
 }
 
@@ -145,6 +158,11 @@ void System::writePositionsToFile() {
      *
      * Which format you choose for the data file is up to you.
      */
+
+    for (int i = 0; i < m_numberOfParticles; i++) {
+        m_outFile << m_particles.at(i)->getPosition();
+    }
+    m_outFile << endl;
 }
 
 void System::closeOutFile() {
@@ -153,9 +171,3 @@ void System::closeOutFile() {
         m_outFileOpen = false;
     }
 }
-
-
-
-
-
-
