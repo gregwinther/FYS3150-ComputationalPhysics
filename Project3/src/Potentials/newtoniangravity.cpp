@@ -30,9 +30,14 @@ void NewtonianGravity::computeForces(Particle& a, Particle& b) {
 
     // Aquiring data
     vec3 r_a = a.getPosition();
-    vec3 r_b = a.getPosition();
+    vec3 r_b = b.getPosition();
     double m_a = a.getMass();
     double m_b = b.getMass();
+
+    vec3 r = r_a - r_b;
+
+    r_a.print();
+    r_b.print();
 
     // FORCE COMPUTATION
 
@@ -40,28 +45,31 @@ void NewtonianGravity::computeForces(Particle& a, Particle& b) {
     double dFx, dFy, dFz;
 
     // x-direction
-    if (r_a[0] > r_b[0]) {
-        dFx = -(m_G*m_a*m_b) / ((r_a[0]-r_b[0])*(r_a[0]-r_b[0]));
+   if (r_a[0] > r_b[0]) {
+        dFx = -(m_G*m_a*m_b) / (r.lengthSquared());
     } else {
-        dFx =  (m_G*m_a*m_b) / ((r_a[0]-r_b[0])*(r_a[0]-r_b[0]));
+        dFx =  (m_G*m_a*m_b) / (r.lengthSquared());
     }
 
     // y-direction
-    if (r_a[1] > r_b[1]) {
-        dFy = -(m_G*m_a*m_b) / ((r_a[1]-r_b[1])*(r_a[1]-r_b[1]));
+   if (r_a[1] > r_b[1]) {
+        dFy = -(m_G*m_a*m_b) / (r.lengthSquared());
     } else {
-        dFy =  (m_G*m_a*m_b) / ((r_a[1]-r_b[1])*(r_a[1]-r_b[1]));
+        dFy =  (m_G*m_a*m_b) / (r.lengthSquared());
     }
 
     // z-direction
-    if (r_a[0] > r_b[0]) {
-        dFz = -(m_G*m_a*m_b) / ((r_a[2]-r_b[2])*(r_a[2]-r_b[2]));
+   if (r_a[2] >= r_b[2]) {
+        dFz = -(m_G*m_a*m_b) / (r.lengthSquared());
     } else {
-        dFz =  (m_G*m_a*m_b) / ((r_a[2]-r_b[2])*(r_a[2]-r_b[2]));
+        dFz =  (m_G*m_a*m_b) / (r.lengthSquared());
     }
 
     // ...
     //m_potentialEnergy += V;
+
+    //std::cout << "Force computation: " << std::endl;
+    //std::cout << dFx << dFy << dFz << std::endl;
 
     // Adding force to particle a
     a.addForce(dFx, dFy, dFz);

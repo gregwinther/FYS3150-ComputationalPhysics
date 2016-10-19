@@ -16,7 +16,7 @@ void System::computeForces() {
      * between each one. This should be done by the Potential::computeForces
      * method which takes pointers to two Particles as input. I.e. the forces
      * between particle i and particle j should be computed by
-     *
+
      *      m_potential->computeForces(*m_particles.at(i), *m_particles.at(j));
      *
      * Note: It is important that you do not sum over each particle pair more
@@ -26,6 +26,8 @@ void System::computeForces() {
      * loop.
      */
 
+    resetAllForces();
+
     int n = m_numberOfParticles;
 
     for (int i = 0; i < n; i++) {
@@ -33,7 +35,7 @@ void System::computeForces() {
             m_potential->computeForces(*m_particles.at(i), *m_particles.at(j));
         }
     }
-    resetAllForces();
+
     m_potential->resetPotentialEnergy();
 }
 
