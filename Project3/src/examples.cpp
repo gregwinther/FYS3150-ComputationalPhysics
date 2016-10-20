@@ -7,12 +7,14 @@
 #include "Potentials/nopotential.h"
 #include "InitialConditions/twobody.h"
 #include "InitialConditions/threebody.h"
+#include "InitialConditions/multibody.h"
+
 #include <iostream>
 #include <cmath>
 
 
 void Examples::twoBodyProblem() {
-    double G = 4*M_PI*M_PI; // 6.67E-11 Nm/kg adjusted to .... blah blah
+    double G = 4*M_PI*M_PI; // 6.67E-11 Nm/kg adjusted to correct units
 
     System* twoBodySystem = new System();
     twoBodySystem->setIntegrator        (new EulerCromer(twoBodySystem));
@@ -24,12 +26,25 @@ void Examples::twoBodyProblem() {
 }
 
 void Examples::threeBodyProblem() {
-    /*
-     * This is where you should set up a three-body problem, using the
-     * InitialCondition::ThreeBody class as System's InitialCondition.
-     *
-     * You should start by considering the two-body case in
-     * Examples::twoBodyProblem, before continuing with this more complicated
-     * case.
-     */
+    double G = 4*M_PI*M_PI;
+
+    System* threeBodySystem = new System();
+    threeBodySystem->setIntegrator        (new VelocityVerlet(threeBodySystem));
+    threeBodySystem->setPotential         (new NewtonianGravity(G));
+    threeBodySystem->setInitialCondition  (new ThreeBody());
+    threeBodySystem->setFileWriting       (true);
+    threeBodySystem->removeLinearMomentum ();
+    threeBodySystem->integrate            (30000);
+}
+
+void Examples::multiBodyProblem() {
+    double G = 4*M_PI*M_PI; //6.67e-11;
+
+    System* multiBodySystem = new System();
+    multiBodySystem->setIntegrator        (new VelocityVerlet(multiBodySystem));
+    multiBodySystem->setPotential         (new NewtonianGravity(G));
+    multiBodySystem->setInitialCondition  (new MultiBody());
+    multiBodySystem->setFileWriting       (true);
+    multiBodySystem->removeLinearMomentum ();
+    multiBodySystem->integrate            (100000);
 }

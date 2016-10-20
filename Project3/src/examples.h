@@ -4,4 +4,5 @@ class Examples {
 public:
     static void twoBodyProblem();
     static void threeBodyProblem();
+    static void multiBodyProblem();
 };
