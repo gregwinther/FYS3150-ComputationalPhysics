@@ -7,3 +7,6 @@ Solution to the Poission equation in special one-dimensional form. A tridiagonal
 
 ## Project 2: Eigensystems
 Solution to the Schrödinger's equation for two electrons in a three-dimensional harmonic oscillator potential well with and without repulsive Coulomb interaction.
+
+## Project 3: Numerical Integration
+The Euler-Cromer method and then the Velocity Verlet method is employed to solve a complex many-body problem, namely the solar system. Forces between the sun and all planets of the solar system, including Pluto, is computed. The orbits are then estimated by numerical integration.
