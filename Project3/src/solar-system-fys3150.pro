@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     Potentials/nopotential.cpp \
     InitialConditions/initialcondition.cpp \
     InitialConditions/twobody.cpp \
-    InitialConditions/threebody.cpp
+    InitialConditions/threebody.cpp \
+    InitialConditions/multibody.cpp
 
 HEADERS += \
     vec3.h \
@@ -31,4 +32,5 @@ HEADERS += \
     Potentials/nopotential.h \
     InitialConditions/initialcondition.h \
     InitialConditions/twobody.h \
-    InitialConditions/threebody.h
+    InitialConditions/threebody.h \
+    InitialConditions/multibody.h

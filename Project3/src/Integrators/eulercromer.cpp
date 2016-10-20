@@ -31,10 +31,10 @@ void EulerCromer::integrateOneStep(std::vector<Particle*> particles) {
        // std::cout << "Force: " << p->getForce() << std::endl;
 
         // Velocity update
-        p->getVelocity() = p->getVelocity() + m_dt*a;
+        p->getVelocity() += m_dt*a;
 
         // Position update
-        p->getPosition() = p->getPosition() + m_dt*p->getVelocity();
+        p->getPosition() += m_dt*p->getVelocity();
     }
 }
 

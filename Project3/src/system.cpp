@@ -96,7 +96,7 @@ double System::computeKineticEnergy() {
     m_kineticEnergy = 0;
 
     for (int i = 0; i < m_numberOfParticles; i++) {
-        m_kineticEnergy += m_particles.at(i)->velocitySquared() * m_particles.at(i)->getMass();
+        m_kineticEnergy += (1.0/2) * m_particles.at(i)->velocitySquared() * m_particles.at(i)->getMass();
     }
     return m_kineticEnergy;
 }
@@ -141,6 +141,11 @@ void System::removeLinearMomentum() {
      */
 
     vec3 totalMomentum = vec3(0,0,0);
+    for (int i = 0; i < m_numberOfParticles; i++) {
+        Particle *p = m_particles.at(i);
+
+        totalMomentum += p->getVelocity() * p->getMass();
+    }
 }
 
 void System::setFileWriting(bool writeToFile) {

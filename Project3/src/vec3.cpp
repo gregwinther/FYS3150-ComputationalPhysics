@@ -131,8 +131,8 @@ vec3& vec3::operator/=(const vec3& rhs) {
 
 std::ostream &operator<<(std::ostream& os, const vec3& vec)  {
     // Allows cout << myVector << endl;
-    os  << vec.x() << " "
-              << vec.y() << " "
-              << vec.z() << " ";
+    os  << " " << vec.x() << " "
+               << vec.y() << " "
+               << vec.z() << " ";
     return os;
 }

@@ -12,7 +12,7 @@
 
 
 void Examples::twoBodyProblem() {
-    double G = 1.0;
+    double G = 4*M_PI*M_PI; // 6.67E-11 Nm/kg adjusted to .... blah blah
 
     System* twoBodySystem = new System();
     twoBodySystem->setIntegrator        (new EulerCromer(twoBodySystem));
@@ -20,7 +20,7 @@ void Examples::twoBodyProblem() {
     twoBodySystem->setInitialCondition  (new TwoBody());
     twoBodySystem->setFileWriting       (true);
     twoBodySystem->removeLinearMomentum ();
-    twoBodySystem->integrate            (5000);
+    twoBodySystem->integrate            (10000);
 }
 
 void Examples::threeBodyProblem() {

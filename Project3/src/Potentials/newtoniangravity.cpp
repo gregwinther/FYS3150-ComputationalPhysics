@@ -33,48 +33,23 @@ void NewtonianGravity::computeForces(Particle& a, Particle& b) {
     vec3 r_b = b.getPosition();
     double m_a = a.getMass();
     double m_b = b.getMass();
-
     vec3 r = r_a - r_b;
-
-    r_a.print();
-    r_b.print();
 
     // FORCE COMPUTATION
 
     // Computing force components for particle a
-    double dFx, dFy, dFz;
+    vec3 F;
 
     // x-direction
-   if (r_a[0] > r_b[0]) {
-        dFx = -(m_G*m_a*m_b) / (r.lengthSquared());
-    } else {
-        dFx =  (m_G*m_a*m_b) / (r.lengthSquared());
-    }
+    F = -((m_G*m_a*m_b) / (r.lengthSquared()*r.length())) * r;
 
-    // y-direction
-   if (r_a[1] > r_b[1]) {
-        dFy = -(m_G*m_a*m_b) / (r.lengthSquared());
-    } else {
-        dFy =  (m_G*m_a*m_b) / (r.lengthSquared());
-    }
-
-    // z-direction
-   if (r_a[2] >= r_b[2]) {
-        dFz = -(m_G*m_a*m_b) / (r.lengthSquared());
-    } else {
-        dFz =  (m_G*m_a*m_b) / (r.lengthSquared());
-    }
-
-    // ...
-    //m_potentialEnergy += V;
-
-    //std::cout << "Force computation: " << std::endl;
-    //std::cout << dFx << dFy << dFz << std::endl;
+    double V = -(m_G*m_a*m_b) / r.length();
+    m_potentialEnergy += V;
 
     // Adding force to particle a
-    a.addForce(dFx, dFy, dFz);
+    a.addForce(F[0], F[1], F[2]);
     // Force acting on particle b acts in opposite direction (N3L)
-    b.addForce(-dFx, -dFy, -dFz);
+    b.addForce(-F[0], -F[1], -F[2]);
 }
 
 std::string NewtonianGravity::getName() {

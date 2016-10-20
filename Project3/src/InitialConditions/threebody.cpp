@@ -14,6 +14,14 @@ void ThreeBody::setupParticles(System &system) {
      * complicated three-body initialization only after you have a working
      * implementation of the two-body case.
      */
+
+    Particle *sun     = new Particle(vec3(0,0,0), vec3(0,0,0), 1.0);
+    Particle *earth   = new Particle(vec3(1,0,0), vec3(0,2*M_PI,0), pow(10,-6));
+    Particle *jupiter = new Particle(vec3(5.2,0,0), vec3(0,M_PI,0), pow(10, -3));
+
+    system.addParticle(sun);
+    system.addParticle(earth);
+    system.addParticle(jupiter);
 }
 
 std::string ThreeBody::getName() {
