@@ -7,6 +7,7 @@ class System {
 private:
     bool                        m_writeToFile       = false;
     bool                        m_outFileOpen       = false;
+    bool						m_outFileOpen2		= false;
     int                         m_integrateSteps    = 0;
     int                         m_numberOfParticles = 0;
     double                      m_kineticEnergy     = 0;
@@ -16,10 +17,12 @@ private:
     class Potential*            m_potential         = nullptr;
     class InitialCondition*     m_initialCondition  = nullptr;
     std::ofstream               m_outFile;
+    std::ofstream               m_outFile2;
     std::vector<Particle*>      m_particles;
 
 public:
     System() {}
+    void writeThetasToFile		(double theta);
     void computeForces          ();
     void resetAllForces         ();
     void setPotential           (class Potential* potential);

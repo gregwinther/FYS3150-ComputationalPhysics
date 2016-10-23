@@ -22,7 +22,7 @@ void Examples::twoBodyProblem() {
     twoBodySystem->setInitialCondition  (new TwoBody());
     twoBodySystem->setFileWriting       (true);
     twoBodySystem->removeLinearMomentum ();
-    twoBodySystem->integrate            (10000);
+    twoBodySystem->integrate            (1e6);
 }
 
 void Examples::threeBodyProblem() {
@@ -34,11 +34,11 @@ void Examples::threeBodyProblem() {
     threeBodySystem->setInitialCondition  (new ThreeBody());
     threeBodySystem->setFileWriting       (true);
     threeBodySystem->removeLinearMomentum ();
-    threeBodySystem->integrate            (30000);
+    threeBodySystem->integrate            (50000);
 }
 
 void Examples::multiBodyProblem() {
-    double G = 4*M_PI*M_PI; //6.67e-11;
+    double G = 4*M_PI*M_PI;
 
     System* multiBodySystem = new System();
     multiBodySystem->setIntegrator        (new VelocityVerlet(multiBodySystem));
@@ -46,5 +46,5 @@ void Examples::multiBodyProblem() {
     multiBodySystem->setInitialCondition  (new MultiBody());
     multiBodySystem->setFileWriting       (true);
     multiBodySystem->removeLinearMomentum ();
-    multiBodySystem->integrate            (100000);
+    multiBodySystem->integrate            (50000);
 }

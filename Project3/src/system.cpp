@@ -3,10 +3,13 @@
 #include "Potentials/potential.h"
 #include "InitialConditions/initialcondition.h"
 #include "particle.h"
-
 #include <iostream>
+#include <cmath>
+#include <iomanip>
+
 using std::cout;
 using std::endl;
+using std::setprecision;
 
 
 
@@ -65,10 +68,46 @@ void System::setDt(double dt) {
 void System::integrate(int numberOfSteps) {
     m_integrateSteps = numberOfSteps;
     printIntegrateInfo(0);
+
+    // Set some helper variables before we start the time integration.
+    double thetaPrevious        = 0;	// The perihelion angle of the previous time step.
+    double thetaCurrent 		= 0;	// The perihelion angle of the current time step.
+
+    double rPreviousPrevious 	= 0;	// Mercury-Sun-distance two times steps ago.
+    double rPrevious            = 0;	// Mercury-Sun-distance of the previous time step.
+    double rCurrent             = 0;	// Mercury-Sun-distance of the current time step.
+
     for (int i=1; i<numberOfSteps+1; i++) {
         m_integrator->integrateOneStep(m_particles);
         printIntegrateInfo(i);
         writePositionsToFile();
+        Particle *sun = m_particles.at(0);
+        Particle *mercury = m_particles.at(1);
+        // Compute the current perihelion angle, using the inverse tangent function from cmath.
+        // This assumes there is a vector of planets, called m_bodies, available, in which the
+        // Sun is m_bodies[0] and Mercury is m_bodies[1].
+        double x = mercury->getPosition().x() - sun->getPosition().x();
+        double y = mercury->getPosition().y() - sun->getPosition().y();
+
+        thetaCurrent = atan2( y, x );
+
+        // Compute the current Mercury-Sun distance.
+        rCurrent = (sun->getPosition()-mercury->getPosition()).length();
+
+        // Check if the *previous* time step was a minimum for the Mercury-Sun distance. I.e. check
+        // if the previous distance is smaller than the current one *and* the previous previous one.
+        if ( rCurrent > rPrevious && rPrevious < rPreviousPrevious ) {
+
+             // If we are perihelion, print angle (in radians) to terminal.
+             writeThetasToFile(thetaPrevious);
+
+             // Here you should also probably write it to file for later plotting or something.
+        }
+
+        // Update the helper variables (current, previous, previousPrevious).
+        rPreviousPrevious 	= rPrevious;
+        rPrevious			= rCurrent;
+        thetaPrevious		= thetaCurrent;
     }
     closeOutFile();
 }
@@ -117,7 +156,7 @@ void System::printIntegrateInfo(int stepNumber) {
         m_kineticEnergy     = computeKineticEnergy();
         m_potentialEnergy   = m_potential->getPotentialEnergy();
         m_totalEnergy       = m_kineticEnergy + m_potentialEnergy;
-        printf("Step: %5d    E =%10.5f   Ek =%10.5f    Ep =%10.5f\n",
+        printf("Step: %5d    E =%10.5g   Ek =%10.5g    Ep =%10.5g\n",
                stepNumber, m_totalEnergy, m_kineticEnergy, m_potentialEnergy);
         fflush(stdout);
     }
@@ -154,7 +193,7 @@ void System::setFileWriting(bool writeToFile) {
 
 void System::writePositionsToFile() {
     if (m_outFileOpen == false) {
-        m_outFile.open("positions.dat", std::ios::out);
+        m_outFile.open("../positions.dat", std::ios::out);
         m_outFileOpen = true;
     }
     /*
@@ -167,10 +206,29 @@ void System::writePositionsToFile() {
      */
 
     for (int i = 0; i < m_numberOfParticles; i++) {
-        m_outFile << m_particles.at(i)->getPosition();
+        m_outFile << setprecision(15) << m_particles.at(i)->getPosition();
     }
     m_outFile << endl;
 }
+
+void System::writeThetasToFile(double theta) {
+    if (m_outFileOpen2 == false) {
+         m_outFile2.open("../thetas.dat", std::ios::out);
+         m_outFileOpen2 = true;
+     }
+     /*
+      * This is where you should print the positions of each particle to file.
+     * Note that the file, "positions.dat", is already open; it is opened in
+      * the above if-test the first time this method is called in
+      * System::Integrate.
+      *
+      * Which format you choose for the data file is up to you.
+      */
+
+     m_outFile2 << setprecision(15) << theta;
+
+     m_outFile2 << endl;
+ }
 
 void System::closeOutFile() {
     if (m_writeToFile == true) {

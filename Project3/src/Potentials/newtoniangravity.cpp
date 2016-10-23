@@ -1,5 +1,7 @@
 #include "newtoniangravity.h"
 #include <iostream>
+#include <string>
+#include <iomanip>
 
 NewtonianGravity::NewtonianGravity(double G) : m_G(G) {
 
@@ -40,8 +42,18 @@ void NewtonianGravity::computeForces(Particle& a, Particle& b) {
     // Computing force components for particle a
     vec3 F;
 
-    // x-direction
+    // Force
     F = -((m_G*m_a*m_b) / (r.lengthSquared()*r.length())) * r;
+
+    // Mercury relativistic correction
+    if ( (a.getName().compare("Sun") == 0) && (b.getName().compare("Mercury") == 0 )) {
+        double c = 63239.7263; // AU per year
+        vec3 v = b.getVelocity();
+        vec3 l = r.cross(v);
+        double l2 = l.lengthSquared();
+        double correction = 1 + (3.0*l2) / (c*c*r.lengthSquared());
+        F *= correction;
+     }
 
     double V = -(m_G*m_a*m_b) / r.length();
     m_potentialEnergy += V;
