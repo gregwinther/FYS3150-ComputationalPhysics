@@ -193,7 +193,30 @@ The object-oriented model for the solar system that has been built is very flexi
 
 \subsection{Two-Body system: Earth and Sun}
 
+\begin{figure}[ht]
+	\centering
+	\textbf{Comparison of Euler-Cromer and Velocity Verlet}
+	\includegraphics[width=0.99\textwidth]{../figures/earthcompare.png}
+	\label{fig:earthcompare}
+	\caption{Figure showing the difference in precision between the Euler-Cromer method (left) and the velocity Verlet method (right). The time step is $dt=10^{-2}$ and the number of points is $N=10^6$}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\textbf{Earth Escape Velocity}
+	\includegraphics[width=0.9\textwidth]{../figures/earthescape.png}
+	\caption{Illustration of Earth escaping orbit at $\sqrt{8}\pi AU/yr$}
+\end{figure}
+
+
 \subsection{Three-Body system: Earth, Sun and Jupiter}
+
+\begin{figure}[ht]
+	\centering
+	\textbf{Earth, Sun and Jupiter}
+	\includegraphics[width=0.99\textwidth]{../figures/threebody.png}
+	\caption{Model outcome for a Jupiter with different masses. Top left: Normal mass. Top right: Jupiter mass $10\times$ normal. Bottom: Jupiter mass $1000\times$ normal, in 2D (left) and 3D (right)}
+\end{figure}
 
 \subsection{Multi-Body system: all planets}
 
