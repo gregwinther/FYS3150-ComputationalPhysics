@@ -6,9 +6,7 @@
 void MultiBody::setupParticles(System &system) {
 
     // Units in AU and mass as fraction of sun
-
     double solar_mass 	= 1.988544 * pow(10, 30);
-
     double mercury_mass = 3.302 * pow(10, 23) / solar_mass;
     double venus_mass 	= 48.685 * pow(10, 23) / solar_mass;
     double earth_mass 	= 5.97219 * pow(10, 24) / solar_mass;

@@ -15,9 +15,13 @@ void ThreeBody::setupParticles(System &system) {
      * implementation of the two-body case.
      */
 
-    Particle *sun     = new Particle(vec3(0,0,0), vec3(0,0,0), 1.0);
-    Particle *earth   = new Particle(vec3(1,0,0), vec3(0,2*M_PI,0), pow(10,-6));
-    Particle *jupiter = new Particle(vec3(5.2,0,0), vec3(0,M_PI,0), pow(10, -3));
+    double solar_mass   = 1.988544 * pow(10,30);
+    double earth_mass 	= 5.97219  * pow(10, 24) / solar_mass;
+    double jupiter_mass = 1898.13  * pow(10, 24) / solar_mass;
+
+    Particle* sun = new Particle(vec3(0,0,0), vec3(0,0,0), 1.0);
+    Particle* earth = new Particle(vec3(1,0,0), vec3(0,2*M_PI,0), earth_mass);
+    Particle* jupiter = new Particle(vec3(5.2,0,0), vec3(5.9024E-04, -7.1587E-03, 1.6542E-05)*265.2422, jupiter_mass);
 
     system.addParticle(sun);
     system.addParticle(earth);

@@ -27,6 +27,7 @@ void System::computeForces() {
      */
 
     resetAllForces();
+    m_potential->resetPotentialEnergy();
 
     int n = m_numberOfParticles;
 
@@ -36,7 +37,6 @@ void System::computeForces() {
         }
     }
 
-    m_potential->resetPotentialEnergy();
 }
 
 void System::resetAllForces() {

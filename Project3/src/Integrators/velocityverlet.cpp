@@ -23,13 +23,18 @@ void VelocityVerlet::integrateOneStep(std::vector<Particle*> particles) {
     for (int i = 1; i < particles.size(); i++) {
         Particle *p = particles.at(i);
 
+        // Acceleration vector
         vec3 a = (p->getForce()) / (p->getMass());
 
+        // Position update
         p->getPosition() += p->getVelocity()*m_dt + (1.0/2)*a*m_dt*m_dt;
 
         m_system->computeForces();
+
+        // New acceleration vector
         vec3 anew = (p->getForce()) / (p->getMass());
 
+        // Velocity update
         p->getVelocity() += (a + anew) * (1.0/2) * m_dt;
     }
 }
