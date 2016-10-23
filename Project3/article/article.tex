@@ -1,13 +1,14 @@
-\documentclass[10pt, a4paper]{amsart}
+\documentclass[10pt,a4paper]{amsart}
 
 \usepackage[]{graphicx}
 \usepackage[]{hyperref}
 \usepackage[]{physics}
-\usepackage[]{color,listings}
+\usepackage[]{listings}
 \usepackage[utf8]{inputenc}
 \usepackage[toc,page]{appendix}
+\usepackage[dvipsnames]{xcolor}
 
-\definecolor{mygray}{gray}{0.6}
+\definecolor{mygray}{gray}{0.9}
 
 \lstset{
 	frame = single,
@@ -15,13 +16,14 @@
 	showstringspaces = false,
 	tabsize = 2,
 	otherkeywords = {self},
-	keywordstyle = \color{blue},
-	identifierstyle=\color{blue},
+	keywordstyle = \color{Maroon},
+	identifierstyle=\color{olive},
  	stringstyle=\color{orange},
- 	backgroundcolor=\color{mygray}
+ 	backgroundcolor=\color{mygray},
+ 	breaklines = true
 }
 
-\title[Simulation of Solar System]{Simulation of Solar System Using Velocity Verlet Method \\
+\title[Simulation of the Solar System]{The Solar System: an Exercise in Numerical Integration \\
   \hrulefill\small{ FYS3150: Computational Physics }\hrulefill}
 
 \author[Winther-Larsen \& Svalheim]{Sebastian G. Winther-Larsen \\ 
@@ -102,24 +104,98 @@ Because the mass of the sun as a fraction of solar masses is $M_{\odot}=1$  and 
 G=4\pi^2AU^3yr^{-2} \quad v_{Earth}=2\pi AUyr^{-1}
 \end{equation}
 
-\section{Algorithm and implementation}
+\section{Algorithms and implementation}
 
 \subsection{Object orientation}
-Object orientation allows for more general code to be written and for easy reuse. Moreover, object orientation makes sense for humans, who tends to classify objects we see and interact with in everyday life. In this study we make use of all the advantages of object oriented programming by implementing several classes. A class diagram illustration of the program is included
+Object orientation allows for more general code to be written and for easy reuse. Moreover, object orientation makes sense for humans, who tends to classify objects we see and interact with in everyday life. In this study we make use of all the advantages of object oriented programming by implementing several classes. A class diagram illustration of the program is included in appendix \ref{app:classdiagram}. Bear in mind that this diagram does not represent the functionality of the program to a full extent, as many methods and a few classes are left out. Rather, it helps one to understand how the class hierarchy is built up and how the program as whole is supposed to function.
 
 The \lstinline|System| class contains all the information about the initial conditions of the system, which integration method should be used and also some helpful methods, like one that writes data to file.
 
 The \lstinline|InitialCondition| superclass contains a method for setting up particles. Depending on what system one wants to model, we have implemented three subclasses of \lstinline|IntialCondition|: \lstinline|TwoBody|, \lstinline|ThreeBody| and \lstinline|MultiBody|. The name of these classes speek mostly for themselves.
 
-The intersting objects, contained within the \lstinline|InitialCondition| subclasses are instances of the \lstinline|Particle| class. The class could have another name, like "planet" or "body" because instances of it will represent the largest bodies in the solar system; the sun and (eventually) all nine planets\footnote{Including Pluto for historical reasons.}.
+The intersting objects, contained within the \lstinline|InitialCondition| subclasses are instances of the \lstinline|Particle| class. The class could have another name, like "planet" or "body" because instances of it will represent the largest bodies in the solar system; the sun and (eventually) all nine planets\footnote{Including Pluto for historical reasons.}. Every particle instance takes a position vector, a velcity vector and a mass as inputs and has only these attributes\footnote{The position and velocity vectors are defined by its own class \lstinline|Vec3|.}. The extra abstraction to "particle" if therefore fitting, and the class could be employed elsewhere, for instance in a molecular dynamics simulation.
+
+The \lstinline|Integrator| superclass har two subclasses \lstinline|EulerCromer| and \lstinline|VelocityVerlet| each of which must owerwrite the \lstinline|integrateOneStep| method. These are the most important part of the program, because it is where the essential part of the two algorithms are implemented. The \lstinline|integrateOneStep| method is called iteratively for a specified number of steps from a class instance of the \lstinline|system| class, hence the name of the method. Within the \lstinline|integrateOneStep| method, the integration is performed for every particle in the system. A further description of the integrator algorithms follows.
 
 \subsection{Euler-Cromer}
 
+Analytically the Euler-Cromer method, or the semi-implicit Euler method, can be expressed in one dimension by the following recursive relations
+\begin{align}
+v_{n+1} &= v_n + a_n dt \\
+x_{n+1} &= x_n + v_{n+1} dt,
+\end{align}
+where $a_n$ is the acceleration, $v_n$ is the velocity and $x_n$ is the position, after a certain number of steps $n$. $dt$ is the time step and $t_n = t_0 + ndt$ is the time after $n$ steps. One sees that the algorithm is relatively cheap, with $4n$ FLOPS. In C++ code the \lstinline|integrateOneStep| method of the \lstinline|EulerCromer| class looks like this
+\begin{lstlisting}
+void EulerCromer::integrateOneStep(std::vector<Particle*> particles) {
+
+	m_system->computeForces();
+    
+	for (int i=0; i<particles.size(); i++) {
+		Particle *p = particles.at(i);
+
+		// Acceleration vector
+		vec3 a = (p->getForce()) / (p->getMass());
+        
+		// Velocity update
+		p->getVelocity() += m_dt*a;
+
+		// Position update
+		p->getPosition() += m_dt*p->getVelocity();
+	}
+}
+\end{lstlisting}
+Notice that the forces used to compute the acceleration are computed within the \lstinline|System| class and that the method uses three-dimensional vectors for more realistic results.
+
+The Euler Cromer method is a first-order integrator which means that it commits a global error of the order of $dt$. This means that by decreasing the time step one will get a more accurate result.
+
 \subsection{Velocity Verlet}
+The Verlet method is an integration method designed to integrate Newton's equation of motion. The method provides good numerical stability and more precise results compared with a regular method like the Euler-Cromer method. The reason for this is that it is symplectic, which means that it conserves state-space volume\footnote{One would probably read an entire book to understand this, so we will leave it at that.}.
+
+The velocity Verlet method can also be represented by a (one-dimensional) recursive relation
+\begin{align}
+x_{n+1} &= x_n + v_ndt + \frac{1}{2}a_ndt^2 \\
+v_{n+1} &= v_n + \frac{a_n + a_{n+1}}{2}dt.
+\end{align}
+These equations tell us that the algorithm is slightly more expensive compared to the Euler-Cromer scheme at $11n$. Here follows an implementation of the algorithm in C++.
+
+\begin{lstlisting}
+void VelocityVerlet::integrateOneStep(std::vector<Particle*> particles) {
+    
+	m_system->computeForces();
+    
+	for (int i=0; i<particles.size(); i++) {
+		Particle *p = particles.at(i);
+
+		// Acceleration vector
+		vec3 a = (p->getForce()) / (p->getMass());
+
+		// Position update
+		p->getPosition() += p->getVelocity()*m_dt + 0.5*a*m_dt*m_dt;
+
+		m_system->computeForces();
+
+		// New accelration vector
+		vec3 anew = (p->getForce()) / (p->getMass());
+
+		// Velocity update
+		p->getVelocity() += (a + anew)*m_dt/2;
+	}
+}
+\end{lstlisting}
+One sees that it is necessary to compute forces and update acceleration once more in order to update the velocity, which means more operations must be conducted. Time will show if the extra cost of this algorithm is worth the  increase in precision it promises.
 
 \section{Data}
+As we wish to determine the orbits of our solar system as accurately as possible, we use date from HORIZON Web-Interface, provided by the Jet Propulsion Laboratory (NASA) at the California institute of technology: \url{http://ssd.jpl.nasa.gov/horizons.cgi}. Here of data from several celestial bodies can be downloaded. It is simple to find both position and velocity for all particles in our bodies at high precision. Units of length can be set to $AU$ and velocities to $AU$ per day. The velocities must be converted for our simulation. We have faith that these data are accurate.
 
 \section{Results}
+
+\subsection{Two-Body system: Earth and Sun}
+
+\subsection{Three-Body system: Earth, Sun and Jupiter}
+
+\subsection{Multi-Body system: all planets}
+
+\subsection{The perihelion precession of Mercury}
 
 \section{Discussion}
 
