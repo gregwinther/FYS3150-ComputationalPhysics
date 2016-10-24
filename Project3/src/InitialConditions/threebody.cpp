@@ -6,13 +6,9 @@
 
 void ThreeBody::setupParticles(System &system) {
     /*
-     * This is where you should implement the initialization of a three-body
-     * system.
-     *
-     * You should start by impelmenting the two-body scheme in the
-     * InitialiCondition::TwoBody class, and then implement the more
-     * complicated three-body initialization only after you have a working
-     * implementation of the two-body case.
+     * Here, we set uo the particle system for three particles.
+     * For our project we have one such system:
+     * The Sun-Earth-Jupiter system
      */
 
     double solar_mass   = 1.988544 * pow(10,30);

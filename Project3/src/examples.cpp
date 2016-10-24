@@ -17,13 +17,13 @@ typedef std::chrono::high_resolution_clock Clock;
 
 
 void Examples::twoBodyProblem() {
-    double G = 4*M_PI*M_PI; // 6.67E-11 Nm/kg adjusted to correct units
+    double G = 4*M_PI*M_PI;
 
     System* twoBodySystem = new System();
-    twoBodySystem->setIntegrator        (new VelocityVerlet(twoBodySystem));
+    twoBodySystem->setIntegrator        (new EulerCromer(twoBodySystem));
     twoBodySystem->setPotential         (new NewtonianGravity(G));
     twoBodySystem->setInitialCondition  (new TwoBody());
-    twoBodySystem->setFileWriting       (true);
+    twoBodySystem->setFileWriting       (false);
     twoBodySystem->removeLinearMomentum ();
     auto t1 = Clock::now();
     twoBodySystem->integrate            (1e6);
@@ -40,9 +40,9 @@ void Examples::threeBodyProblem() {
     threeBodySystem->setIntegrator        (new VelocityVerlet(threeBodySystem));
     threeBodySystem->setPotential         (new NewtonianGravity(G));
     threeBodySystem->setInitialCondition  (new ThreeBody());
-    threeBodySystem->setFileWriting       (true);
+    threeBodySystem->setFileWriting       (false);
     threeBodySystem->removeLinearMomentum ();
-    threeBodySystem->integrate            (50000);
+    threeBodySystem->integrate            (1e5);
 }
 
 void Examples::multiBodyProblem() {
@@ -52,7 +52,7 @@ void Examples::multiBodyProblem() {
     multiBodySystem->setIntegrator        (new VelocityVerlet(multiBodySystem));
     multiBodySystem->setPotential         (new NewtonianGravity(G));
     multiBodySystem->setInitialCondition  (new MultiBody());
-    multiBodySystem->setFileWriting       (true);
+    multiBodySystem->setFileWriting       (false);
     multiBodySystem->removeLinearMomentum ();
-    multiBodySystem->integrate            (50000);
+    multiBodySystem->integrate            (1e5);
 }

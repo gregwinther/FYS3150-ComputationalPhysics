@@ -123,13 +123,6 @@ double System::computeKineticEnergy() {
      * this is independent of the potential in use, we place this method
      * directly in the system class.
      *
-     * Remember that you can access the mass and velocity of particle i by
-     *
-     *      m_particles.at(i)->getMass()
-     *      m_particles.at(i)->getVelocity()
-     *
-     * Remember also that the Particle class has a built in method
-     * Particle::velocitySquared which can be used here.
      */
 
     m_kineticEnergy = 0;
@@ -168,15 +161,7 @@ void System::removeLinearMomentum() {
      * ensure the entire system does not drift away during long integration
      * times.
      *
-     * Remember that you can access the mass and velocity of particle i by
-     *
-     *      m_particles.at(i)->getMass();
-     *      m_particles.at(i)->getVelocity();
-     *
-     * Remember also that the vec3-vector class supports the += and -=
-     * operators, so you can do
-     *
-     *      totalMomentum += p->getVelocity() * p->getMass();
+     * This correction is not used as velocites from NASA are sufficient
      */
 
     vec3 totalMomentum = vec3(0,0,0);
@@ -193,17 +178,9 @@ void System::setFileWriting(bool writeToFile) {
 
 void System::writePositionsToFile() {
     if (m_outFileOpen == false) {
-        m_outFile.open("../positions.dat", std::ios::out);
+        m_outFile.open("../ESverletHD.dat", std::ios::out);
         m_outFileOpen = true;
-    }
-    /*
-     * This is where you should print the positions of each particle to file.
-     * Note that the file, "positions.dat", is already open; it is opened in
-     * the above if-test the first time this method is called in
-     * System::Integrate.
-     *
-     * Which format you choose for the data file is up to you.
-     */
+    } 
 
     for (int i = 0; i < m_numberOfParticles; i++) {
         m_outFile << setprecision(15) << m_particles.at(i)->getPosition();

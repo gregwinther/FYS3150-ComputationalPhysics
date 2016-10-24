@@ -3,6 +3,8 @@
 #include <string>
 #include <iomanip>
 
+using std::setprecision;
+
 NewtonianGravity::NewtonianGravity(double G) : m_G(G) {
 
 }
@@ -12,22 +14,6 @@ void NewtonianGravity::computeForces(Particle& a, Particle& b) {
      * This is where the ordinary Newtoninan gravity forces and potential
      * energies should be calculated. This method is called by the System
      * class in System::computeForces, for all particle pairs a and b.
-     *
-     * Note that you may access the mass and the position of the particles a
-     * and b by
-     *
-     *      a.getMass();       b.getMass();
-     *      a.getPosition();   b.getPosition();
-     *
-     * In order to apply the forces to each particle, it is easiest to use the
-     * Particle::addForce method.
-     *
-     * Since calculating the forces between a and b almost inevitably involves
-     * calculating the potential energy, V(r) WHY? WHY?, it is assumed by the Potential
-     * class that this quantity is calculated here and added to the
-     * m_potentialEnergy variable. Note: You may skip this until you have a
-     * working two-body problem, since the calculation of the potential energy
-     * is only neccessary for verification purposes later.
      */
 
     // Aquiring data
@@ -37,26 +23,33 @@ void NewtonianGravity::computeForces(Particle& a, Particle& b) {
     double m_b = b.getMass();
     vec3 r = r_a - r_b;
 
+    old_angular_momentum = angular_momentum;
+
     // FORCE COMPUTATION
-
-    // Computing force components for particle a
     vec3 F;
-
-    // Force
     F = -((m_G*m_a*m_b) / (r.lengthSquared()*r.length())) * r;
 
-    // Mercury relativistic correction
-    if ( (a.getName().compare("Sun") == 0) && (b.getName().compare("Mercury") == 0 )) {
-        double c = 63239.7263; // AU per year
+    // Angular momentum
         vec3 v = b.getVelocity();
         vec3 l = r.cross(v);
         double l2 = l.lengthSquared();
-        double correction = 1 + (3.0*l2) / (c*c*r.lengthSquared());
-        F *= correction;
-     }
 
-    double V = -(m_G*m_a*m_b) / r.length();
-    m_potentialEnergy += V;
+        //Checking if angular momentum conserved
+        angular_momentum = l2;
+        double angdiff = fabs(old_angular_momentum-angular_momentum);
+        if ( angdiff > 1e-5){
+            //std::cout << setprecision(7) <<"Angular momentum not conserved " << angdiff<< std::endl;
+        }
+
+        // Potential energy
+        m_potentialEnergy -= (m_G*m_a*m_b) / r.length();
+
+        // Force with Mercury correction
+        if ( (a.getName().compare("Sun") == 0) && (b.getName().compare("Mercury") == 0 )) {
+            double c = 63239.7263; // [AU per year]
+            double correction = 1+(3.0*l2)/(c*c*r.lengthSquared());
+            F *= correction;
+        }
 
     // Adding force to particle a
     a.addForce(F[0], F[1], F[2]);

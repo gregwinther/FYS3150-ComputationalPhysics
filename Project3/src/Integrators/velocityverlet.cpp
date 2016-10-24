@@ -11,12 +11,7 @@ std::string VelocityVerlet::getName() {
 
 void VelocityVerlet::integrateOneStep(std::vector<Particle*> particles) {
     /*
-     * This is where you should implement the Velocity Verlet algorithm.
-     *
-     * You should start by impelmenting the Euler-Cromer scheme in the
-     * Integrator::EulerCromer class, and then implement the more complicated
-     * Velocity Verlet algorithm only after you have a working implementation
-     * of Euler-Cromer.
+     * The velocity Verlet scheme
      */
 
     m_system->computeForces();
@@ -29,6 +24,7 @@ void VelocityVerlet::integrateOneStep(std::vector<Particle*> particles) {
         // Position update
         p->getPosition() += p->getVelocity()*m_dt + (1.0/2)*a*m_dt*m_dt;
 
+        // Recomputing forces to get new acceleration
         m_system->computeForces();
 
         // New acceleration vector
