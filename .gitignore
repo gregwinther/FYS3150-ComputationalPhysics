@@ -5,7 +5,7 @@ info/
 build*
 *.pro.user
 
-# data
+# Data
 *.txt
 
 # Stupid files
