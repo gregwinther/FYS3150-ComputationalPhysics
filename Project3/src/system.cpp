@@ -86,7 +86,7 @@ void System::integrate(int numberOfSteps) {
 
             // If we are perihelion, print angle (in radians) to terminal.
             writeThetasToFile(thetaPrevious);
-            cout << "Theta: " << thetaPrevious << endl;
+
             // Here you should also probably write it to file for later plotting or something.
         }
 
@@ -131,14 +131,14 @@ void System::printIntegrateInfo(int stepNumber) {
              << "  o Potential in use:    " << m_potential->getName() << endl
              << "  o Integrator in use:   " << m_integrator->getName() << endl
              << endl;
-    }/* else if (stepNumber % 1000 == 0) {
+    } else if (stepNumber % 1000 == 0) {
         m_kineticEnergy     = computeKineticEnergy();
         m_potentialEnergy   = m_potential->getPotentialEnergy();
         m_totalEnergy       = m_kineticEnergy + m_potentialEnergy;
         printf("Step: %5d    E =%10.5g   Ek =%10.5g    Ep =%10.5g\n",
                stepNumber, m_totalEnergy, m_kineticEnergy, m_potentialEnergy);
         fflush(stdout);
-    }*/
+    }
 }
 
 void System::removeLinearMomentum() {

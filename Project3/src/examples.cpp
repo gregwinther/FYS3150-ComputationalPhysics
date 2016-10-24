@@ -26,7 +26,7 @@ void Examples::twoBodyProblem() {
     twoBodySystem->setFileWriting       (false);
     twoBodySystem->removeLinearMomentum ();
     auto t1 = Clock::now();
-    twoBodySystem->integrate            (1e10);
+    twoBodySystem->integrate            (1e9);
     auto t2 = Clock::now();
     std::cout << "Time elapsed: "
               << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count()

@@ -24,7 +24,7 @@
  	breaklines = true
 }
 
-\title[Simulation of the Solar System]{The Solar System: an Exercise in Numerical Integration and \\
+\title[Simulation of the Solar System]{The Solar System: an Exercise in Numerical Integration and Object oriented design \\
   \hrulefill\small{ FYS3150: Computational Physics }\hrulefill}
 
 \author[Winther-Larsen \& Svalheim]{Sebastian G. Winther-Larsen \\ 
@@ -37,7 +37,7 @@ Trygve L. Svalheim \\
 
 \begin{titlepage}
 \begin{abstract}
-Two, three, multi. With Euler-Cromer and then Velocity Verlet
+In this project we build a flexible and easily expandible object oriented framework which we use to simulate the solar system. In order to calculate orbits of celastial bodies we implement the Euler-Cromer and the velocity Verlet numerical integration methods. The Verlet method proves superior. The model is expanded gradually from a two-body system to include all planets of the solar system.
 \end{abstract}
 \maketitle
 \tableofcontents
@@ -45,12 +45,13 @@ Two, three, multi. With Euler-Cromer and then Velocity Verlet
 
 \section{Introduction}
 
-This study has three main goals. To show some of the advantages of object-oriented programming, to implement and compare different integration methods and to build a working model of the solar system. 
+This study has three main goals. To show some of the advantages of object-oriented programming, to implement and compare different integration methods and to build a working model of the solar system. Object oriented programming has several advantages that will be illustrated here, among them are flexibility and reusable code. We shall see how a system of just a couple of bodies easily expands to the full model of the solar system. The main task at hand when modelling the solar system is to compute the orbits of all celestial bodies. In order to do this one must integrate Newtons's law of motion, and an integration method is needed. We will implement two different methods, the Euler-Cromer method and the velocity Verlet method.
+First, we give a sound theoretic background for the study, including both classical and modern laws of gravity and a few unit tricks to make everything a bit easier. Second, we give a walkthrough of how the object oriented framework is built and thereafter follows an explanation of the implementation of the integration algorithms. Third, we give some thoughts on the data we use as basis for the initial conditions. Fourth, we present the results of the undertaking, in the same order as we have worked on expanding the model, with increasing complexity. Fifth, we provide a discussion of the results and last, some concluding remarks. All computer code in C++ can be found by following the Github URL beneath author names on the front page.
 
 \section{Theory}
 
 \subsection{Newtonian gravtiation}
-When one studies the solar system and the way it moves, one inevitably needs to consider the gravity of the situation. The classical law of gravitation is given by Newton's law
+When one studies the solar system and the way everything moves, one inevitably needs to consider the gravity of the situation. The classical law of gravitation is given by Newton's law
 \begin{equation}
 \label{eq:newtoniangravity}
 F_G = \frac{GM_1M_2}{r^2},
@@ -206,13 +207,13 @@ The object-oriented model for the solar system that has been built is very flexi
 
 A two-body system is a meager representation of the solar system, but is the first important stepping stone towards a more interesting and realistic model. The two-body system has two instances of the \lstinline|Particle| class, representing the sun and the Earth. The orbits are found by solutions from both the Euler-Cromer method and the velocity Verlet method. 
 
-In figure \ref{fig:earthcompare} shows a plot of a solution by Euler-Cromer to the left and velocity Verlet to the right. The same time step $dt=10^{-2}$ and the numper of points $N=10^6$ is employed in both simulations. The sun is the yellow dot in the middle of the plot and the Earth is the blue dot orbiting along the red path. The reason the past is wide is because the simulation has run for such a long time that the Earth has travelled several orbits\footnote{One hundred points per revolution and 100000 points should give 1000 revolutions in total.}. The difference between the two methods is quite clear. The velocity Verlet method har a much narrower ``orbit band'' and is therefore more precise.
+In figure \ref{fig:earthcompare} shows a plot of a solution by Euler-Cromer to the right and velocity Verlet to the left. The same time step $dt=10^{-2}$ and the numper of points $N=10^6$ is employed in both simulations. The sun is the yellow dot in the middle of the plot and the Earth is the blue dot orbiting along the red path. The reason the past is wide is because the simulation has run for such a long time that the Earth has travelled several orbits\footnote{One hundred points per revolution and 100000 points should give 1000 revolutions in total.}. The difference between the two methods is quite clear. The velocity Verlet method har a much narrower ``orbit band'' and is therefore more precise.
 
 \begin{figure}
 	\centering
 	\textbf{Comparison of Euler-Cromer and Velocity Verlet}
 	\includegraphics[width=0.99\textwidth]{../figures/earthcompare.png}
-	\caption{Figure showing the difference in precision between the Euler-Cromer method (left) and the velocity Verlet method (right). The time step is $dt=10^{-2}$ and the number of points is $N=10^6$\label{fig:earthcompare}}
+	\caption{Figure showing the difference in precision between the Euler-Cromer method (right) and the velocity Verlet method (left). The time step is $dt=10^{-2}$ and the number of points is $N=10^6$\label{fig:earthcompare}}
 \end{figure}
 
 The model is easily adjustable and one can modify it to show many interesting phenomena. In figure \ref{fig:earthescape} is a plot showing the Earth escaping its orbit around the sun. The escape velocity was found by trial and error; $v=\sqrt{8}\pi AU/yr$.
@@ -266,11 +267,11 @@ Finally for the pinnacle of this study, a model of the entire solar system!\foot
 
 \subsection{The perihelion precession of Mercury}
 
-Figure \ref{fig:perangle} shows the angel of the perihelion of Mercury calculated by equation \ref{eq:perangle} in the theory section. This plot is over a period of 30 Earth years and with a time step of $dt = 10^{-6}yrs$. One can see a clear trend in the angle of the perihelion as predicted. We get a slope of the perhelion angle versus number of orbist of approximately $10^{-6}$, for a century on earth Mercury makes $415.2091$ orbits, which gives us a perhelion precession of $\approx1.5''/100yrs$. This much lower than the expected precession of $43''/100yrs$.
+Figure \ref{fig:perangle} shows the angel of the perihelion of Mercury calculated by equation \ref{eq:perangle} in the theory section. This plot is over a period of almost fifty Earth years and with a time step of $dt = 10^{-7}yrs$. One can see a clear trend in the angle of the perihelion as predicted. We get a slope of the perhelion angle versus number of orbits of approximately $5.1^{-7}$, for a century on earth Mercury makes $415.2091$ orbits, which gives us a perhelion precession of $\approx0.8''/100yrs$. This much lower than the expected precession of $43''/100yrs$.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\textwidth]{../figures/periangle30yrs.png}
+	\includegraphics[width=0.8\textwidth]{../figures/mercuryPerihelion.png}
 	\caption{The precession of Mercury's orbit\label{fig:perangle}}
 \end{figure}
 
@@ -293,9 +294,15 @@ It is worth metioning something about the symplecticity of the velocity Verlet m
 
 \subsection{Mercury}
 
-We tried to compute the perihelion precessrion of Mercury. We found it to be $\approx1.5''/100yrs$ when it should have been much more, id est $43''/100yrs$. This error can stem from several sources. Most obvious is that we have done something wrong and have been unable to find where. Antoher likely source of uncertainty is that the method is that the integration method is not precise enough. We had problems decreasing the step size further, and extending the simulation to a full century because the job was too much for our hardware. One last probelm that must be mentioned is that Mercury's precession cannot be explained by the simple relativistic correction we are employing.
+We tried to compute the perihelion precessrion of Mercury. We found it to be $\approx1.5''/100yrs$ when it should have been much more, id est $43''/100yrs$. This error can stem from several sources. Most obvious is that we have done something wrong and have been unable to find out what. Antoher likely source of uncertainty is that the method is that the integration method is not precise enough. We had problems decreasing the step size further, and extending the simulation to a full century because the job was too much for our hardware. One last probelm that must be mentioned is that Mercury's precession cannot be explained by the simple relativistic correction we are employing.
 
 \section{Conclusion}
+
+In this study we have shown the advantages of building an object oriented framework and how it can easily be expanded upon and modified to its needs. We wanted to apply object oriented design on analysis of the solar system and have succeded. Moreover, a few of the classes, like the \lstinline|System|, \lstinline|Particle| and integrator subclasses can be applied to other problem and in new fields, like molecular dynamics. 
+
+We have implemented two integrators, the Euler-Cromer and the velocity Verlet. The velocity Verlet proved to be more stable than the Euler-Cromer method. The reason for this is because Verlet integration methods are symplectic and therefore perfect for system with conserved angular momentum and energy. Additionally, the velocity Verlet method seemed in theory to be more CPU costly than the Euler-Cromer method, but proved just as fast.
+
+Lastly, we tried to adjust Mercurys orbit for relativity. We found a clear trend in the perihelion angle of Mercury's orbit, but got dissappointing results compared with previous observations and calculations.
 
 \begin{thebibliography}{9}
 
@@ -316,6 +323,8 @@ We tried to compute the perihelion precessrion of Mercury. We found it to be $\a
 	Retrieved October 24 2016 from \url{http://codeflow.org/entries/2010/aug/28/integration-by-example-euler-vs-verlet-vs-runge-kutta/},
 
 \end{thebibliography}
+
+\vfill
 
 \pagebreak
 
