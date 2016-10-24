@@ -7,29 +7,52 @@
 #include "Potentials/nopotential.h"
 #include "InitialConditions/twobody.h"
 #include "InitialConditions/threebody.h"
+#include "InitialConditions/multibody.h"
+
 #include <iostream>
 #include <cmath>
 
+#include <chrono>
+typedef std::chrono::high_resolution_clock Clock;
+
 
 void Examples::twoBodyProblem() {
-    double G = 1.0;
+    double G = 4*M_PI*M_PI;
 
     System* twoBodySystem = new System();
     twoBodySystem->setIntegrator        (new VelocityVerlet(twoBodySystem));
     twoBodySystem->setPotential         (new NewtonianGravity(G));
     twoBodySystem->setInitialCondition  (new TwoBody());
-    twoBodySystem->setFileWriting       (true);
+    twoBodySystem->setFileWriting       (false);
     twoBodySystem->removeLinearMomentum ();
-    twoBodySystem->integrate            (5000);
+    auto t1 = Clock::now();
+    twoBodySystem->integrate            (1e9);
+    auto t2 = Clock::now();
+    std::cout << "Time elapsed: "
+              << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count()
+              << " nanoseconds" << std::endl;
 }
 
 void Examples::threeBodyProblem() {
-    /*
-     * This is where you should set up a three-body problem, using the
-     * InitialCondition::ThreeBody class as System's InitialCondition.
-     *
-     * You should start by considering the two-body case in
-     * Examples::twoBodyProblem, before continuing with this more complicated
-     * case.
-     */
+    double G = 4*M_PI*M_PI;
+
+    System* threeBodySystem = new System();
+    threeBodySystem->setIntegrator        (new VelocityVerlet(threeBodySystem));
+    threeBodySystem->setPotential         (new NewtonianGravity(G));
+    threeBodySystem->setInitialCondition  (new ThreeBody());
+    threeBodySystem->setFileWriting       (false);
+    threeBodySystem->removeLinearMomentum ();
+    threeBodySystem->integrate            (1e5);
+}
+
+void Examples::multiBodyProblem() {
+    double G = 4*M_PI*M_PI;
+
+    System* multiBodySystem = new System();
+    multiBodySystem->setIntegrator        (new VelocityVerlet(multiBodySystem));
+    multiBodySystem->setPotential         (new NewtonianGravity(G));
+    multiBodySystem->setInitialCondition  (new MultiBody());
+    multiBodySystem->setFileWriting       (false);
+    multiBodySystem->removeLinearMomentum ();
+    multiBodySystem->integrate            (1e5);
 }

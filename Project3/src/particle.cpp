@@ -1,14 +1,16 @@
 #include "particle.h"
 #include "vec3.h"
+#include <string>
 
 Particle::Particle()
-        : Particle(vec3(), vec3(), 0) {
+        : Particle(vec3(), vec3(), 0, ""){
 }
 
-Particle::Particle(vec3 position, vec3 velocity, double mass) {
+Particle::Particle(vec3 position, vec3 velocity, double mass, std::string particle_name) {
     m_position  = position;
     m_velocity  = velocity;
     m_mass      = mass;
+    m_name 		= particle_name;
 }
 
 void Particle::resetForces() {
