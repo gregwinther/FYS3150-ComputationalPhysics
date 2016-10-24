@@ -12,17 +12,25 @@
 #include <iostream>
 #include <cmath>
 
+#include <chrono>
+typedef std::chrono::high_resolution_clock Clock;
+
 
 void Examples::twoBodyProblem() {
     double G = 4*M_PI*M_PI; // 6.67E-11 Nm/kg adjusted to correct units
 
     System* twoBodySystem = new System();
-    twoBodySystem->setIntegrator        (new EulerCromer(twoBodySystem));
+    twoBodySystem->setIntegrator        (new VelocityVerlet(twoBodySystem));
     twoBodySystem->setPotential         (new NewtonianGravity(G));
     twoBodySystem->setInitialCondition  (new TwoBody());
     twoBodySystem->setFileWriting       (true);
     twoBodySystem->removeLinearMomentum ();
+    auto t1 = Clock::now();
     twoBodySystem->integrate            (1e6);
+    auto t2 = Clock::now();
+    std::cout << "Time elapsed: "
+              << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count()
+              << " nanoseconds" << std::endl;
 }
 
 void Examples::threeBodyProblem() {

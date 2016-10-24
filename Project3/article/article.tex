@@ -78,6 +78,12 @@ F_G = \frac{GM_{\odot}M_{Mercury}}{r^2}\left[1+\frac{3l^2}{r^2c^2} \right],
 \end{equation}
 where $M_{MERCURY}$ is the mass of Mercury, $r$ is the distance between Mercury and the Sun, $l=\abs{\vb{r}\times\vb{v}}$ is the orbital angular momentum per unit mass, and $c$ is the speed of light in vacuum.
 
+The precession of Mercury's orbit is not easy to spot simply by plotting the planets orbit, but the angle of the perihelion\footnote{The point in the orbit closest to the sun.} can be calculated easily enough by the following equation
+\begin{equation}
+\label{eq:perangle}
+\theta_p = \arctan \left( \frac{y_p}{x_p}\right)
+\end{equation}
+
 \section{Units}
 In order to make the system easy to work with and the calculations easier as well, a change of units is warranted. In this study we will therefore express the mass of any body as a fraction of solar masses, that is $M_{\odot} = 2\times10^{30}kg$. This means that the Earth\footnote{In SI-units, $M_{Earth}\approx6\times10^{24}kg$}, for instance will have a mass of $M_{Earth}= 3\times10^{-6}$.
 
@@ -193,37 +199,81 @@ The object-oriented model for the solar system that has been built is very flexi
 
 \subsection{Two-Body system: Earth and Sun}
 
-\begin{figure}[ht]
+A two-body system is a meager representation of the solar system, but is the first important stepping stone towards a more interesting and realistic model. The two-body system has two instances of the \lstinline|Particle| class, representing the sun and the Earth. The orbits are found by solutions from both the Euler-Cromer method and the velocity Verlet method. 
+
+In figure \ref{fig:earthcompare} shows a plot of a solution by Euler-Cromer to the left and velocity Verlet to the right. The same time step $dt=10^{-2}$ and the numper of points $N=10^6$ is employed in both simulations. The sun is the yellow dot in the middle of the plot and the Earth is the blue dot orbiting along the red path. The reason the past is wide is because the simulation has run for such a long time that the Earth has travelled several orbits\footnote{One hundred points per revolution and 100000 points should give 1000 revolutions in total.}. The difference between the two methods is quite clear. The velocity Verlet method har a much narrower ``orbit band'' and is therefore more precise.
+
+\begin{figure}
 	\centering
 	\textbf{Comparison of Euler-Cromer and Velocity Verlet}
 	\includegraphics[width=0.99\textwidth]{../figures/earthcompare.png}
-	\label{fig:earthcompare}
-	\caption{Figure showing the difference in precision between the Euler-Cromer method (left) and the velocity Verlet method (right). The time step is $dt=10^{-2}$ and the number of points is $N=10^6$}
+	\caption{Figure showing the difference in precision between the Euler-Cromer method (left) and the velocity Verlet method (right). The time step is $dt=10^{-2}$ and the number of points is $N=10^6$\label{fig:earthcompare}}
 \end{figure}
 
-\begin{figure}[ht]
+The model is easily adjustable and one can modify it to show many interesting phenomena. In figure \ref{fig:earthescape} is a plot showing the Earth escaping its orbit around the sun. The escape velocity was found by trial and error; $v=\sqrt{8}\pi AU/yr$.
+
+\begin{figure}
 	\centering
 	\textbf{Earth Escape Velocity}
 	\includegraphics[width=0.9\textwidth]{../figures/earthescape.png}
-	\caption{Illustration of Earth escaping orbit at $\sqrt{8}\pi AU/yr$}
+	\caption{Illustration of Earth escaping orbit at $v=\sqrt{8}\pi AU/yr$\label{fig:earthescape}}
 \end{figure}
 
+\begin{table}
+	\centering
+	\caption{Time comparison of Euler-Cromer and velocity Verlet applied to a two-body system. \label{tab:eulervsverlet}}
+	\begin{tabular}{ccc} \hline
+	$N$ & Euler-Cromer [t] & Velocity Verlet [t] \\ \hline
+	$10^{3}$ & 0.023 & 0.036   \\
+	$10^{4}$ & 0.20  & 0.17   \\
+	$10^{5}$ & 1.92  & 1.83   \\
+	$10^{6}$ & 18.42 & 17.88 \\ \hline
+	\end{tabular}
+\end{table}
+
+Table \ref{tab:eulervsverlet} shows a comparison of how much time the two algorithm requires to handle a problem of increasing size. The two algorithms were applied to the same two-body problem. As one can see, it appears that the velocity Verlet method is a bit quicker, but these results are probably not statistically significant. More on this in the discussion below.
 
 \subsection{Three-Body system: Earth, Sun and Jupiter}
 
-\begin{figure}[ht]
+A natural progression from a two-body system is a three-body system. We have implemented a model consisting of particles representing Jupiter, Earth, and the Sun. The top left subfigure of figure \ref{fig:jupiter} in two dimensions. The velocity Verlet method is employed here.
+
+\begin{figure}
 	\centering
 	\textbf{Earth, Sun and Jupiter}
 	\includegraphics[width=0.99\textwidth]{../figures/threebody.png}
-	\caption{Model outcome for a Jupiter with different masses. Top left: Normal mass. Top right: Jupiter mass $10\times$ normal. Bottom: Jupiter mass $1000\times$ normal, in 2D (left) and 3D (right)}
+	\caption{Model outcome for a Jupiter with different masses. Top left: Normal mass. Top right: Jupiter mass $10\times$ normal. Bottom: Jupiter mass $1000\times$ normal, in 2D (left) and 3D (right)\label{fig:jupiter}}
 \end{figure}
+
+The rest of the subfigures in figure \ref{fig:jupiter} show what would happen if Jupiter had larger mass than it has. The top right subplot shows this scenario if Jupiter's mass was $10\times$ larger than normal. One can see that this would drag the Earth along into the Sun, which stays mostly put, and likely skew the entire solar system.
+
+The two bottom figures show what would happen i Jupiter would have had $1000\times$ normal mass. The plot speaks for itself; the entire system is pulled apart. This situation is shows in 2D to the left and 3D to the right.
 
 \subsection{Multi-Body system: all planets}
 
+\begin{figure}
+	\centering
+	\textbf{Multi-body model of the Solar System}
+	\includegraphics[width=0.8\textwidth]{../figures/multibody.png}
+	\caption{All planets of our solar system (including Pluto) \label{fig:multibody}}
+\end{figure}
+
+Finally for the pinnacle of this study, a model of the entire solar system!\footnote{Excluding moons and other satelites, but including Pluto.} Figure \ref{fig:multibody} shows a multi-body simulation representing the solar system, integrated using the velocity Verlet algorithm. One can see that the algorithm handles the problem quite well.
+
 \subsection{The perihelion precession of Mercury}
+
+Figure \ref{fig:perangle} shows the angel of the perihelion of Mercury calculated by equation \ref{eq:perangle} in the theory section. This plot is over a period of 30 Earth years and with a time step of $dt = 10^{-6}yrs$. One can see a clear trend in the angle of the perihelion as predicted.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{../figures/periangle30yrs.png}
+	\caption{The precession of Mercury's orbit\label{fig:perangle}}
+\end{figure}
 
 \section{Discussion}
 
+\subsection{Integration Algorithm}
+
+Velocity Verlet for the win!! :D
 
 \section{Conclusion}
 

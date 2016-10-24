@@ -2,6 +2,6 @@
 #include "examples.h"
 
 int main(int, char**) {
-    Examples::multiBodyProblem();
+    Examples::twoBodyProblem();
     return 0;
 }
