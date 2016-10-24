@@ -20,13 +20,13 @@ void Examples::twoBodyProblem() {
     double G = 4*M_PI*M_PI;
 
     System* twoBodySystem = new System();
-    twoBodySystem->setIntegrator        (new EulerCromer(twoBodySystem));
+    twoBodySystem->setIntegrator        (new VelocityVerlet(twoBodySystem));
     twoBodySystem->setPotential         (new NewtonianGravity(G));
     twoBodySystem->setInitialCondition  (new TwoBody());
     twoBodySystem->setFileWriting       (false);
     twoBodySystem->removeLinearMomentum ();
     auto t1 = Clock::now();
-    twoBodySystem->integrate            (1e6);
+    twoBodySystem->integrate            (1e10);
     auto t2 = Clock::now();
     std::cout << "Time elapsed: "
               << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count()

@@ -5,7 +5,7 @@
 
 class Integrator {
 protected:
-    double          m_dt        = 1e-5;
+    double          m_dt        = 1e-8;
     class System*   m_system    = nullptr;
 
 public:
