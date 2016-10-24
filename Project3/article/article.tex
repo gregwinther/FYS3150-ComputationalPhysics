@@ -45,8 +45,8 @@ In this project we build a flexible and easily expandible object oriented framew
 
 \section{Introduction}
 
-This study has three main goals. To show some of the advantages of object-oriented programming, to implement and compare different integration methods and to build a working model of the solar system. Object oriented programming has several advantages that will be illustrated here, among them are flexibility and reusable code. We shall see how a system of just a couple of bodies easily expands to the full model of the solar system. The main task at hand when modelling the solar system is to compute the orbits of all celestial bodies. In order to do this one must integrate Newtons's law of motion, and an integration method is needed. We will implement two different methods, the Euler-Cromer method and the velocity Verlet method.
-First, we give a sound theoretic background for the study, including both classical and modern laws of gravity and a few unit tricks to make everything a bit easier. Second, we give a walkthrough of how the object oriented framework is built and thereafter follows an explanation of the implementation of the integration algorithms. Third, we give some thoughts on the data we use as basis for the initial conditions. Fourth, we present the results of the undertaking, in the same order as we have worked on expanding the model, with increasing complexity. Fifth, we provide a discussion of the results and last, some concluding remarks. All computer code in C++ can be found by following the Github URL beneath author names on the front page.
+This study has three main goals. To show some of the advantages of object-oriented programming, to implement and compare different integration methods and to build a working model of the solar system. Object oriented programming has several advantages that will be illustrated here, among them are flexible and reusable code. We shall see how a system of just a couple of bodies easily expands to the full model of the solar system. The main task at hand when modelling the solar system is to compute the orbits of all celestial bodies. In order to do this one must integrate Newtons's law of motion, and an integration method is needed. We will implement two different methods, the Euler-Cromer method and the velocity Verlet method.
+First, we give a sound theoretic background for the study, including both classical and modern laws of gravity and a few unit tricks to make everything a bit easier. Second, we give a walkthrough of how the object oriented framework is built and thereafter an explanation of the implementation of the integration algorithms. Third, we give some thoughts on the data we use as basis for the initial conditions. Fourth, we present the results of the undertaking, in the same order as we have worked on expanding the model, with increasing complexity. Fifth, we provide a discussion of the results and last, some concluding remarks. All computer code in C++ can be found by following the Github URL beneath author names on the front page.
 
 \section{Theory}
 
@@ -58,7 +58,7 @@ F_G = \frac{GM_1M_2}{r^2},
 \end{equation} 
 where $F_G$ is the gravitational force between to bodies, $G$\footnote{$G=6.67408 \times 10^{-11} m^3 kg^{-1} s{-2}$} is the gravitational constant, $M_1$ and $M_2$ are the masses of the two bodies and $r$ is the distance between them.
 
-In three dimensions, by employing Newton's second law of motion, one will get the following componental equations for the acceleration due to gravitational pull on a particular body $i$.
+In three dimensions, by employing Newton's second law of motion, one will get the following componential equations for the acceleration due to gravitational pull on a particular body $i$.
 \begin{equation}
 \label{eq:componentalnewton}
 \frac{d^2x}{dt^2} = \frac{F_{G,x}}{M_i}, \quad
