@@ -1,12 +1,28 @@
-#pragma once
+//#pragma once
 
-//#include <armadillo>
+#include <armadillo>
 
 class Ising {
 	private:
-		int some_number;
+		int lattice_dimension;
+
+		arma::mat lattice;
+
+		double temperature;
+
+		double expected_energy;
+		double expected_magnetisation;
+		double specific_heat;
+		double susceptibility;
+
+		double energy;
+		double magnetisation;
+
+		int periodic_boundary_translation(int x, int dimension, int translation);
 
 	public:
-		Ising() {}
-		void print_some_number() {}
+		Ising(int lattice_dimension);
+		
+		void initialise_system(double temp);
+		void simulate(int cycles);
 };

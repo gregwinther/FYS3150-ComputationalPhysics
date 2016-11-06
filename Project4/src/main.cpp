@@ -1,8 +1,11 @@
 #include "ising.h"
 
 int main(int argc, char *argv[]) {
-	Ising myClass;
-	myClass = Ising::Ising();
-	myClass->print_some_number();
+	
+	int dim = atoi(argv[1]);
+	int temp = atoi(argv[2]);
+	Ising myClass = Ising(dim);
+	myClass.initialise_system(temp);
+
 	return 0;
 }
