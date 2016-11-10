@@ -1,5 +1,4 @@
 #pragma once
-
 #include <armadillo>
 
 class Ising {
@@ -7,6 +6,8 @@ class Ising {
 		int lattice_dimension;
 
 		arma::mat lattice;
+
+        arma::vec delta_energy = arma::zeros<arma::mat>(17);
 
 		double temperature;
 
@@ -19,6 +20,7 @@ class Ising {
 		double magnetisation;
 
 		int periodic_boundary_translation(int x, int dimension, int translation);
+        double get_energy_of_site(int x, int y);
 
 	public:
 		Ising(int lattice_dimension);
