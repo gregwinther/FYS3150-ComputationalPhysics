@@ -1,4 +1,4 @@
-//#pragma once
+#pragma once
 
 #include <armadillo>
 
@@ -24,5 +24,7 @@ class Ising {
 		Ising(int lattice_dimension);
 		
 		void initialise_system(double temp);
-		void simulate(int cycles);
+        void simulate(int cycles);
+
+        void metropolis_test();
 };

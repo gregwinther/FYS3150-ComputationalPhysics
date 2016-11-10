@@ -52,6 +52,19 @@ void Ising::initialise_system(double temp) {
 
 }
 
+// One step of Metropolis-Hastings. One single Monte-Carlo cycle
+void Ising::metropolis_test() {
+    for (int i = 0; i < lattice_dimension; i++) {
+        int random_x = rand() % lattice_dimension;
+        int random_y = rand() % lattice_dimension;
+    }
+}
+
+// Calculates
+double Ising::get_energy_of_site(int x, int y) {
+    return 2 * self * (north + south + east + west);
+}
+
 // Periodic boundary conditions: "wraps around"
 int Ising::periodic_boundary_translation(int x, int dimension, int translation) {
 	return (x + dimension + translation) % dimension;
