@@ -7,6 +7,7 @@ Ising::Ising(int lattice_dimension) {
 
     this->lattice_dimension = lattice_dimension;
     this->no_of_spins = lattice_dimension*lattice_dimension;
+    this->expectations_filename = "expectations.dat";
 
 	lattice = arma::mat(lattice_dimension, lattice_dimension);
 
@@ -62,6 +63,8 @@ void Ising::simulate(int cycles) {
         expected_values(2) += magnetisation;
         expected_values(3) += magnetisation*magnetisation;
         expected_values(4) += fabs(magnetisation);
+
+        if ((i > 0) && (i % 100))  output(i);
     }
 
     // Divide by total number of cycles in order to get expected values
@@ -127,4 +130,39 @@ void Ising::write_to_terminal() {
     cout << setw(25) << "Susceptibility: " << setw(10) << setprecision(8) << susceptibility << endl;
     cout << setw(25) << "Expected abs. magnetis.: " << setw(10) << setprecision(8) << exp_abs_magnetisation << endl;
     //cout << setw(20) << setprecision(8) << number_of_accepted_states / (double) cycles << endl;
+}
+
+void Ising::output(int current_cycle) {
+
+    // Divide by total number of cycles in order to get expected values
+    double normalising_coeff = 1.0 / ((double) current_cycle);
+    double ev_E  = expected_values(0) * normalising_coeff;
+    double ev_E2 = expected_values(1) * normalising_coeff;
+    double ev_M  = expected_values(2) * normalising_coeff;
+    double ev_M2 = expected_values(3) * normalising_coeff;
+    double ev_Ma = expected_values(4) * normalising_coeff;
+
+    // Variance
+    double var_E = (ev_E2 - ev_E*ev_E) / no_of_spins;
+    double var_M = (ev_M2 - ev_Ma*ev_Ma) / no_of_spins;
+
+    // The interesting quantities
+    expected_energy 		= ev_E / no_of_spins;
+    expected_magnetisation 	= ev_M / no_of_spins;
+    specific_heat			= var_E / (temperature*temperature);
+    susceptibility			= var_M / temperature;
+    exp_abs_magnetisation 	= ev_Ma / no_of_spins;
+
+    // Writing to file
+    using namespace  std;
+    ofstream ofile;
+    ofile.open(expectations_filename, ios::app);
+    ofile << setiosflags(ios::showpoint | ios::uppercase);
+    ofile << setw(15) << setprecision(8) << temperature;
+    ofile << setw(15) << setprecision(8) << expected_energy;
+    ofile << setw(15) << setprecision(8) << specific_heat;
+    ofile << setw(15) << setprecision(8) << expected_magnetisation;
+    ofile << setw(15) << setprecision(8) << susceptibility;
+    ofile << setw(15) << setprecision(8) << exp_abs_magnetisation << endl;
+    ofile.close();
 }
