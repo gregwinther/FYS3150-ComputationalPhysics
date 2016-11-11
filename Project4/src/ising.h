@@ -8,7 +8,8 @@ class Ising {
         int no_of_spins;
         int no_of_accepted_states;
 
-        int rank = 0;
+        int rank;
+        int world_size;
 
 		arma::mat lattice;
 
@@ -35,7 +36,7 @@ class Ising {
 
     public:
 
-        Ising(int lattice_dimension, int rank);
+        Ising(int lattice_dimension, int rank, int world_size);
 		
 		void initialise_system(double temp);
         void simulate(int cycles, arma::vec &expected_values);

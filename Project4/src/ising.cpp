@@ -5,61 +5,66 @@
 #include <mpi.h>
 
 
-Ising::Ising(int lattice_dimension, int rank) {
+Ising::Ising(int lattice_dimension, int rank, int world_size) {
 
     this->lattice_dimension = lattice_dimension;
     this->no_of_spins = lattice_dimension*lattice_dimension;
     this->expectations_filename = "expectations.dat";
     this->rank = rank;
+    this->world_size = world_size;
 
-	lattice = arma::mat(lattice_dimension, lattice_dimension);
+    lattice = arma::mat(lattice_dimension, lattice_dimension);
 
     delta_energy = arma::vec(17);
 
-	energy = 0;
-	magnetisation = 0;
-	
+    energy = 0;
+    magnetisation = 0;
+
 }
 
 void Ising::initialise_system(double temp) {
-	temperature = temp;
+    temperature = temp;
 
     // Reset variables
-	energy = 0;
+    energy = 0;
     magnetisation = 0;
 
     // Possible energies
     for (int i = -8; i <= 8; i += 4) delta_energy(i + 8) = exp(-i/temperature);
 
-	// Time as seed for random number generator
-	srand(time(NULL));
+    // Time as seed for random number generator
+    srand(time(NULL));
 
-	for (int i = 0; i < lattice_dimension; i++) {
-		for (int j = 0; j < lattice_dimension; j++) {
+    for (int i = 0; i < lattice_dimension; i++) {
+        for (int j = 0; j < lattice_dimension; j++) {
 
-			// Start in random configuration
-			lattice(i, j) = (((double) rand() / (RAND_MAX)) > 0.5) ? 1: -1;
+            // Start in random configuration
+            lattice(i, j) = (((double) rand() / (RAND_MAX)) > 0.5) ? 1: -1;
 
-			magnetisation += lattice(i,j);	
+            magnetisation += lattice(i,j);
 
-		}
-	}
+        }
+    }
 
     // Initial energy - Mulitply every sites spin direction with neighbhours
-	for (int i = 0; i < lattice_dimension; ++i) {
-		for (int j = 0; j < lattice_dimension; ++j) {
-			energy -= lattice(i, j) 
-					* (lattice(periodic_boundary_translation(i, lattice_dimension, -1), j)
-					+  lattice(i, periodic_boundary_translation(j, lattice_dimension, -1)));
-		}
-	}	
+    for (int i = 0; i < lattice_dimension; ++i) {
+        for (int j = 0; j < lattice_dimension; ++j) {
+            energy -= lattice(i, j)
+                    * (lattice(periodic_boundary_translation(i, lattice_dimension, -1), j)
+                       +  lattice(i, periodic_boundary_translation(j, lattice_dimension, -1)));
+        }
+    }
 }
 
 void Ising::simulate(int cycles, arma::vec &expected_values) {
 
-    //this->expected_values = expected_values;
+    int no_intervals  = cycles / world_size;
+    int my_loop_begin = rank * no_intervals + 1;
+    int my_loop_end   = (rank + 1) * no_intervals;
 
-    for (int i = 0; i < cycles; ++i) {
+    if ( (rank == world_size - 1) && (my_loop_end < cycles)) my_loop_end = cycles;
+
+    for (int i = my_loop_begin; i <= my_loop_end; i++) {
 
         metropolis();
 
@@ -95,6 +100,9 @@ void Ising::simulate(int cycles, arma::vec &expected_values) {
 
 // One step of Metropolis-Hastings. One single Monte-Carlo cycle
 void Ising::metropolis() {
+
+
+
     for (int i = 0; i < no_of_spins; i++) {
         int random_x = rand() % lattice_dimension;
         int random_y = rand() % lattice_dimension;
@@ -124,9 +132,9 @@ double Ising::get_energy_of_site(int x, int y) {
 
 // Periodic boundary conditions: "wraps around"
 int Ising::periodic_boundary_translation(int x, int dimension, int translation) {
-	return (x + dimension + translation) % dimension;
+    return (x + dimension + translation) % dimension;
 }
-/*
+
 void Ising::write_to_terminal() {
   using namespace std;
     cout << setw(25) << "Temperature: " << setw(10) << setprecision(8) << temperature << endl;
@@ -135,7 +143,7 @@ void Ising::write_to_terminal() {
     cout << setw(25) << "Susceptibility: " << setw(10) << setprecision(8) << susceptibility << endl;
     cout << setw(25) << "Expected abs. magnetis.: " << setw(10) << setprecision(8) << exp_abs_magnetisation << endl;
     //cout << setw(20) << setprecision(8) << number_of_accepted_states / (double) cycles << endl;
-}*/
+}
 
 void Ising::output(int current_cycle, arma::vec &expected_values) {
 
@@ -168,10 +176,10 @@ void Ising::output(int current_cycle, arma::vec &expected_values) {
     specific_heat			= var_E / (temperature*temperature);
     susceptibility			= var_M / temperature;
     exp_abs_magnetisation 	= ev_Ma / no_of_spins;
-
+    /*
     for( int i = 0; i < 5; i++) {
         MPI_Reduce(&expected_values[i], &tot_expected_values[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    }
+    }*/
 
     // Writing to file with "master thread"
     using namespace  std;
