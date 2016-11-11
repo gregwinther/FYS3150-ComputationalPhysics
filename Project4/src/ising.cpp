@@ -2,12 +2,15 @@
 #include <iomanip>
 #include <iostream>
 #include <time.h>
+#include <mpi.h>
 
-Ising::Ising(int lattice_dimension) {
+
+Ising::Ising(int lattice_dimension, int rank) {
 
     this->lattice_dimension = lattice_dimension;
     this->no_of_spins = lattice_dimension*lattice_dimension;
     this->expectations_filename = "expectations.dat";
+    this->rank = rank;
 
 	lattice = arma::mat(lattice_dimension, lattice_dimension);
 
@@ -52,7 +55,9 @@ void Ising::initialise_system(double temp) {
 	}	
 }
 
-void Ising::simulate(int cycles) {
+void Ising::simulate(int cycles, arma::vec &expected_values) {
+
+    //this->expected_values = expected_values;
 
     for (int i = 0; i < cycles; ++i) {
 
@@ -64,7 +69,7 @@ void Ising::simulate(int cycles) {
         expected_values(3) += magnetisation*magnetisation;
         expected_values(4) += fabs(magnetisation);
 
-        if ((i > 0) && (i % 100))  output(i);
+        if ((i > 0) && (i % 100))  output(i, expected_values);
     }
 
     // Divide by total number of cycles in order to get expected values
@@ -121,7 +126,7 @@ double Ising::get_energy_of_site(int x, int y) {
 int Ising::periodic_boundary_translation(int x, int dimension, int translation) {
 	return (x + dimension + translation) % dimension;
 }
-
+/*
 void Ising::write_to_terminal() {
   using namespace std;
     cout << setw(25) << "Temperature: " << setw(10) << setprecision(8) << temperature << endl;
@@ -130,17 +135,28 @@ void Ising::write_to_terminal() {
     cout << setw(25) << "Susceptibility: " << setw(10) << setprecision(8) << susceptibility << endl;
     cout << setw(25) << "Expected abs. magnetis.: " << setw(10) << setprecision(8) << exp_abs_magnetisation << endl;
     //cout << setw(20) << setprecision(8) << number_of_accepted_states / (double) cycles << endl;
-}
+}*/
 
-void Ising::output(int current_cycle) {
+void Ising::output(int current_cycle, arma::vec &expected_values) {
+
+    arma::vec tot_expected_values = arma::zeros<arma::mat>(5);
 
     // Divide by total number of cycles in order to get expected values
     double normalising_coeff = 1.0 / ((double) current_cycle);
-    double ev_E  = expected_values(0) * normalising_coeff;
-    double ev_E2 = expected_values(1) * normalising_coeff;
-    double ev_M  = expected_values(2) * normalising_coeff;
-    double ev_M2 = expected_values(3) * normalising_coeff;
-    double ev_Ma = expected_values(4) * normalising_coeff;
+
+    // Reducing threads to one
+    MPI_Reduce(&expected_values(0), &tot_expected_values(0), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&expected_values(1), &tot_expected_values(1), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&expected_values(2), &tot_expected_values(2), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&expected_values(3), &tot_expected_values(3), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&expected_values(4), &tot_expected_values(4), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    // Normalising
+    double ev_E = tot_expected_values(0) * normalising_coeff;
+    double ev_E2 = tot_expected_values(1) * normalising_coeff;
+    double ev_M = tot_expected_values(2) * normalising_coeff;
+    double ev_M2 = tot_expected_values(3) * normalising_coeff;
+    double ev_Ma = tot_expected_values(4) * normalising_coeff;
 
     // Variance
     double var_E = (ev_E2 - ev_E*ev_E) / no_of_spins;
@@ -153,16 +169,22 @@ void Ising::output(int current_cycle) {
     susceptibility			= var_M / temperature;
     exp_abs_magnetisation 	= ev_Ma / no_of_spins;
 
-    // Writing to file
+    for( int i = 0; i < 5; i++) {
+        MPI_Reduce(&expected_values[i], &tot_expected_values[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    }
+
+    // Writing to file with "master thread"
     using namespace  std;
-    ofstream ofile;
-    ofile.open(expectations_filename, ios::app);
-    ofile << setiosflags(ios::showpoint | ios::uppercase);
-    ofile << setw(15) << setprecision(8) << temperature;
-    ofile << setw(15) << setprecision(8) << expected_energy;
-    ofile << setw(15) << setprecision(8) << specific_heat;
-    ofile << setw(15) << setprecision(8) << expected_magnetisation;
-    ofile << setw(15) << setprecision(8) << susceptibility;
-    ofile << setw(15) << setprecision(8) << exp_abs_magnetisation << endl;
-    ofile.close();
+    if(rank == 0) {
+        ofstream ofile;
+        ofile.open(expectations_filename, ios::app);
+        ofile << setiosflags(ios::showpoint | ios::uppercase);
+        ofile << setw(15) << setprecision(8) << temperature;
+        ofile << setw(15) << setprecision(8) << expected_energy;
+        ofile << setw(15) << setprecision(8) << specific_heat;
+        ofile << setw(15) << setprecision(8) << expected_magnetisation;
+        ofile << setw(15) << setprecision(8) << susceptibility;
+        ofile << setw(15) << setprecision(8) << exp_abs_magnetisation << endl;
+        ofile.close();
+    }
 }
