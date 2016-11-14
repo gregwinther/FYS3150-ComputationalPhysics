@@ -3,13 +3,14 @@
 #include <iostream>
 #include <time.h>
 #include <mpi.h>
+#include <string.h>
 
 
 Ising::Ising(int lattice_dimension, int rank, int world_size) {
 
     this->lattice_dimension = lattice_dimension;
     this->no_of_spins = lattice_dimension*lattice_dimension;
-    this->expectations_filename = "expectations.dat";
+    this->expectations_filename = "expectations";
     this->rank = rank;
     this->world_size = world_size;
 
@@ -74,7 +75,7 @@ void Ising::simulate(int cycles, arma::vec &expected_values) {
         expected_values(3) += magnetisation*magnetisation;
         expected_values(4) += fabs(magnetisation);
 
-        if ((i > 0) && (i % 100))  output(i, expected_values);
+        if ((i > 0) /*&& (i % 100)*/)  output(i, expected_values);
     }
 
     // Divide by total number of cycles in order to get expected values
@@ -145,26 +146,27 @@ void Ising::write_to_terminal() {
     //cout << setw(20) << setprecision(8) << number_of_accepted_states / (double) cycles << endl;
 }
 
+
 void Ising::output(int current_cycle, arma::vec &expected_values) {
 
     arma::vec tot_expected_values = arma::zeros<arma::mat>(5);
 
     // Divide by total number of cycles in order to get expected values
     double normalising_coeff = 1.0 / ((double) current_cycle);
-
+/*
     // Reducing threads to one
     MPI_Reduce(&expected_values(0), &tot_expected_values(0), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&expected_values(1), &tot_expected_values(1), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&expected_values(2), &tot_expected_values(2), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&expected_values(3), &tot_expected_values(3), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&expected_values(4), &tot_expected_values(4), 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-
+*/
     // Normalising
-    double ev_E = tot_expected_values(0) * normalising_coeff;
-    double ev_E2 = tot_expected_values(1) * normalising_coeff;
-    double ev_M = tot_expected_values(2) * normalising_coeff;
-    double ev_M2 = tot_expected_values(3) * normalising_coeff;
-    double ev_Ma = tot_expected_values(4) * normalising_coeff;
+    double ev_E = expected_values(0) * normalising_coeff;
+    double ev_E2 = expected_values(1) * normalising_coeff;
+    double ev_M = expected_values(2) * normalising_coeff;
+    double ev_M2 = expected_values(3) * normalising_coeff;
+    double ev_Ma = expected_values(4) * normalising_coeff;
 
     // Variance
     double var_E = (ev_E2 - ev_E*ev_E) / no_of_spins;
@@ -176,16 +178,12 @@ void Ising::output(int current_cycle, arma::vec &expected_values) {
     specific_heat			= var_E / (temperature*temperature);
     susceptibility			= var_M / temperature;
     exp_abs_magnetisation 	= ev_Ma / no_of_spins;
-    /*
-    for( int i = 0; i < 5; i++) {
-        MPI_Reduce(&expected_values[i], &tot_expected_values[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    }*/
 
     // Writing to file with "master thread"
     using namespace  std;
-    if(rank == 0) {
+    //if(rank == 0) {
         ofstream ofile;
-        ofile.open(expectations_filename, ios::app);
+        ofile.open(expectations_filename + "_" + std::to_string(rank + 1) + ".dat", ios::app);
         ofile << setiosflags(ios::showpoint | ios::uppercase);
         ofile << setw(15) << setprecision(8) << temperature;
         ofile << setw(15) << setprecision(8) << expected_energy;
@@ -194,5 +192,5 @@ void Ising::output(int current_cycle, arma::vec &expected_values) {
         ofile << setw(15) << setprecision(8) << susceptibility;
         ofile << setw(15) << setprecision(8) << exp_abs_magnetisation << endl;
         ofile.close();
-    }
+    //}
 }
