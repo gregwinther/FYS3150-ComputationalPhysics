@@ -102,8 +102,6 @@ void Ising::simulate(int cycles, arma::vec &expected_values) {
 // One step of Metropolis-Hastings. One single Monte-Carlo cycle
 void Ising::metropolis() {
 
-
-
     for (int i = 0; i < no_of_spins; i++) {
         int random_x = rand() % lattice_dimension;
         int random_y = rand() % lattice_dimension;
@@ -149,7 +147,7 @@ void Ising::write_to_terminal() {
 
 void Ising::output(int current_cycle, arma::vec &expected_values) {
 
-    arma::vec tot_expected_values = arma::zeros<arma::mat>(5);
+    //arma::vec tot_expected_values = arma::zeros<arma::mat>(5);
 
     // Divide by total number of cycles in order to get expected values
     double normalising_coeff = 1.0 / ((double) current_cycle);
