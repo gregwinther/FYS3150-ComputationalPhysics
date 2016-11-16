@@ -1,5 +1,9 @@
 #include "ising.h"
 #include <mpi.h>
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <stdio.h>
 
 // input arguments: [dim] [temp_init] [temp_final] [temp_step] [cycles]
 int main(int argc, char *argv[]) {
@@ -7,8 +11,8 @@ int main(int argc, char *argv[]) {
     int world_size;
     int world_rank;
 
-    arma::vec expected_values = arma::zeros<arma::mat>(5); //arma::zeros<arma::mat>(5); //= arma::zeros<arma::mat>(5);
-    arma::vec tot_expected_values = arma::zeros<arma::mat>(5);
+    double expected_values [5]; //arma::zeros<arma::mat>(5); //= arma::zeros<arma::mat>(5);
+
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
@@ -20,10 +24,6 @@ int main(int argc, char *argv[]) {
     double temp_step  = atof(argv[4]);
     int cycles = atoi(argv[5]);
 
-    // dont need this!
-    //arma::vec temp_steps = arma::linspace<arma::vec>(temp_init, temp_final, stuff_to_do);
-    //std::cout << temp_steps << std::endl;
-
     MPI_Bcast(&cycles, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&temp_init, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&temp_final, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -34,9 +34,14 @@ int main(int argc, char *argv[]) {
     timeStart = MPI_Wtime();
     Ising myFriendTheIsingModel = Ising(dim, world_rank, world_size);
     for (float temp=temp_init; temp <= temp_final; temp += temp_step) {
+        for (int i = 0; i < 5; i ++) {
+            expected_values[i] = 0;
+        }
         myFriendTheIsingModel.initialise_system(temp);
         myFriendTheIsingModel.simulate(cycles, expected_values);
+        if (world_rank == 0) myFriendTheIsingModel.write_to_terminal();
     }
+
     timeStop = MPI_Wtime();
 
     totalTime = timeStop - timeStart;

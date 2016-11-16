@@ -1,5 +1,4 @@
-#pragma once
-#include <armadillo>
+#include <string>
 
 class Ising {
     private:
@@ -11,10 +10,9 @@ class Ising {
         int rank;
         int world_size;
 
-		arma::mat lattice;
+        double** lattice;
 
-        arma::vec delta_energy = arma::zeros<arma::mat>(17);
-        //arma::vec* expected_values;// = arma::zeros<arma::mat>(5);
+        double delta_energy [17];
         std::string expectations_filename;
 
 		double temperature;
@@ -32,14 +30,14 @@ class Ising {
 
 		int periodic_boundary_translation(int x, int dimension, int translation);
         double get_energy_of_site(int x, int y);
-        void output(int current_cycle, arma::vec &expected_values);
+        void output(int current_cycle, double (&expected_values)[5]);
 
     public:
 
         Ising(int lattice_dimension, int rank, int world_size);
 		
 		void initialise_system(double temp);
-        void simulate(int cycles, arma::vec &expected_values);
+        void simulate(int cycles, double (&expected_values)[5]);
         void write_to_terminal();
 
 };

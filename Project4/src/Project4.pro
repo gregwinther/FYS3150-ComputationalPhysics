@@ -19,8 +19,10 @@ INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib
 
 SOURCES += main.cpp \
-	ising.cpp
+	ising.cpp \
+    lib.cpp
 
-HEADERS += ising.h
+HEADERS += ising.h \
+    lib.h
 
 LIBS += -llapack -lblas -larmadillo
