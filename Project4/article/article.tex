@@ -202,12 +202,12 @@ Inserting \ref{eq:2by2magnetvar} into \ref{eq:susceptibility2} yields the suscep
 Bear in mind that $\beta = \frac{1}{k_BT}$, and that all the quantities computed are functions of $T$. The results computed here can be used as comparison for numerical computations.
 
 \section{Algorithm}
-An initial spin configuration will be 
+The algorithm for solving the Ising model consists of several parts and interesting aspects. The path to a steady state for the Ising mode can be seen as a Markov chain, which justifies the use of the Metropolis-Hastings algorithm, which again can be seen as one cycle in a Monte Carlo solver.
 
 \subsection{Markov chains}
 A Markov chain gives a good description for a system that moves towards a steady state given an initial configuration. A Markov process is a random walk with a a set of probabilities for making a set of moves. Such a process is usually represented by a stochastic matrix containing probabilities of transitioning from one state to another. In physics Markov chains can by used to study diffusion because it gives a framework for the rules of Brownian motion - the behaviour exhibited by small parts of any system when exposed to random fluctuations of the medium.
 
-In order to simulate how the system in this study evolves towards a steady state, Markov chains are used repeatedly in Monte Carlo simulations. From Markov chains one gets tow conditions needed for reaching a steady state, detailed balance and ergodicity. These properties governs our choice of algorithm, the Metropolis-Hastings algorithm.
+In order to simulate how the system in this study evolves towards a steady state, Markov chains are used repeatedly in Monte Carlo simulations. From Markov chains one gets two conditions needed for reaching a steady state, detailed balance and ergodicity. These properties governs our choice of algorithm, the Metropolis-Hastings algorithm.
 
 \subsection{The Metropolis-Hastings algorithm}
 In this project we need random samples from a probability distribution $P_\beta (\sigma)$ associated with the physical system we wish to model. Regrettably, direct sampling can be incredibly difficult, as we need to compute the partition function in order to express the probability distribution in its entirety. The Metropolis-Hastings algorithm is circumvents this problem because it only requires a function $f$ proportional to the distribution density.
