@@ -3,9 +3,10 @@
 #include <iostream> // std::cout, std::endl
 #include <armadillo>
 #include <string.h>
+#include <math.h>
 #include <iomanip>  // std::setiosflags
 
-void transact(int N, int no_of_transactions, arma::vec (&agents), double lambda, double alpha, double gamma) {
+void trade(int N, int no_of_transactions, arma::vec (&agents), double lambda, double alpha, double gamma) {
 
     // Matrix registring if a previous transaction has taken place between two agents
     arma::mat C = arma::zeros<arma::mat>(N,N);
@@ -19,11 +20,8 @@ void transact(int N, int no_of_transactions, arma::vec (&agents), double lambda,
     double avgVarBlockOld   = 1e100;
     double varVarBlockOld   = 1e100;
     double cumVarBlock      =     0;
-    double comVar2Block     =     0;
+    double cumVar2Block     =     0;
     int blockSize           =   1e4;
-
-    // Random number generator is seeded by time
-    srand(time(NULL));
 
     for (int i = 0; i < no_of_transactions; i++) {
 
@@ -50,21 +48,22 @@ void transact(int N, int no_of_transactions, arma::vec (&agents), double lambda,
          * found, new random agents are picked.
          */
 
-        while ( (pow(fabs(m_i-m_j),-alpha)*pow(previous_transactions+1, gamma) < random_number)
-                || (agent_i==agent_j)) {
+        while ((pow(fabs(m_i - m_j), -alpha)*pow(previous_transactions+1, gamma) < random_number)
+               || (agent_i == agent_j)) {
 
             // Pick new agents ...
-            int agent_i = (int) rand() % N;
-            int agent_j = (int) rand() % N;
+            agent_i = (int) rand() % N;
+            //agent_j = (int) rand() % N;
 
             // ... find wealth of these ...
-            double m_i = agents(agent_i);
-            double m_j = agents(agent_j);
+            m_i = agents(agent_i);
+            m_j = agents(agent_j);
 
             // ... update previous transactions ...
-            int previous_transactions = C(agent_i, agent_j);
+            previous_transactions = C(agent_i, agent_j);
 
             // ... and update the random comparison number
+            random_number = (double) rand() / RAND_MAX;
 
         }
 
@@ -89,59 +88,45 @@ void transact(int N, int no_of_transactions, arma::vec (&agents), double lambda,
          * block of the transactions that take place
          */
 
-        double variance = arma::var(agents);
+        double var = arma::var(agents);
         cumVarBlock += var;
         cumVar2Block += var*var;
 
         // Enter here at the correct place: end of block
         if (i % blockSize == 0) {
 
+            // Variance of a block "averaged" over the block
+            double avgVar  =  cumVarBlock / blockSize;
+            double avgVar2 = cumVar2Block / blockSize;
+
+            // Variance of a block of variance
+            double varVarBlock = avgVar2 - avgVar*avgVar;
+
+            // Check if variance is low enough
+            if ((fabs(avgVarBlockOld - avgVar) / fabs(avgVarBlockOld)     < 0.2) &&
+                (fabs(varVarBlock - varVarBlockOld) / fabs(varVarBlockOld) < 0.5)) {
+
+                // Telling a user that an equilibrium has been reached
+                std::cout << "Equilibrium reached at transaction no. " << i << std::endl;
+
+                // Done! For now.
+                break;
+
+            } else {
+
+                avgVarBlockOld = avgVar;
+                varVarBlockOld = varVarBlock;
+
+            }
+
+            // Reset cumulative variance
+            cumVarBlock  = 0;
+            cumVar2Block = 0;
 
         }
-
     }
-
-
-
-    /*
-    double lambda = savings_rate;
-
-    for (int i = 0; i < no_of_transactions; i++) {
-
-        // Picking random dudes
-        int agent1_rank = (int) rand() % no_of_agents;
-        int agent2_rank = (int) rand() % no_of_agents;
-        // They should not be the same dude
-        while (agent1_rank == agent2_rank) agent2_rank = (int) rand() % no_of_agents;
-
-        double epsilon = (double) rand() / RAND_MAX;
-        double new_agent1 = lambda * agents(agent1_rank)
-                + epsilon * (1 - lambda) * (agents(agent1_rank) + agents(agent2_rank));
-        double new_agent2 = lambda * agents(agent1_rank) +
-                (1 - epsilon) * (1 - lambda) * (agents(agent1_rank) + agents(agent2_rank));
-        agents(agent1_rank) = new_agent1;
-        agents(agent2_rank) = new_agent2;
-    }
-
-    // Re-seeding random number generator
-    srand(time(NULL));
 }
 
-void write_to_file(arma::vec data, int vector_length, std::string filename) {
-
-    using namespace std;
-
-    ofstream ofile;
-    ofile.open(filename, ios::app);
-    ofile << setiosflags(ios::showpoint | ios::uppercase);
-    for (int i = 0; i < vector_length; i++) {
-
-        ofile << setw(15) << setprecision(8) << data[i] << endl;
-    }
-    ofile.close();
-    */
-
-}
 
 void output(int N, arma::vec agents, std::string filename) {
 

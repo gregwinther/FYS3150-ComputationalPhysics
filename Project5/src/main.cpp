@@ -1,28 +1,59 @@
 #include <iostream>
+#include <ctime>
+#include <string.h>
 #include "functions.h"
-# include <time.h>
 
-using namespace std;
 
 
 int main() {
 
-    /*
-    int N = 10; // No of agents
-    int no_of_transactions = 1e7;
-    double initial_wealth = 100;
+    std::string filename     = "data.dat";   // Output filename
 
-    arma::vec agents(N);
-    agents.fill(initial_wealth);
+    double m0           =  100;         // Initial wealth
+    int N               = 1000;         // No. of agents
+    int transactions    =  1e7;         // No. of transactions
+    int simulations     =  1e3;         // No. of simulations
+    double lambda       =  0.5;         // Propensity to save
+    double alpha        =  0.0;         // Wealth proximity variable
+    double gamma        =  0.0;         // Past interaction variable
 
-    cout << "No of agents = " << N << ". Sum = " << arma::sum(agents) << endl;
-    cout << "Initial wealth distribution: " << endl;
-    cout << agents << endl;
-    transact(agents, no_of_transactions, N);
-    cout << "Wealth distribution after " << no_of_transactions << " transactions"
-         << ". Sum = " << arma::sum(agents) << endl;
-    cout << agents << endl;
+    arma::vec agents(N);    // Agent vector
+    arma::vec totagents(N); // Sum of agents over all simulations
 
-    return 0;
-    */
+    // Seeding RNG
+    srand(time(NULL));
+
+    // Timer variables
+    clock_t start, end;
+    // Start timer
+    start = clock();
+
+    // Start simulations
+
+    for (int i = 0; i < simulations; i++) {
+
+        // Print progress
+        std::cout << "Simulation no. " << i << std::endl;
+
+        // Assign intitial wealth to all agents
+        agents.fill(m0);
+
+        // Trade!
+        trade(N, transactions, agents, lambda, alpha, gamma);
+
+        // Sort and add equilibrium wealth to total
+        totagents += arma::sort(agents);
+    }
+
+    // Mean value of all simulations
+    agents = totagents/simulations;
+
+    // Write data to file
+    output(N, agents, filename);
+
+    // Stop timer
+    end = clock();
+
+    std::cout << "Time elapsed: " << (double) (end - start) / CLOCKS_PER_SEC << " seconds." << std::endl;
+
 }
