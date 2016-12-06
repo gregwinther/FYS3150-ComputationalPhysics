@@ -1,12 +1,14 @@
 #include "functions.h"
 #include <time.h>
-#include <iostream>
+#include <iostream> // std::cout, std::endl
 #include <armadillo>
 #include <string.h>
-#include <iomanip>
+#include <iomanip>  // std::setiosflags
 
 void transact(arma::vec (&agents), int no_of_transactions, int no_of_agents, double savings_rate) {
 
+
+    /*
     double lambda = savings_rate;
 
     for (int i = 0; i < no_of_transactions; i++) {
@@ -40,6 +42,20 @@ void write_to_file(arma::vec data, int vector_length, std::string filename) {
     for (int i = 0; i < vector_length; i++) {
 
         ofile << setw(15) << setprecision(8) << data[i] << endl;
+    }
+    ofile.close();
+    */
+
+}
+
+void output(int N, arma::vec agents, std::string filename) {
+
+    using namespace std;
+    ofstream ofile;
+    ofile.open(filename, ios::out);
+    ofile << setiosflags(ios::showpoint | ios::uppercase);
+    for (int i = 0; i < N; i++) {
+        ofile << setw(15) << setprecision(8) << agents(i) << endl;
     }
     ofile.close();
 

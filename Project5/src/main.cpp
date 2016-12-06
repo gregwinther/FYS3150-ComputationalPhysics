@@ -5,8 +5,9 @@
 using namespace std;
 
 
-int main(int argc, char *argv[]) {
+int main() {
 
+    /*
     int N = 10; // No of agents
     int no_of_transactions = 1e7;
     double initial_wealth = 100;
@@ -23,4 +24,5 @@ int main(int argc, char *argv[]) {
     cout << agents << endl;
 
     return 0;
+    */
 }
