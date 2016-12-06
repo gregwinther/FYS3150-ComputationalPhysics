@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 from scipy.special import gamma
 from matplotlib import rc
 
-m1 = np.loadtxt("data/5ab/5a_000.dat",unpack=True)
-m2 = np.loadtxt("data/5ab/5a_0.25-00.dat",unpack=True)
-m3 = np.loadtxt("data/5ab/5a_0.5-00.dat",unpack=True)
-m4 = np.loadtxt("data/5ab/5a_0.9-00.dat",unpack=True)
+m1 = np.loadtxt("../data/5ab/5a_000.dat",unpack=True)
+m2 = np.loadtxt("../data/5ab/5a_0.25-00.dat",unpack=True)
+m3 = np.loadtxt("../data/5ab/5a_0.5-00.dat",unpack=True)
+m4 = np.loadtxt("../data/5ab/5a_0.9-00.dat",unpack=True)
 
 # ---------------- New color scheme -----------------
 # These are the "Tableau 20" colors as RGB.    
