@@ -1,0 +1,85 @@
+\documentclass[10pt, a4paper]{amsart}
+
+\usepackage[]{graphicx}
+\usepackage[]{hyperref}
+\usepackage[]{physics}
+\usepackage[]{listings}
+\usepackage[T1]{fontenc}
+
+\title[Simulation of monetary transactions]{Monte Carlo simulation of monetary transactions: \\
+\normalsize{A simple model for wealth distribution} \\
+  \hrulefill\small{ FYS3150: Computational Physics }\hrulefill}
+
+\author[Svalheim \& Winther-Larsen]{Trygve Leithe Svalheim \\
+   Sebastian G. Winther-Larsen \\
+  \href{https://github.com/gregwinther/FYS3150/}{\texttt{github.com/gregwinther}}}
+  
+
+\begin{document}
+
+\begin{titlepage}
+\begin{abstract}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id neque elementum, accumsan ligula at, lobortis tortor. Duis elementum pellentesque purus, sit amet euismod diam facilisis volutpat. Nulla facilisi. Mauris quis felis ante. Aliquam ac velit sit amet velit porta condimentum iaculis ut quam. Phasellus pretium libero nec lectus placerat, ac consectetur sem faucibus. Maecenas dictum porta finibus.
+\end{abstract}
+\maketitle
+\tableofcontents
+\end{titlepage}
+
+%% -----------------
+%% INTRODUCTION
+\section{Introduction}
+
+
+%% -----------------
+%% THEORY
+\section{Theoretical Background}
+\subsection{The simplest model for an economy}
+Arguably, the most famous equation in macroeconomics is the ``autarky identity"
+\begin{equation}
+\label{eq:YCGI}
+Y = C + G + I,
+\end{equation}
+where $Y$ is income, $C$ is consumption, $G$ is government spending and $I$ is investment. The best-know, but not necessarily the best, measure of income $Y$ is the Gross Domestic Product (GDP)\footnote{GDP = GNP (Gross National Product) in autarky.}. Consumption $C$ is the monetary value of all goods and services purchased in the private sector, while government spending $G$ is the consumption of the government. Finally, investment $I$ is the sum of private and public saving. 
+
+Equation \ref{eq:YCGI} is autarkic because all interactions with other economies are excluded from the expression. There are no terms representing exports and captial inflow, for instance. We are dealing with a \emph{closed} economy, alternatively the entire world as a whole. Moreover, let's assume that the economy we are studying is a peaceful anarchy, without a governing authority of any sort, in effect setting $G = 0$. To begin with, we will also forgo the agents the ability to save such that the worth of every individual, or agent, in the economy must be spent at once. Equation \ref{eq:YCGI} is reduced to $Y = C$, everything one agent spends is the income of another.
+
+\subsection{Monetary transactions}
+To simulate monetary transactions in out model economy we expand employ the framework introduced in Patriarca et al.\cite{Patriarca}. We assume there are $N$ agents that exchange money in pairs ($i,j$). We assume also that all agents start with the same amount of money $m_0>0$. For every period an arbitrary pair of agents are picked at randomly and let them conduct business, id est a transaction takes place between them. Money is conserved during the transaction such that
+\begin{equation}
+m_i + m_j = m_i' + m_j',
+\end{equation}
+where the right-hand side represents the amount of money agents $i$ and $j$ have after the transaction. The exchange is done via a random reassignment factor $\epsilon$ such that
+\begin{align}
+m_i' &= \epsilon (m_i + m_j) \\
+m_j' &= (1 - \epsilon) (m_i + m_j)
+\end{align}
+Th
+
+
+%% -----------------
+%% ALGORITHM
+\section{Algorithm}
+
+%% -----------------
+%% RESULTS
+\section{Results}
+
+%% ----------------
+%% DISCUSSION
+\section{Discussion}
+
+%% ---------------
+%% CONCLUSION
+\section{Summary Remarks}
+
+
+\begin{thebibliography}{10}
+
+\bibitem{Patriarca} Patriarca, M., Chakraborti, A., \& Kaski, K. (2004). 
+	Gibbs versus non-Gibbs distributions in money dynamics. 
+	\emph{Physica A: Statistical Mechanics and its Applications},
+	340(1), 334-339.
+
+\end{thebibliography}
+
+\end{document}
