@@ -53,7 +53,7 @@ void trade(int N, int no_of_transactions, arma::vec (&agents), double lambda, do
 
             // Pick new agents ...
             agent_i = (int) rand() % N;
-            //agent_j = (int) rand() % N;
+            agent_j = (int) rand() % N;
 
             // ... find wealth of these ...
             m_i = agents(agent_i);

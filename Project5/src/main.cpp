@@ -14,7 +14,7 @@ int main() {
     int transactions    =  1e7;         // No. of transactions
     int simulations     =  1e3;         // No. of simulations
     double lambda       =  0.5;         // Propensity to save
-    double alpha        =  0.0;         // Wealth proximity variable
+    double alpha        =  2.0;         // Wealth proximity variable
     double gamma        =  0.0;         // Past interaction variable
 
     arma::vec agents(N);    // Agent vector
