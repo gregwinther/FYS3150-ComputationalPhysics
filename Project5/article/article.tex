@@ -46,14 +46,24 @@ Equation \ref{eq:YCGI} is autarkic because all interactions with other economies
 \subsection{Monetary transactions}
 To simulate monetary transactions in out model economy we expand employ the framework introduced in Patriarca et al.\cite{Patriarca}. We assume there are $N$ agents that exchange money in pairs ($i,j$). We assume also that all agents start with the same amount of money $m_0>0$. For every period an arbitrary pair of agents are picked at randomly and let them conduct business, id est a transaction takes place between them. Money is conserved during the transaction such that
 \begin{equation}
+\label{eq:wealthconserved}
 m_i + m_j = m_i' + m_j',
 \end{equation}
-where the right-hand side represents the amount of money agents $i$ and $j$ have after the transaction. The exchange is done via a random reassignment factor $\epsilon$ such that
+where the left hand side is the agent $i$ and $j$'s updated wealth and the right-hand side represents the amount of money agents $i$ and $j$ had before the transaction. The exchange is done via a random reassignment factor $\epsilon$, such that
 \begin{align}
 m_i' &= \epsilon (m_i + m_j) \\
 m_j' &= (1 - \epsilon) (m_i + m_j)
 \end{align}
-Th
+No agent will ever have negative wealth, that is $m \geq 0$. Moreover, because of the conservation law in equation \ref{eq:wealthconserved}, the system eventually reaches an equilibrium state given by a Gibbs distribution
+\begin{equation}
+\label{eq:gibbs}
+w_m = \beta e^{-\beta m}, \quad \beta = \frac{1}{\ev{m}},
+\end{equation}
+where $\ev{m}$ is the expected wealth, for which the arithmetic mean is an unbiased estimator. This implies that after an equilibrium has been reached the majority of agents is left with lower wealth than they had initially and
+the number of rich agents exponentially decrease.
+
+\subsection{Transactions and savings}
+We are can now expand upon the model by introducing a savings rate $\lambda$. The savings rate is defined as a fraction of an agent's wealth that does not partake in a transaction for every period. One can gather from the macroeconomic identity in equation \ref{eq:YCGI} that income must still be the same and the transaction law in equation \ref{eq:wealthconserved} still holds. Now one
 
 
 %% -----------------
