@@ -4,7 +4,7 @@
 \usepackage[]{hyperref}
 \usepackage[]{physics}
 \usepackage[]{listings}
-\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 
 \title[Simulation of monetary transactions]{Monte Carlo simulation of monetary transactions: \\
 \normalsize{A simple model for wealth distribution} \\
@@ -34,7 +34,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id neque elementum, 
 %% THEORY
 \section{Theoretical Background}
 \subsection{The simplest model for an economy}
-Arguably, the most famous equation in macroeconomics is the ``autarky identity"
+Arguably, the most famous equation in macroeconomics is the ``autarky identity"\footnote{Any introductory text on macroeconomics will give a thorough elaboration, e.g. Gärtner.}
 \begin{equation}
 \label{eq:YCGI}
 Y = C + G + I,
@@ -49,7 +49,7 @@ To simulate monetary transactions in out model economy we expand employ the fram
 \label{eq:wealthconserved}
 m_i + m_j = m_i' + m_j',
 \end{equation}
-where the left hand side is the agent $i$ and $j$'s updated wealth and the right-hand side represents the amount of money agents $i$ and $j$ had before the transaction. The exchange is done via a random reassignment factor $\epsilon$, such that
+where the right-hand side is the agent $i$ and $j$'s updated wealth and the left-hand side represents the amount of money agents $i$ and $j$ had before the transaction. The exchange is done via a random reassignment factor $\epsilon$, such that
 \begin{align}
 m_i' &= \epsilon (m_i + m_j) \\
 m_j' &= (1 - \epsilon) (m_i + m_j)
@@ -63,7 +63,32 @@ where $\ev{m}$ is the expected wealth, for which the arithmetic mean is an unbia
 the number of rich agents exponentially decrease.
 
 \subsection{Transactions and savings}
-We are can now expand upon the model by introducing a savings rate $\lambda$. The savings rate is defined as a fraction of an agent's wealth that does not partake in a transaction for every period. One can gather from the macroeconomic identity in equation \ref{eq:YCGI} that income must still be the same and the transaction law in equation \ref{eq:wealthconserved} still holds. Now one
+We are can now expand upon the model by introducing a savings rate $\lambda$. The savings rate is defined as a fraction of an agent's wealth that does not partake in a transaction for every period. One can gather from the macroeconomic identity in equation \ref{eq:YCGI} that income must still be the same and the transaction law in equation \ref{eq:wealthconserved} still holds. The updated wealth of agents $i$ and $j$ after a transaction becomes
+\begin{align}
+m_i' &= \lambda m_i + \epsilon (1 - \lambda) (m_i + m_j) \\
+m_j' &= \lambda m_j + (1- \epsilon) (1 - \lambda) (m_i + m_j)
+\end{align}
+one can rewrite these expressions to
+\begin{align*}
+m_i' &= m_i + \delta m \\
+m_j' &= m_j - \delta m
+\end{align*}
+where
+\begin{equation}
+\delta m = (1 - \lambda)(\epsilon m_j - (1 - \epsilon)m_i)
+\end{equation}
+
+\subsection{Economic inequality and social friction}
+``The first historical series of income distribution statistics became available with the publication in 1953 fo Kuznet's monumental Shares of Upper Income Groups in Income and Savings. Kuznet's series dealt with only one country (the United Stetes) over a period of thirty-five years (1913-1948)" (Pikkety \& Ganser, 2014, Kindle locations 276-280\cite{Piketty}). Ever since that time there has been wealth and income inequality to a greater or lesser degree. According to the PolitiFact the top 400 richest Americans in 2011 "[had] more wealth than half of all Americans combined"\cite{Moore}.
+
+One of the possible reasons for continued wealth and income inequality that has risen in popularity the last few years is the process of wealth concentration. This is a process by which, under certain conditions, newly created wealth concentrates in the possession of already-wealthy individuals or entities. Those who already have wealth have the means to invest in newly created sources and structures of wealth. Piketty argues that the fundamental force for wealth divergence is the usually greater return of capital than economic growth (Piketty \& Ganser, 2014 p. 284 Table 12.2\cite{Piketty}).
+
+To incorporate the social rigidities described above, we will make two further additions to the model. These additions build mostly on the work of Goswami and Sen\cite{GoswamiSen}. Firstly, we will make it more likely for two agents to conduct a transaction if they have similar wealth. Second, we will make it more likely for two agents to make a transaction if they have made a transaction before. We define a probability
+\begin{equation}
+\label{eq:rigidprob}
+p_{ij} \propto \abs{m_i - m_j}^{-\alpha}(c_{ij}+1)^{\gamma},
+\end{equation}
+where the first factor $\abs{m_i-m_j}^{-\alpha}$ relates to wealth similarity and the second factor $(c_{ij}+1)^{\gamma}$ relates to previous transactions. A relatively large difference between $m_i$ and $m_j$ should translate to a lower probability. The strength of this effect is governed by the exponent $\alpha$, a larger value decreases the probability of a trade further. The variable $c_{ij}$ is simply the number of times agent $i$ and $j$ have conducted transactions in the past. The number $1$ is added in order to ensure that if they have not interacted earlier they can still interact. The strength of this effect is governed by the exponent $\gamma$.
 
 
 %% -----------------
@@ -89,6 +114,19 @@ We are can now expand upon the model by introducing a savings rate $\lambda$. Th
 	Gibbs versus non-Gibbs distributions in money dynamics. 
 	\emph{Physica A: Statistical Mechanics and its Applications},
 	340(1), 334-339.
+	
+\bibitem{Piketty} Piketty, T., \& Ganser, L. J. (2014).
+	\emph{Capital in the twenty-first century}.
+	
+\bibitem{Moore} Moore, M., (March 7, 2011).
+	The Forbes 400 vs. everybody else.
+	\emph{\href{https://web.archive.org/web/20110309211959/http://www.michaelmoore.com/words/must-read/forbes-400-vs-everybody-else}{michaelmoore.com}}.
+	Retrieved December 8. 2016.
+
+\bibitem{GoswamiSen} Goswami, S., \& Sen, P. (2014).
+	Agent based models for wealth distribution with preference in interaction.
+	\emph{Physica A: Statistical Mechanics and its Applications},
+	415, 514-524.
 
 \end{thebibliography}
 
