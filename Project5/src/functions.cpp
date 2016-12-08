@@ -44,7 +44,7 @@ void trade(int N, int no_of_transactions, arma::vec (&agents), double lambda, do
         /*
          * The logical statement in the following while loops will check if the agents are
          * "good enough": Have they dealed in the past and are close in the "food chain".
-         * Furthermore: checks if agents are the same. Until a new good match of agents are
+         * Furthermore: checks if agents are the same. Until a good match of agents are
          * found, new random agents are picked.
          */
 

@@ -29,7 +29,6 @@ int main() {
     start = clock();
 
     // Start simulations
-
     for (int i = 0; i < simulations; i++) {
 
         // Print progress
