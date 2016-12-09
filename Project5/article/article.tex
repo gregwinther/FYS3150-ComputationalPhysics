@@ -8,6 +8,7 @@
 \usepackage[]{listings}
 \usepackage[utf8]{inputenc}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{dirtytalk}
 
 \definecolor{mygray}{gray}{0.9}
 
@@ -112,7 +113,7 @@ where
 \end{equation}
 
 \subsection{Economic inequality and social friction}
-``The first historical series of income distribution statistics became available with the publication in 1953 fo Kuznet's monumental Shares of Upper Income Groups in Income and Savings. Kuznet's series dealt with only one country (the United Stetes) over a period of thirty-five years (1913-1948)" (Pikkety \& Ganser, 2014, Kindle locations 276-280\cite{Piketty}). Ever since that time there has been wealth and income inequality to a greater or lesser degree. According to the PolitiFact the top 400 richest Americans in 2011 "[had] more wealth than half of all Americans combined"\cite{Moore}.
+\say{The first historical series of income distribution statistics became available with the publication in 1953 of Kuznet's monumental Shares of Upper Income Groups in Income and Savings. Kuznet's series dealt with only one country (the United Stetes) over a period of thirty-five years (1913-1948)} (Piketty \& Goldhammer, 2014, Kindle locations 276-280\cite{Piketty}). Ever since that time there has been wealth and income inequality to a greater or lesser degree. According to the PolitiFact the top 400 richest Americans in 2011 "[had] more wealth than half of all Americans combined"\cite{Moore}.
 
 One of the possible reasons for continued wealth and income inequality that has risen in popularity the last few years is the process of wealth concentration. This is a process by which, under certain conditions, newly created wealth concentrates in the possession of already-wealthy individuals or entities. Those who already have wealth have the means to invest in newly created sources and structures of wealth. Piketty argues that the fundamental force for wealth divergence is the usually greater return of capital than economic growth (Piketty \& Ganser, 2014 p. 284 Table 12.2\cite{Piketty}).
 
@@ -343,7 +344,7 @@ Lastly, figure \ref{fig:transbeforefit} show a power law fitting of the wealth d
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.6\textwidth]{../figures/5e/5e_var-2-var-POWERlog_FIXXED.png}
+	\includegraphics[width=0.7\textwidth]{../figures/5e/5e_var-2-var-POWERlog_FIXXED.png}
 	\caption{Power law fitting of wealth distribution including savings, nearest neighbhour- and previous transaction effects. The plot is logarithim and both includes ($\alpha=0$) and excludes ($\alpha=0.5$) savings.}
 	\label{fig:transbeforefit}
 \end{figure}
@@ -351,6 +352,31 @@ Lastly, figure \ref{fig:transbeforefit} show a power law fitting of the wealth d
 %% ----------------
 %% DISCUSSION
 \section{Discussion}
+Most part of this study was a replications of the work done by Patriaraca et al. (2004)\cite{Patriarca} and Goswami and Sen (2014)\cite{GoswamiSen} and we have more than sufficiently managed to do so, but the path to that point has regrettably involved a bit of guesswork. We found that both articles were somewhat lacking in procedural and algorithmic descriptions, which we find not to be consistent with sound science and the scientific method\footnote{We went as far as to e-mail some of the co-authors of the articles, asking (very nicely!) for descriptions of algorithms, software and methods. At the time of writing we are still without answer.}. \say{[Just] as other information should be available to those who want to learn and understand, program source code is the only means for programmers to learn the art from their predecessors. It would be unthinkable for playwrights not to allow other playwrights to read their plays (...)} (Erik Naggum)\cite{Rendering}. That being said, we have confidence that our own results are very much comparable to both of of the studies that this study is based upon. 
+
+\subsection{The ``savings rate'' and other quirks}
+In this study we call the factor $\lambda \in [0,0.9]$ the savings rate. It makes sense to employ it to the model described herein, as one would not assume that anyone would spend (potentially) their entire net worth on a single transaction. On the other hand, a savings rate would usually be defined as the fraction of income that an individual saves over a certain amount of time, e.g. a year. The term ``savings rate'' as it is used in this model can therefore lead to some confusion, mostly because there is no concept of how time progresses throughout the simulation. The only thing that happens is a series of transactions, and after a steady state is reached we have a snapshot of the monetary distribution, but no feel for the dynamics of the economy.
+
+\subsection{Future developments}
+
+We found, after delving into the data, that the Parato distributions than follow the higher tails of the simulation distribution data best are best described by the following rule
+\begin{equation}
+\label{eq:ourpareto}
+w_m \propto m^{-1-\lambda-\alpha-\gamma}
+\end{equation}
+where, of course, $\lambda$ is the savings rate, $\alpha$ is the importance of wealth similarity and $\gamma$ is the importance of previous transactions. This is a very neat result, but we have only confirmed that the Pareto distributions fits the most-wealth in a visual manner. It would be good to confirm the explanatory power by some sort of regression analysis or a goodness-of-fit test. This was regrettably beyond the scope of our study.
+
+A very important part of the social sciences of which economics is a part is that they have applications for the real world and help in a way to explain the behaviour of human beings. It would therefore be nice to compare the results of these simulations to real wealth distributions. As Piketty points out\cite{Piketty}, data on wealth and income distributions have been available in the US since 1953. One study\cite{Kjersti}, in the Norwegian business magazine Kaptial uses the magazine's study of the 400 richest Norwegians to show that their wealth are indeed Pareto distributed. 
+
+Norway is a special case because it is one of very few OECD\footnote{Organisation for Economic Co-operation and Development. Colloquially defined as a \say{club for rich countries}.} member countries that with a wealth tax. These include Switzerland, Hungary, Spain and France\cite{OECD}. In Norway, the wealth tax has a tremendous impact on high net worth individuals, making up $57.1\%$ of the total tax burden of the 400 richest individuals\cite{NHHmaster}. It would therefore be beneficial to include tax effects in the model in some way, as different tax regimes may have an impact of the monetary distribution.
+
+We started the the theory section by stating a macroeconomic identity (equation \ref{eq:YCGI}). In it we included government spending, which necessarily is very important to an economy. Depending on the relative size of the government, the spendings of the government could impact wealth distribution through welfare. Even though poor individuals may not have a high personal wealth it may not be necessary for them, because of the security that a welfare state provides. This would in turn affect savings rate in an economy. A huge ``social security net'' could lead to lower savings and vice versa.
+
+In a modern, open economy one inevitably must trade with other economies. The macroeconomic identity in equation \ref{eq:YCGI} can be expanded to net exports $X-M$, where $X$ is exports and $M$ is imports
+\begin{equation}
+Y = C + G + I + (X-M).
+\end{equation}
+It would be interesting to see what opening the economy up for trade would do for wealth distribution. According to the Stolper-Samuelson theorem, opening an economy to trade should make unskilled workers producing traded goods in a high-skilled economy worse off as trade increases\cite{StolperSamuelson}. Advocates of protectionism usually use such theories to underline their argumentation. Building a model consisting of several ``countries'' with increasing amount of trade could be beneficial in this debate, especially as we been seen an increase in protectionist political rhetoric in recent times.
 
 %% ---------------
 %% CONCLUSION
@@ -362,7 +388,7 @@ Lastly, figure \ref{fig:transbeforefit} show a power law fitting of the wealth d
 \bibitem{Patriarca} Patriarca, M., Chakraborti, A., \& Kaski, K. (2004). 
 	Gibbs versus non-Gibbs distributions in money dynamics. 
 	\emph{Physica A: Statistical Mechanics and its Applications},
-	340(1), 334-339.
+	340(1), pp. 334-339.
 	
 \bibitem{Pareto} Pareto, V. (1897).
 	\emph{Cours d'Économique politique},
@@ -384,9 +410,34 @@ Lastly, figure \ref{fig:transbeforefit} show a power law fitting of the wealth d
 \bibitem{GoswamiSen} Goswami, S., \& Sen, P. (2014).
 	Agent based models for wealth distribution with preference in interaction.
 	\emph{Physica A: Statistical Mechanics and its Applications},
-	415, 514-524.
+	415, pp. 514-524.
+	
+\bibitem{Rendering} Pharr, M., \& Humphreys, G. (2010).
+	\emph{Physically Based Rendering}, 
+	Amsterdam: Elsevier.
+	
+\bibitem{Kjersti} Aas, K. (2010).
+	Stor formue - flaks eller dyktighet?
+	\emph{Kapital} 18, p. 30.
+	
+\bibitem{OECD} OECD (2016). 
+	\emph{OECD.stat} extract.
+	\url{stats.oecd.org}. 
+	Retrieved December 9. 2016.
+	
+\bibitem{NHHmaster} Lieng, E., \& Sveen, P. B. (2016).
+	\emph{kattenivået til Norges rikeste : en analyse av skattebyrden i 2014 og formuesskattens regelendringer mellom 2006 og 2014}.
+	Master Thesis. 
+	\url{http://hdl.handle.net/11250/2403838}.
+	Retrieved December 9. 2016.
 
+\bibitem{StolperSamuelson}  Stolper, W. F., \& Samuelson, P. A. (1941).
+	Protection and real wages.
+	\emph{Economic Studies}. Oxford Journals.
+	9 (1), pp. 58-73.
+	
 \end{thebibliography}
+	
 
 \begin{appendices}
 
