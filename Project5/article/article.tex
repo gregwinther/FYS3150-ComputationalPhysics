@@ -2,6 +2,7 @@
 
 \usepackage[]{graphicx}
 \usepackage{subcaption}
+\usepackage[toc,page]{appendix}
 \usepackage[]{hyperref}
 \usepackage[]{physics}
 \usepackage[]{listings}
@@ -86,7 +87,12 @@ It is easy to see that the logarithm of the Gibbs measure in equation \ref{eq:gi
 \end{equation}
 
 \subsection{Pareto distributions}
-
+How the income and wealth of a population has been studied for a long time. Already in 1897, Vilfredo Pareto, sought to describe bot wealth and income distribution by power law probability distributions\cite{Pareto}. Pareto showed that the higher end of the distribution of money follows a distribution
+\begin{equation}
+\label{eq:paretodist}
+w_m \propto m^{-1-\alpha}, \quad \alpha \in [1,2].
+\end{equation}
+Pareto's ``80-20 rule", that $20\%$ of the population controls $80\%$ of the wealth, corresponds to a certain value of $\alpha$. Today, a whole class of distributions similar to the one in equation \ref{eq:paretodist} are named after Pareto\cite{Arnold}.
 
 \subsection{Transactions and savings}
 We are can expand upon the model by introducing a savings rate $\lambda$. The savings rate is defined as a fraction of an agent's wealth that does not partake in a transaction for every period. One can gather from the macroeconomic identity in equation \ref{eq:YCGI} that income must still be the same and the transaction law in equation \ref{eq:wealthconserved} still holds. The updated wealth of agents $i$ and $j$ after a transaction becomes
@@ -221,11 +227,13 @@ One can see that what must be specified is the number of simulations (\lstinline
 %% RESULTS
 \section{Results}
 
+%% Problem a, b, c.
+
 Figure \ref{fig:distribution} shows plot of different wealth distributions after $1000$ simulations for $N=500$ agents. We see that that without savings, the distribution shows a decreasing number of agents as wealth increases. As the savings rate $\lambda$ is allowed to increase, the distribution moves to the right and eventually peaks at the initial wealth $m_0 = 100$ when $\lambda = 0.9$. This plot, were it not for the colors, could be an exact copy of figure 1 in Patriarca et al.\cite{Patriarca}. Without savings the distribution appears as a inverse exponential function ($e^{-x}$) which is the same class of function as the Gibbs distribution (equation \ref{eq:gibbs}). However, these traits disappear from the wealth distributions once savings are allowed.
 
 A further study of the wealth distributions from figure \ref{fig:distribution} is visualized in figure \ref{fig:logplot}. Figure  \ref{fig:logdistribution} shows the same graphs as in figure \ref{fig:distribution}, but on with logarithmic scales on both axes. Figure \ref{fig:straightline} the wealth values evaluated by equation \ref{eq:gibbs} and plotted with logarithmic $y$-axis. Observe that all all the wealth distributions give straight lines. This makes sense, as the logarithm of the Gibbs distribution yields a first order expression (equation \ref{eq:lingibbs}).
 
-Figure \ref{fig:paramfig1} shows two different Pareto distrobutions plotted against a distribution at $\lambda = 0$.
+Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha=1.8$ and $\alpha = 2$ (equation \ref{eq:paretodist}) plotted against a distribution at $\lambda = 0$. We see that they fit adequately with the higher end of the distribution, but not perfectly. The simple Pareto distribution becomes a straight line because of the logarithmic axes in the plot. The same figure also contains a parametrization of the wealth \footnote{This is done in the way Partriarca et al. (2004)\cite{Patriarca} does. A recipe is shown in appendix \ref{app:partriarca}}. Figure \ref{fig:paramfig2} also shows such a parametrization, but for a higher savings rate $\lambda=0.9$. The parametrisations are indicated by a label $P(x)$.
 
 
 \begin{figure}
@@ -248,7 +256,7 @@ Figure \ref{fig:paramfig1} shows two different Pareto distrobutions plotted agai
   \caption{}
   \label{fig:straightline}
 \end{subfigure}
-\caption{Logarithmic plot wealth distribution from figure \ref{fig:distribution} (right), and }
+\caption{Logarithmic plot wealth distribution from figure \ref{fig:distribution} (right), and the logarithm of the Gibbs measure (equation \ref{eq:gibbs}) of every data point (right).}
 \label{fig:logplot}
 \end{figure}
 
@@ -265,8 +273,41 @@ Figure \ref{fig:paramfig1} shows two different Pareto distrobutions plotted agai
   \caption{}
   \label{fig:paramfig2}
 \end{subfigure}
-\caption{Parametrization}
+\caption{Parametrization of two different wealth distributions, $\lambda=0$ and $\lambda=0.9$. Method for parametrization is found in appendix \ref{app:partriarca}. For $\lambda=0$ two Pareto power law distributions are also shown.}
 \label{fig:paramfig}
+\end{figure}
+
+%% Problem d.
+\begin{figure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{../figures/5d/5d_0-var-0.pdf}
+	\caption{}
+	\label{fig:neighbour1}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{../figures/5d/5d_05-var-0.pdf}
+	\caption{}
+	\label{fig:neighbour2}
+\end{subfigure}
+\caption{Effect of neighbour-only interaction}
+\end{figure}
+
+\begin{figure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{../figures/5d/5d_0-var-0-PARETO.pdf}
+	\caption{}
+	\label{fig:neighbourpareto1}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{../figures/5d/5d_0-var-0-POWERLOG.pdf}
+	\caption{}
+	\label{fig:neighourpareto2}
+\end{subfigure}
+\caption{Effect of neighbour-only interaction}
 \end{figure}
 
 
@@ -289,7 +330,11 @@ Figure \ref{fig:paramfig1} shows two different Pareto distrobutions plotted agai
 \bibitem{Pareto} Pareto, V. (1897).
 	\emph{Cours d'Économique politique},
 	Lausanne: Ed. Rouge.
-	
+
+\bibitem{Arnold} Arnold, B. C. (1983). 
+	\emph{Pareto Distributions}.
+	 International Co-operative Publishing House	
+
 \bibitem{Piketty} Piketty, T., \& Goldhammer, A. (2014).
 	\emph{Capital in the twenty-first century},
 	Cambridge: Harvard University Press.
@@ -305,5 +350,27 @@ Figure \ref{fig:paramfig1} shows two different Pareto distrobutions plotted agai
 	415, 514-524.
 
 \end{thebibliography}
+
+\begin{appendices}
+
+\section{Parametrization from Patriarcal et al.}
+\label{app:partriarca}
+A corresponding exact solution of an income distributions for a generic value of $\lambda$ with $0<\lambda<1$ is provided in Patriarca et al.\cite{Patriarca}. Fir one employs the reduced variable
+\begin{equation}
+x = \frac{m}{\ev{m}}
+\end{equation}
+the agent money in units of average money $\ev{m}$ and the parameter
+\begin{equation}
+n(\lambda) = 1 + \frac{3\lambda}{1-\lambda}.
+\end{equation}
+The money distributions, for arbitrary values of $\lambda$, are well fitted by the function
+\begin{equation}
+P_n(x) = a_nx^{n-1}e^{-nx}
+\end{equation}
+where $a_n$ is a normalization factor shown to be
+\begin{equation}
+a_n = \frac{n^n}{\Gamma(n)}
+\end{equation}
+\end{appendices}
 
 \end{document}
