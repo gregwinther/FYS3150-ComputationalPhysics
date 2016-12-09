@@ -39,7 +39,7 @@
 
 \begin{titlepage}
 \begin{abstract}
-We build a simple agent-interaction money to model wealth distribution by taking inspiration from the field of econophysics. The model can account for effects of saving ($\lambda$) and agent preference to trade only with agents of similar wealth ($\alpha$) and that they have dealt with before ($\gamma$). We find that the upper tails of the wealth distributions can be adequately explained by simple Pareto distribution: $w_m \propto m^{-1-\lambda-\alpha-\gamma}$. We suggest some improvements to the model; inclusion of time propagation dynamics and a system of several economies connected through varying degrees of trade.
+We build a simple agent-interaction model in order to simulate wealth distribution by taking inspiration from the field of econophysics. The model can account for effects of saving ($\lambda$) and agent preference to trade only with agents of similar wealth ($\alpha$) and agents they have dealt with before ($\gamma$). We find that the upper tails of the wealth distributions can only be adequately explained by simple Pareto distribution: $w_m \propto m^{-1-\lambda-\alpha-\gamma}$. We suggest some prospective future additions to the model; inclusion of time propagation dynamics, a system of several economies connected through varying degrees of trade, and functionality that takes welfare and social benefits into account.
 \end{abstract}
 \maketitle
 \tableofcontents
@@ -48,7 +48,7 @@ We build a simple agent-interaction money to model wealth distribution by taking
 %% -----------------
 %% INTRODUCTION
 \section{Introduction}
-This is a first venture into the field of econophysics for us. We use concepts from statistical mechanics to build a model consisting of agents allowed to conduct monetary transactions with one another. This study is based on the previous work of Patriarca et al. (2004)\cite{Patriarca} and Goswami and Sen (2014)\cite{GoswamiSen}. We start by giving a very brief introduction to the simplest of macroeconomic models, justifying the use of a simplification to an agent-interaction model. Thereafter we show how the agent model works. It is built up piece by piece and takes into account the effects of saving, and a preference for an agent to conduct a transaction with another agent of similar wealth and one the agent has dealt with before. We then give a thorough description of how the model can be implemented using Monte Carlo methods in C++ \footnote{All program source code is available online. Follow the github url on the title page}. The program is relatively straightforward to implement, except perhaps for the algorithm that breaks the transaction loop if a steady state is reached prematurely. After that we swiftly present all results, accounting for all the different effects. What follows is a somewhat lengthy discussion of the model's shortcomings and suggestions for future developments. We end this article with some summary remarks.
+This is a first venture into the field of econophysics for us. We use concepts from statistical mechanics to build a model consisting of agents allowed to conduct monetary transactions with one another. This study is based on the previous work of Patriarca et al. (2004)\cite{Patriarca} and Goswami and Sen (2014)\cite{GoswamiSen}. We start by giving a very brief introduction to the simplest of macroeconomic models, justifying the use of a simplification to an agent-interaction model. Thereafter we show how the agent model works. It is built up piece by piece and takes into account the effects of saving, and the preference for an agent to conduct a transaction with another agent of similar wealth and one the agent has dealt with before. We then give a thorough description of how the model can be implemented using Monte Carlo methods in C++ \footnote{All program source code is available online. Follow the github url on the title page}. The program is relatively straightforward to implement, except perhaps for the algorithm that breaks the transaction loop if a steady state is reached prematurely. This functionality speeds up the simulations tremendously. After that we swiftly present all results, accounting for all the different effects. What follows is a somewhat lengthy discussion of the model's shortcomings and suggestions for future developments. We end this article with some summary remarks.
 
 %% -----------------
 %% THEORY
@@ -59,17 +59,17 @@ Arguably, the most famous equation in macroeconomics is the ``autarky identity"\
 \label{eq:YCGI}
 Y = C + G + I,
 \end{equation}
-where $Y$ is income, $C$ is consumption, $G$ is government spending and $I$ is investment. The best-know, but not necessarily the best, measure of income $Y$ is the Gross Domestic Product (GDP)\footnote{GDP = GNP (Gross National Product) in autarky.}. Consumption $C$ is the monetary value of all goods and services purchased in the private sector, while government spending $G$ is the consumption of the government. Finally, investment $I$ is the sum of private and public saving. 
+where $Y$ is income, $C$ is consumption, $G$ is government spending and $I$ is investment. The best-known, but not necessarily the best, measure of income $Y$ is the Gross Domestic Product (GDP)\footnote{GDP = GNP (Gross National Product) in autarky.}. Consumption $C$ is the monetary value of all goods and services purchased in the private sector, while government spending $G$ is the consumption of the government. Finally, investment $I$ is the sum of private and public saving. 
 
 Equation \ref{eq:YCGI} is autarkic because all interactions with other economies are excluded from the expression. There are no terms representing exports and captial inflow, for instance. We are dealing with a \emph{closed} economy, alternatively the entire world as a whole. Moreover, let's assume that the economy we are studying is a peaceful anarchy, without a governing authority of any sort, in effect setting $G = 0$. To begin with, we will also forgo the agents the ability to save such that the worth of every individual, or agent, in the economy must be spent at once. Equation \ref{eq:YCGI} is reduced to $Y = C$, everything one agent spends is the income of another.
 
 \subsection{Monetary transactions}
-To simulate monetary transactions in our model economy we expand employ the framework introduced in Patriarca et al.\cite{Patriarca}. We assume there are $N$ agents that exchange money in pairs ($i,j$). We assume also that all agents start with the same amount of money $m_0>0$. For every period an arbitrary pair of agents are picked at randomly and let them conduct business, id est a transaction takes place between them. Money is conserved during the transaction such that
+To simulate monetary transactions in our model economy we employ the framework introduced in Patriarca et al.\cite{Patriarca}. We assume there are $N$ agents that exchange money in pairs ($i,j$). We assume also that all agents start with the same amount of money $m_0>0$. For every period an arbitrary pair of agents are picked at randomly and we let them conduct business, i.e. a transaction takes place between them. Money is conserved during the transaction such that
 \begin{equation}
 \label{eq:wealthconserved}
-m_i + m_j = m_i' + m_j',
+m_i' + m_j'= m_i + m_j,
 \end{equation}
-where the right-hand side is the agent $i$ and $j$'s updated wealth and the left-hand side represents the amount of money agents $i$ and $j$ had before the transaction. The exchange is done via a random reassignment factor $\epsilon$, such that
+where the left-hand side is the agent $i$ and $j$'s updated wealth and the right-hand side represents the amount of money agents $i$ and $j$ had before the transaction. The exchange is done via a random reassignment factor $\epsilon$, such that
 \begin{align}
 m_i' &= \epsilon (m_i + m_j) \\
 m_j' &= (1 - \epsilon) (m_i + m_j)
@@ -89,15 +89,15 @@ It is easy to see that the logarithm of the Gibbs measure in equation \ref{eq:gi
 \end{equation}
 
 \subsection{Pareto distributions}
-How the income and wealth of a population has been studied for a long time. Already in 1897, Vilfredo Pareto, sought to describe bot wealth and income distribution by power law probability distributions\cite{Pareto}. Pareto showed that the higher end of the distribution of money follows a distribution
+How the income and wealth of a population is distributed has been studied for a long time. Already in 1897, Vilfredo Pareto, sought to describe both wealth and income distribution by power law probability distributions\cite{Pareto}. Pareto showed that the higher end of the distribution of money follows a distribution
 \begin{equation}
 \label{eq:paretodist}
-w_m \propto m^{-1-\alpha}, \quad \alpha \in [1,2].
+w_m \propto m^{-1-\nu}, \quad \nu \in [1,2].
 \end{equation}
-Pareto's ``80-20 rule", that $20\%$ of the population controls $80\%$ of the wealth, corresponds to a certain value of $\alpha$. Today, a whole class of distributions similar to the one in equation \ref{eq:paretodist} are named after Pareto\cite{Arnold}.
+Pareto's ``80-20 rule", that $20\%$ of the population controls $80\%$ of the wealth, corresponds to a certain value of $\nu$. Today, a whole class of distributions similar to the one in equation \ref{eq:paretodist} are named after Pareto\cite{Arnold}.
 
 \subsection{Transactions and savings}
-We are can expand upon the model by introducing a savings rate $\lambda$. The savings rate is defined as a fraction of an agent's wealth that does not partake in a transaction for every period. One can gather from the macroeconomic identity in equation \ref{eq:YCGI} that income must still be the same and the transaction law in equation \ref{eq:wealthconserved} still holds. The updated wealth of agents $i$ and $j$ after a transaction becomes
+We are can expand upon the model by introducing a savings rate $\lambda$. The savings rate is defined as a fraction of an agent's wealth that does not partake in a transaction for each cycle. One can gather from the macroeconomic identity in equation \ref{eq:YCGI} that income must still be the same and the transaction conservation law in equation \ref{eq:wealthconserved} still holds. The updated wealth of agents $i$ and $j$ after a transaction becomes
 \begin{align}
 m_i' &= \lambda m_i + \epsilon (1 - \lambda) (m_i + m_j) \\
 m_j' &= \lambda m_j + (1- \epsilon) (1 - \lambda) (m_i + m_j)
@@ -128,10 +128,10 @@ where the first factor $\abs{m_i-m_j}^{-\alpha}$ relates to wealth similarity an
 %% -----------------
 %% ALGORITHM
 \section{Algorithm \& Implementation}
-All programming code used in this project is written in C++ and is publicly available at github by following the link on the first page. The program consists mainly of two files, \lstinline|main.cpp| and \lstinline|functions.cpp|. \lstinline|main.cpp| contains the set-up of the program and is where the number of agents, initial wealth, number of transactions, number of simulations and all parameters ($\lambda$, $\alpha$ and $\gamma$) are specified. The main part of the program however, is in \lstinline|functions.cpp| which in addition to the \lstinline|trade(...)|\footnote{The functions have several arguments: \lstinline|trade(int N, int no_of_transactions, arma::vec (&agents), double lambda, double alpha, double gamma)|. To include all the arguments in the text would have decreased readability and they are replaced with dots.} function contains the function \lstinline|output(...)|\footnote{\lstinline|output(...)| = \lstinline|output(int N, arma::vec agents, std::string filename)|.} which writes data to file.
+All programming code used in this project is written in C++ and is publicly available at github by following the link on the title page. The program consists mainly of two files, \lstinline|main.cpp| and \lstinline|functions.cpp|. \lstinline|main.cpp| contains the set-up of the program and is where the number of agents, initial wealth, number of transactions, number of simulations and all parameters (like $\lambda$, $\alpha$ and $\gamma$) are specified. The main part of the program however, is in \lstinline|functions.cpp| which in addition to the \lstinline|trade(...)|\footnote{The functions have several arguments: \lstinline|trade(int N, int no_of_transactions, arma::vec (&agents), double lambda, double alpha, double gamma)|. To include all the arguments in the text would have decreased readability and they are replaced with dots.} function contains the function \lstinline|output(...)|\footnote{\lstinline|output(...)| = \lstinline|output(int N, arma::vec agents, std::string filename)|.} which writes data to file.
 
 \subsection{The \lstinline|trade(...)| function}
-This function runs a specified number of Monte Carlo cycles, where the transactions take place. For each iteration two random agents are picked, then some logic follows which will determine if the two agents are allowed to go into business. This is a very important part of the program and is therefore listed here:
+This function runs a specified number of Monte Carlo cycles, where the actual transactions take place. For each iteration two random agents are picked, then some logic follows which will determine if the two agents are allowed to go into business. This is a very important part of the program and is therefore listed here:
 \begin{lstlisting}
 while ((pow(fabs(m_i - m_j), -alpha)*
 		pow(previous_transactions+1, gamma) < random_number)
@@ -151,13 +151,13 @@ while ((pow(fabs(m_i - m_j), -alpha)*
 	// ... and update the random comparison number
 	random_number = (double) rand() / RAND_MAX;
 \end{lstlisting}
-One can see that the the argument of the while loop in the program listing above contains equation \ref{eq:rigidprob} which is compared against a random number and an equality test that will return \lstinline|True| if agents $i$ and $j$ are the same agent. This part of the code makes sure that a new pair of randomly picked agents until we are satisfied that the agents are not the same and that they are close enough in wealth and in previous relations to go forward with a transaction. After everything is all-right and we have a good pair of agents a transaction takes place:
+One can see that the the argument of the while loop in the program listing above contains equation \ref{eq:rigidprob} which is compared against a random number and an equality test that will return \lstinline|True| if agents $i$ and $j$ are the same agent. This part of the code makes sure that a new pair of agents are randomly picked until we are satisfied that the agents are not the same and that they are close enough in wealth and have good enough relations to go forward with a transaction. After everything is all-right and we have a good pair of agents a transaction takes place:
 \begin{lstlisting}
 // Random value of transaction b/w 0 and 1
 double epsilon = (double) rand() / RAND_MAX;
 
 // Transaction takes place, but some is saved (lambda)
-double delta_m = (1 - lambda) * 
+double delta_m = (1 - lambda)* 
 	(epsilon*m_j - (1 - epsilon)*m_i);
 agents(agent_i) += delta_m;
 agents(agent_j) -= delta_m;
@@ -168,7 +168,7 @@ C(agent_j, agent_i) += 1;
 \end{lstlisting}
 The program listing above should be straight-forward. Notice that the transaction is registered in matrix \lstinline|C| by incrementing element $i,j$ and $j,i$ by $1$.
 
-The last part of the \lstinline|trade(...)| function is not particularly important for the quality of the data that a simulation will provide, but vastly increased the speed of the program. This last functionality breaks the for loop within the \lstinline|trade(...)| function when a steady state is reached. Listed in its entirety here:
+The last part of the \lstinline|trade(...)| function is not particularly important for the quality of the data that a simulation will provide, but vastly increase the speed of the program. This last functionality breaks the for loop within the \lstinline|trade(...)| function when a steady state is reached. Listed in its entirety here:
 \begin{lstlisting}
 double var = arma::var(agents);
 cumVarBlock += var;
@@ -200,9 +200,8 @@ if (i % blockSize == 0) {
 	// Reset cumulative variance
 	cumVarBlock  = 0;
 	cumVar2Block = 0;
-}
 \end{lstlisting}
-This code section does some calculations on the results after a certain amount of transactions have taken place, an amount predetermined by \lstinline|blockSize|. The average variance of the block is computed as well as the average square variance of the block size. Then the "variance of the variance" is computed. These measures are compared against the measures from the previous block. The relative size of the average variance must be less than $20\%$ and the relative size of the variance of the variance must be less than $50\%$ of the measures from the previous block. If both these logical statements evaluate to \lstinline|True|, the for loop of the \lstinline|trade(...)| function is broken, terminating the current simulation. We found that for most simulations an equilibrium is reached quite quickly, usually between $40000$ and $120000$ transactions have taken place between $N=1000$ agents. This speeds up the time for a simulation to finish tremendously, compared with the initially, and rather naively, picked $10^7$ iterations. In order to find correct values \lstinline|blockSize| as well as when the variance measures are ``low enough'' the behaviour of the variance measures were meticulously studied through several trial runs of the function.
+This code section does some calculations on the results after a certain amount of transactions have taken place, an amount predetermined by \lstinline|blockSize|. The average variance of the block is computed as well as the average square variance of the block size. Then the "variance of the variance" is computed. These measures are compared against the measures from the previous block. The relative size of the average variance must be less than $20\%$ and the relative size of the variance of the variance must be less than $50\%$ of the measures from the previous block. If both these logical statements evaluate to \lstinline|True|, the for loop of the \lstinline|trade(...)| function is broken, terminating the current simulation. We found that for most simulations an equilibrium is reached quite quickly, usually when between $40000$ and $120000$ transactions have taken place between $N=1000$ agents. This speeds up the time for a simulation to finish tremendously, compared with the initially, and rather naively, picked $10^7$ iterations. In order to find correct values for \lstinline|blockSize| as well as when the variance measures are ``low enough'' the behaviour of the variance measures were meticulously studied through several trial runs of the function.
 
 \subsection{Example \lstinline|main()|}
 The parameters of the simulation is set up in the \lstinline|main()| function. When all parameters are chosen the following for loop is almost everything that is needed
@@ -231,7 +230,7 @@ One can see that what must be specified is the number of simulations (\lstinline
 
 %% Problem a, b, c.
 
-Figure \ref{fig:distribution} shows plot of different wealth distributions after $1000$ simulations for $N=500$ agents. We see that that without savings, the distribution shows a decreasing number of agents as wealth increases. As the savings rate $\lambda$ is allowed to increase, the distribution moves to the right and eventually peaks at the initial wealth $m_0 = 100$ when $\lambda = 0.9$. This plot, were it not for the colors, could be an exact copy of figure 1 in Patriarca et al.\cite{Patriarca}. Without savings the distribution appears as a inverse exponential function ($e^{-x}$) which is the same class of function as the Gibbs distribution (equation \ref{eq:gibbs}). However, these traits disappear from the wealth distributions once savings are allowed.
+Figure \ref{fig:distribution} shows plot of different wealth distributions after $1000$ simulations for $N=500$ agents. We see that that without savings, the distribution shows a decreasing number of agents as wealth increases. As the savings rate $\lambda$ is allowed to increase, the distribution moves to the right and eventually peaks at the initial wealth $m_0 = 100$ when $\lambda = 0.9$. This plot, were it not for the colors, could be an exact copy of figure 1 in Patriarca et al.\cite{Patriarca}. Without savings the distribution appears as a inverse exponential function which is the same class of function as the Gibbs distribution (equation \ref{eq:gibbs}), and the Pareto distribution (equation \ref{eq:paretodist}). However, these traits disappear from the wealth distributions once savings are allowed.
 
 
 \begin{figure}
@@ -241,7 +240,7 @@ Figure \ref{fig:distribution} shows plot of different wealth distributions after
 	\label{fig:distribution}
 \end{figure}
 
-A further study of the wealth distributions from figure \ref{fig:distribution} is visualized in figure \ref{fig:logplot}. Figure  \ref{fig:logdistribution} shows the same graphs as in figure \ref{fig:distribution}, but on with logarithmic scales on both axes. Figure \ref{fig:straightline} the wealth values evaluated by equation \ref{eq:gibbs} and plotted with logarithmic $y$-axis. Observe that all all the wealth distributions give straight lines. This makes sense, as the logarithm of the Gibbs distribution yields a first order expression (equation \ref{eq:lingibbs}).
+A further study of the wealth distributions from figure \ref{fig:distribution} is visualized in figure \ref{fig:logplot}. Figure  \ref{fig:logdistribution} shows the same graphs as in figure \ref{fig:distribution}, but on with logarithmic scales on both axes. Figure \ref{fig:straightline} the wealth values evaluated by equation \ref{eq:gibbs} and plotted with logarithmic $y$-axis. Observe that all all the wealth distributions give straight lines. This makes sense, as the logarithm of the Gibbs distribution yields a first degree polynomial (equation \ref{eq:lingibbs}).
 
 \begin{figure}
 \begin{subfigure}{.5\textwidth}
@@ -260,7 +259,7 @@ A further study of the wealth distributions from figure \ref{fig:distribution} i
 \label{fig:logplot}
 \end{figure}
 
-Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha=1.8$ and $\alpha = 2$ (equation \ref{eq:paretodist}) plotted against a distribution at $\lambda = 0$. We see that they fit adequately with the higher end of the distribution, but not perfectly. The simple Pareto distribution becomes a straight line because of the logarithmic axes in the plot. The same figure also contains a parametrization of the wealth \footnote{This is done in the way Partriarca et al. (2004)\cite{Patriarca} does. A recipe is shown in appendix \ref{app:partriarca}}. Figure \ref{fig:paramfig2} also shows such a parametrization, but for a higher savings rate $\lambda=0.9$. The parametrisations are indicated by a label $P(x)$.
+Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\nu=1.8$ and $\nu = 2$ (equation \ref{eq:paretodist}) in the same plot as a simulated wealth distribution where $\lambda = 0$ (no savings). We see that they fit adequately with the higher end of the distribution, but not perfectly. The simple Pareto distribution becomes a straight line because of the logarithmic axes in the plot. The same figure also contains a parametrization of the wealth distribution \footnote{This is done in the way Partriarca et al. (2004)\cite{Patriarca} does. A recipe is shown in appendix \ref{app:partriarca}}. Figure \ref{fig:paramfig2} also shows such a parametrization, but for a higher savings rate $\lambda=0.9$. The parametrisations are indicated by a label $P(x)$. We see that the parametrisation provides a very good fit. The Pareto distribution only works for the right tail of the distribution and only to a certain extent.
 
 \begin{figure}
 \begin{subfigure}{.5\textwidth}
@@ -281,7 +280,7 @@ Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha
 
 %% Problem d.
 
-The effect of ``nearest neighbhour'' interactions are summarized in figures \ref{fig:neighbour} and \ref{fig:neighbourpareto}. Figure \ref{fig:neighbour} shows logarithmic plots of simulations for different values of $\alpha$ from equation \ref{eq:rigidprob}. The parameter for previous transactions $gamma$ is set to zero for now. The only difference between the subfigures in figure \ref{fig:neighbour} is that figure \ref{fig:neighbour1} is for $\lambda=0$ and figure \ref{fig:neighbour2} is for $\lambda=0.5$, colloquially with and without saving respectively. Figure \ref{fig:neighbour} shows similar results to that of Goswarmi and Sen (2014)\cite{GoswamiSen}.
+The effect of ``nearest neighbhour'' interactions are summarized in figures \ref{fig:neighbour} and \ref{fig:neighbourpareto}. Figure \ref{fig:neighbour} shows logarithmic plots of simulations for different values of $\alpha$ from equation \ref{eq:rigidprob}. The parameter for previous transactions $\gamma$ is set to zero for now. The only difference between the subfigures in figure \ref{fig:neighbour} is that in figure \ref{fig:neighbour1} $\lambda=0$ and in figure \ref{fig:neighbour2} $\lambda=0.5$, colloquially with and without saving respectively. Figure \ref{fig:neighbour} shows similar results to figure 5 in Goswarmi and Sen (2014)\cite{GoswamiSen}.
 
 \begin{figure}
 \begin{subfigure}{.49\textwidth}
@@ -300,7 +299,7 @@ The effect of ``nearest neighbhour'' interactions are summarized in figures \ref
 \label{fig:neighbour}
 \end{figure}
 
-Figure \ref{fig:neighbourpareto} shows the simulations for nearest neighbour interaction fitted to a Pareto distribution. The Pareto distribution should fit only for higher values of the wealth distribution, id est the tails of the distribution. Figure \ref{fig:neighbourpareto1} show that the power law fittings (Pareto distributions) appear to have similar shapes to the results from the simulations. One can see, however, that the data from the simulations tend drop quicker than their Pareto power law counterparts. Figure \ref{fig:neighourpareto2} shows a logarithmic version of figure \ref{fig:neighbourpareto1}. Here the Pareto fittings are straight lines, as one would assume, but the data from the simulations apparently inhibit more complexity than the a simple power law relationship between wealth and frequency.
+Figure \ref{fig:neighbourpareto} shows the simulations for nearest neighbour interaction fitted to a Pareto distribution. The Pareto distribution should fit only for higher values of wealth, i.e. the tails of the distribution. Figure \ref{fig:neighbourpareto1} show that the power law fittings (Pareto distributions) appear to have similar shapes to the results from the simulations. One can see, however, that the data from the simulations tend to drop quicker than their Pareto power law counterparts. Figure \ref{fig:neighourpareto2} shows a logarithmic version of figure \ref{fig:neighbourpareto1}. Here the Pareto fittings are straight lines, as one would assume, but the data from the simulations apparently inhibit more complexity than the a simple power law relationship between wealth and frequency, but the fit is less horrible than it could have been.
 
 \begin{figure}
 \begin{subfigure}{.49\textwidth}
@@ -321,7 +320,7 @@ Figure \ref{fig:neighbourpareto} shows the simulations for nearest neighbour int
 
 %% Problem e
 
-The last effect to consider is the former transaction effect, in combination with savings and nearest neighbour interactions. This effect is illustrated in figure \ref{fig:transbefore}. This figure is an attempt to replicate figure 5 in Goswami and Sen (2014)\cite{GoswamiSen}. Both subfigures show the wealth distribution for different values of $\gamma$ (propensity to trade with agents you have traded with before), but figure \ref{fig:transbefore1} weighs neighbour interactions less strongly than figure \ref{fig:transbefore2}, with $\alpha=1.0$ and $\alpha=2.0$ respectively. 
+The last effect to consider is the former transaction effect, in combination with savings and nearest neighbour interactions. This effect is illustrated in figure \ref{fig:transbefore}. This figure is an attempt to replicate figure 5 in Goswami and Sen (2014)\cite{GoswamiSen}. Both subfigures show the wealth distribution for different values of $\gamma$ (propensity to trade with agents you have traded with before), but figure \ref{fig:transbefore1} weighs neighbour interactions less strongly than figure \ref{fig:transbefore2}, with $\alpha=1.0$ and $\alpha=2.0$ respectively. Again, the Pareto distribution fit is okay, but not tremendously good. One can see that it fits best for the very tip of the tail.
 
 \begin{figure}
 \begin{subfigure}{.49\textwidth}
@@ -355,20 +354,20 @@ Lastly, figure \ref{fig:transbeforefit} show a power law fitting of the wealth d
 Most part of this study was a replications of the work done by Patriaraca et al. (2004)\cite{Patriarca} and Goswami and Sen (2014)\cite{GoswamiSen} and we have more than sufficiently managed to do so, but the path to that point has regrettably involved a bit of guesswork. We found that both articles were somewhat lacking in procedural and algorithmic descriptions, which we find not to be consistent with sound science and the scientific method\footnote{We went as far as to e-mail some of the co-authors of the articles, asking (very nicely!) for descriptions of algorithms, software and methods. At the time of writing we are still without answer.}. \say{[Just] as other information should be available to those who want to learn and understand, program source code is the only means for programmers to learn the art from their predecessors. It would be unthinkable for playwrights not to allow other playwrights to read their plays (...)} (Erik Naggum)\cite{Rendering}. That being said, we have confidence that our own results are very much comparable to both of of the studies that this study is based upon. 
 
 \subsection{The ``savings rate'' and time dynamics}
-In this study we call the factor $\lambda \in [0,0.9]$ the savings rate. It makes sense to employ it to the model described herein, as one would not assume that anyone would spend (potentially) their entire net worth on a single transaction. On the other hand, a savings rate would usually be defined as the fraction of income that an individual saves over a certain amount of time, e.g. a year. The term ``savings rate'' as it is used in this model can therefore lead to some confusion, mostly because there is no concept of how time progresses throughout the simulation. The only thing that happens is a series of transactions, and after a steady state is reached we have a snapshot of the monetary distribution, but no feel for the dynamics of the economy and how the situation may propagate through time. Such time dynamics functionality could be useful to see the time it takes for an economic of monetary policy to take effect.
+In this study we call the factor $\lambda \in [0,1]$ the savings rate. It makes sense to employ it to the model described herein, as one would not assume that anyone would spend (potentially) their entire net worth on a single transaction. On the other hand, a savings rate would usually be defined as the fraction of income that an individual saves over a certain amount of time, for example over a year. The term ``savings rate'' as it is used in this model can therefore lead to some confusion, mostly because there is no concept of how time progresses throughout the simulation. The only thing that happens is a series of transactions which could have happened during any time span, and after a steady state is reached we have a snapshot of the monetary distribution, but no feel for the dynamics of the economy and how the situation may propagate through time. Such time dynamics functionality could be useful to see the time it takes for an economic of monetary policy to take effect, for instance.
 
 \subsection{Future developments}
 
-We found, after delving into the data, that the Parato distributions than follow the higher tails of the simulation distribution data best are best described by the following rule
+We found, after delving into the data, that the Parato distributions that fit the higher tails of the simulation distribution data best can be described by the following rule
 \begin{equation}
 \label{eq:ourpareto}
 w_m \propto m^{-1-\lambda-\alpha-\gamma}
 \end{equation}
-where, of course, $\lambda$ is the savings rate, $\alpha$ is the importance of wealth similarity and $\gamma$ is the importance of previous transactions. This is a very neat result, but we have only confirmed that the Pareto distributions fits the most-wealth in a visual manner. It would be good to confirm the explanatory power by some sort of regression analysis or a goodness-of-fit test. This was regrettably beyond the scope of our study.
+where, of course, $\lambda$ is the savings rate, $\alpha$ is the importance of wealth similarity and $\gamma$ is the importance of previous transactions. This is a very neat result, but we have only confirmed that the Pareto distributions fits, and only adequately at the, in a visual manner. It would be good to confirm the explanatory power by some sort of regression analysis or a goodness-of-fit test. This was regrettably beyond the scope of our study.
 
-A very important part of the social sciences of which economics is a part is that they have applications for the real world and help in a way to explain the behaviour of human beings. It would therefore be nice to compare the results of these simulations to real wealth distributions. As Piketty points out\cite{Piketty}, data on wealth and income distributions have been available in the US since 1953. One study\cite{Kjersti}, in the Norwegian business magazine Kaptial uses the magazine's study of the 400 richest Norwegians to show that their wealth are indeed Pareto distributed. 
+A very important part of the social sciences, of which economics, is to try to have applications for the real world and help in a way to explain the behaviour of human beings. It would therefore be nice to compare the results of these simulations to real wealth distributions. As Piketty points out\cite{Piketty}, data on wealth and income distributions have been available in the US since 1953. One study\cite{Kjersti}, in the Norwegian business magazine Kaptial uses the magazine's study of the 400 richest Norwegians to show that their wealth are indeed Pareto distributed, but what about the rest? We have simulated the distribution of the entire population here! 
 
-Norway is a special case because it is one of very few OECD\footnote{Organisation for Economic Co-operation and Development. Colloquially defined as a \say{club for rich countries}.} member countries that with a wealth tax. These include Switzerland, Hungary, Spain and France\cite{OECD}. In Norway, the wealth tax has a tremendous impact on high net worth individuals, making up $57.1\%$ of the total tax burden of the 400 richest individuals\cite{NHHmaster}. It would therefore be beneficial to include tax effects in the model in some way, as different tax regimes may have an impact of the monetary distribution.
+Norway is a special case because it is one of very few OECD\footnote{Organisation for Economic Co-operation and Development. Colloquially defined as a \say{club for rich countries}.} member countries that still have a wealth tax. These include Switzerland, Hungary, Spain and France\cite{OECD}. In Norway, the wealth tax has a tremendous impact on high net worth individuals, making up $57.1\%$ of the total tax burden of the 400 richest individuals\cite{NHHmaster}. It would therefore be beneficial to include tax effects in the model in some way, as different tax regimes will almost definitely have an impact of the monetary distribution.
 
 We started the the theory section by stating a macroeconomic identity (equation \ref{eq:YCGI}). In it we included government spending, which necessarily is very important to an economy. Depending on the relative size of the government, the spendings of the government could impact wealth distribution through welfare. Even though poor individuals may not have a high personal wealth it may not be necessary for them, because of the security that a welfare state provides. This would in turn affect savings rate in an economy. A huge ``social security net'' could lead to lower savings and vice versa.
 
@@ -376,12 +375,12 @@ In a modern, open economy one inevitably must trade with other economies. The ma
 \begin{equation}
 Y = C + G + I + (X-M).
 \end{equation}
-It would be interesting to see what opening the economy up for trade would do for wealth distribution. According to the Stolper-Samuelson theorem, opening an economy to trade should make unskilled workers producing traded goods in a high-skilled economy worse off as trade increases\cite{StolperSamuelson}. Advocates of protectionism usually use such theories to underline their argumentation. Building a model consisting of several ``countries'' with increasing amount of trade could be beneficial in this debate, especially as we been seen an increase in protectionist political rhetoric in recent times.
+It would be interesting to see what opening the economy up for trade would do for wealth distribution. According to the Stolper-Samuelson theorem, opening an economy to trade should make unskilled workers producing traded goods in a high-skilled economy worse off as trade increases\cite{StolperSamuelson}. Advocates of protectionism usually use such theories to underline their argumentation. Building a model consisting of several ``countries'' with increasing amount of trade could be beneficial in this debate, especially as we have seen an increase in protectionist political rhetoric in recent times.
 		
 %% ---------------
 %% CONCLUSION
 \section{Summary Remarks}
-In this study we have used two previous academic articles\cite{Patriarca}\cite{GoswamiSen} as a basis to build a simple model that mimics monetary distribution in a simple economy consisting of agents that are allowed to trade with one another. The model is implemented in C++ employing Monte Carlo methods. The model is gradually expanded upon to include savings and social rigidities like wealth similarity bias and former transaction bias. We found that the wealth distribution seems to follow a Gibbs distribution for almost all simulations, with a very few number of high net worth individuals. The only situations where the simulations resulted in a wealth distribution with a relative amount of equality is with a very high savings rate($\lambda=0.9$). We also found the upper tail of the wealth distribution to be close to a Pareto distribution as has been the case since 1897\cite{Pareto}. This is confirmed visually, but remains to be statistically tested. Lastly, we suggest some possible future additions to the model, most importantly having several economies at once in a simulation with different amounts of trade, and including a some sort of time dynamics in the model. 
+In this study we have used two academic articles in the field of econophysics\cite{Patriarca}\cite{GoswamiSen} as a basis to build a simple model that mimics monetary distribution in a simple economy consisting of agents that are allowed to make monetary transactions with one another. The model is implemented in C++ employing Monte Carlo methods. The model is gradually expanded upon to include savings and social rigidities like wealth similarity bias and former transaction bias. We found that the wealth distribution seems to follow something similar to a Gibbs distribution for almost all simulations, with a very few number of high net worth individuals. The only situations where the simulations resulted in a wealth distribution with a relative amount of equality is with a very high savings rate($\lambda=0.9$). We also found the upper tail of the wealth distribution to be close to, but not perfectly fitting, a Pareto distribution as has been the case since 1897\cite{Pareto}. This is studied visually, but remains to be statistically tested. Lastly, we suggest some possible future additions to the model, most importantly having several economies at once in a simulation with different amounts of trade, including a some sort of time dynamics in the model, and adding functionality that mimics a government that can provide welfare and social benefits. 
 
 
 \begin{thebibliography}{10}
