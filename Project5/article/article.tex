@@ -32,6 +32,7 @@
    Sebastian G. Winther-Larsen \\
   \href{https://github.com/gregwinther/FYS3150/}{\texttt{github.com/gregwinther}}}
   
+\date{\today}
 
 \begin{document}
 
@@ -231,10 +232,6 @@ One can see that what must be specified is the number of simulations (\lstinline
 
 Figure \ref{fig:distribution} shows plot of different wealth distributions after $1000$ simulations for $N=500$ agents. We see that that without savings, the distribution shows a decreasing number of agents as wealth increases. As the savings rate $\lambda$ is allowed to increase, the distribution moves to the right and eventually peaks at the initial wealth $m_0 = 100$ when $\lambda = 0.9$. This plot, were it not for the colors, could be an exact copy of figure 1 in Patriarca et al.\cite{Patriarca}. Without savings the distribution appears as a inverse exponential function ($e^{-x}$) which is the same class of function as the Gibbs distribution (equation \ref{eq:gibbs}). However, these traits disappear from the wealth distributions once savings are allowed.
 
-A further study of the wealth distributions from figure \ref{fig:distribution} is visualized in figure \ref{fig:logplot}. Figure  \ref{fig:logdistribution} shows the same graphs as in figure \ref{fig:distribution}, but on with logarithmic scales on both axes. Figure \ref{fig:straightline} the wealth values evaluated by equation \ref{eq:gibbs} and plotted with logarithmic $y$-axis. Observe that all all the wealth distributions give straight lines. This makes sense, as the logarithm of the Gibbs distribution yields a first order expression (equation \ref{eq:lingibbs}).
-
-Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha=1.8$ and $\alpha = 2$ (equation \ref{eq:paretodist}) plotted against a distribution at $\lambda = 0$. We see that they fit adequately with the higher end of the distribution, but not perfectly. The simple Pareto distribution becomes a straight line because of the logarithmic axes in the plot. The same figure also contains a parametrization of the wealth \footnote{This is done in the way Partriarca et al. (2004)\cite{Patriarca} does. A recipe is shown in appendix \ref{app:partriarca}}. Figure \ref{fig:paramfig2} also shows such a parametrization, but for a higher savings rate $\lambda=0.9$. The parametrisations are indicated by a label $P(x)$.
-
 
 \begin{figure}
 	\centering
@@ -242,6 +239,8 @@ Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha
 	\caption{Wealth distribution for $N=500$ agents after $1000$ simulations at different savings rates $\lambda$}
 	\label{fig:distribution}
 \end{figure}
+
+A further study of the wealth distributions from figure \ref{fig:distribution} is visualized in figure \ref{fig:logplot}. Figure  \ref{fig:logdistribution} shows the same graphs as in figure \ref{fig:distribution}, but on with logarithmic scales on both axes. Figure \ref{fig:straightline} the wealth values evaluated by equation \ref{eq:gibbs} and plotted with logarithmic $y$-axis. Observe that all all the wealth distributions give straight lines. This makes sense, as the logarithm of the Gibbs distribution yields a first order expression (equation \ref{eq:lingibbs}).
 
 \begin{figure}
 \begin{subfigure}{.5\textwidth}
@@ -256,9 +255,11 @@ Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha
   \caption{}
   \label{fig:straightline}
 \end{subfigure}
-\caption{Logarithmic plot wealth distribution from figure \ref{fig:distribution} (right), and the logarithm of the Gibbs measure (equation \ref{eq:gibbs}) of every data point (right).}
+\caption{Logarithmic plot of wealth distribution from figure \ref{fig:distribution} \ref{fig:logdistribution}), and the logarithm of the Gibbs measure (equation \ref{eq:gibbs}) of every data point (\ref{fig:straightline}).}
 \label{fig:logplot}
 \end{figure}
+
+Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha=1.8$ and $\alpha = 2$ (equation \ref{eq:paretodist}) plotted against a distribution at $\lambda = 0$. We see that they fit adequately with the higher end of the distribution, but not perfectly. The simple Pareto distribution becomes a straight line because of the logarithmic axes in the plot. The same figure also contains a parametrization of the wealth \footnote{This is done in the way Partriarca et al. (2004)\cite{Patriarca} does. A recipe is shown in appendix \ref{app:partriarca}}. Figure \ref{fig:paramfig2} also shows such a parametrization, but for a higher savings rate $\lambda=0.9$. The parametrisations are indicated by a label $P(x)$.
 
 \begin{figure}
 \begin{subfigure}{.5\textwidth}
@@ -278,6 +279,9 @@ Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha
 \end{figure}
 
 %% Problem d.
+
+The effect of ``nearest neighbhour'' interactions are summarized in figures \ref{fig:neighbour} and \ref{fig:neighbourpareto}. Figure \ref{fig:neighbour} shows logarithmic plots of simulations for different values of $\alpha$ from equation \ref{eq:rigidprob}. The parameter for previous transactions $gamma$ is set to zero for now. The only difference between the subfigures in figure \ref{fig:neighbour} is that figure \ref{fig:neighbour1} is for $\lambda=0$ and figure \ref{fig:neighbour2} is for $\lambda=0.5$, colloquially with and without saving respectively. Figure \ref{fig:neighbour} shows similar results to that of Goswarmi and Sen (2014)\cite{GoswamiSen}.
+
 \begin{figure}
 \begin{subfigure}{.49\textwidth}
 	\centering
@@ -291,8 +295,11 @@ Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha
 	\caption{}
 	\label{fig:neighbour2}
 \end{subfigure}
-\caption{Effect of neighbour-only interaction}
+\caption{The effect of different weights of propensity to trade with nearest neighbours, $\alpha$. Figure \ref{fig:neighbour1} is excludes saving ($\lambda = 0$), figure \ref{fig:neighbour2} includes saving ($\lambda = 0.5$).}
+\label{fig:neighbour}
 \end{figure}
+
+Figure \ref{fig:neighbourpareto} shows the simulations for nearest neighbour interaction fitted to a Pareto distribution. The Pareto distribution should fit only for higher values of the wealth distribution, id est the tails of the distribution. Figure \ref{fig:neighbourpareto1} show that the power law fittings (Pareto distributions) appear to have similar shapes to the results from the simulations. One can see, however, that the data from the simulations tend drop quicker than their Pareto power law counterparts. Figure \ref{fig:neighourpareto2} shows a logarithmic version of figure \ref{fig:neighbourpareto1}. Here the Pareto fittings are straight lines, as one would assume, but the data from the simulations apparently inhibit more complexity than the a simple power law relationship between wealth and frequency.
 
 \begin{figure}
 \begin{subfigure}{.49\textwidth}
@@ -307,9 +314,39 @@ Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha
 	\caption{}
 	\label{fig:neighourpareto2}
 \end{subfigure}
-\caption{Effect of neighbour-only interaction}
+\caption{Power law fittings of neighbourhood effect wealth distributions. Figure \ref{fig:neighbourpareto1} is a linear plot, while figure \ref{fig:neighourpareto2} is double-logarithmic.}
+\label{fig:neighbourpareto}
 \end{figure}
 
+%% Problem e
+
+The last effect to consider is the former transaction effect, in combination with savings and nearest neighbour interactions. This effect is illustrated in figure \ref{fig:transbefore}. This figure is an attempt to replicate figure 5 in Goswami and Sen (2014)\cite{GoswamiSen}. Both subfigures show the wealth distribution for different values of $\gamma$ (propensity to trade with agents you have traded with before), but figure \ref{fig:transbefore1} weighs neighbour interactions less strongly than figure \ref{fig:transbefore2}, with $\alpha=1.0$ and $\alpha=2.0$ respectively. 
+
+\begin{figure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{../figures/5e/5e_05-10-var.pdf}
+	\caption{}
+	\label{fig:transbefore1}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{../figures/5e/5e_05-20-var.pdf}
+	\caption{}
+	\label{fig:transbefore2}
+\end{subfigure}
+\caption{Wealth distributions when weighing of previous transactions, in addition, has been taken into account. Figure \ref{fig:transbefore1} weighs wealth similarity less strongly ($\alpha=1$) than figure \ref{fig:transbefore2} ($\alpha=2.0$).}
+\label{fig:transbefore}
+\end{figure}
+
+Lastly, figure \ref{fig:transbeforefit} show a power law fitting of the wealth distributions first presented in figure \ref{fig:transbefore}. The figure both includes ($\lambda=0.5$) and excludes savings ($\lambda=0$). The plot is logarithmic and the Pareto power distribution is therefore presented as a straight line. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{../figures/5e/5e_var-2-var-POWERlog_FIXXED.png}
+	\caption{Power law fitting of wealth distribution including savings, nearest neighbhour- and previous transaction effects. The plot is logarithim and both includes ($\alpha=0$) and excludes ($\alpha=0.5$) savings.}
+	\label{fig:transbeforefit}
+\end{figure}
 
 %% ----------------
 %% DISCUSSION
@@ -353,7 +390,7 @@ Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha
 
 \begin{appendices}
 
-\section{Parametrization from Patriarcal et al.}
+\section{Parametrization from Patriarca et al.}
 \label{app:partriarca}
 A corresponding exact solution of an income distributions for a generic value of $\lambda$ with $0<\lambda<1$ is provided in Patriarca et al.\cite{Patriarca}. Fir one employs the reduced variable
 \begin{equation}
