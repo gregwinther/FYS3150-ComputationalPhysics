@@ -39,7 +39,7 @@
 
 \begin{titlepage}
 \begin{abstract}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id neque elementum, accumsan ligula at, lobortis tortor. Duis elementum pellentesque purus, sit amet euismod diam facilisis volutpat. Nulla facilisi. Mauris quis felis ante. Aliquam ac velit sit amet velit porta condimentum iaculis ut quam. Phasellus pretium libero nec lectus placerat, ac consectetur sem faucibus. Maecenas dictum porta finibus.
+We build a simple agent-interaction money to model wealth distribution by taking inspiration from the field of econophysics. The model can account for effects of saving ($\lambda$) and agent preference to trade only with agents of similar wealth ($\alpha$) and that they have dealt with before ($\gamma$). We find that the upper tails of the wealth distributions can be adequately explained by simple Pareto distribution: $w_m \propto m^{-1-\lambda-\alpha-\gamma}$. We suggest some improvements to the model; inclusion of time propagation dynamics and a system of several economies connected through varying degrees of trade.
 \end{abstract}
 \maketitle
 \tableofcontents
@@ -48,7 +48,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id neque elementum, 
 %% -----------------
 %% INTRODUCTION
 \section{Introduction}
-
+This is a first venture into the field of econophysics for us. We use concepts from statistical mechanics to build a model consisting of agents allowed to conduct monetary transactions with one another. This study is based on the previous work of Patriarca et al. (2004)\cite{Patriarca} and Goswami and Sen (2014)\cite{GoswamiSen}. We start by giving a very brief introduction to the simplest of macroeconomic models, justifying the use of a simplification to an agent-interaction model. Thereafter we show how the agent model works. It is built up piece by piece and takes into account the effects of saving, and a preference for an agent to conduct a transaction with another agent of similar wealth and one the agent has dealt with before. We then give a thorough description of how the model can be implemented using Monte Carlo methods in C++ \footnote{All program source code is available online. Follow the github url on the title page}. The program is relatively straightforward to implement, except perhaps for the algorithm that breaks the transaction loop if a steady state is reached prematurely. After that we swiftly present all results, accounting for all the different effects. What follows is a somewhat lengthy discussion of the model's shortcomings and suggestions for future developments. We end this article with some summary remarks.
 
 %% -----------------
 %% THEORY
@@ -237,7 +237,7 @@ Figure \ref{fig:distribution} shows plot of different wealth distributions after
 \begin{figure}
 	\centering
 	\includegraphics[width=0.9\textwidth]{../figures/5ac/5c_N500_varSavings.pdf}
-	\caption{Wealth distribution for $N=500$ agents after $1000$ simulations at different savings rates $\lambda$}
+	\caption{Wealth distribution for $N=500$ agents after $1000$ simulations at different savings rates $\lambda \in \{0,0.25,0.5,0.9\}$.}
 	\label{fig:distribution}
 \end{figure}
 
@@ -256,7 +256,7 @@ A further study of the wealth distributions from figure \ref{fig:distribution} i
   \caption{}
   \label{fig:straightline}
 \end{subfigure}
-\caption{Logarithmic plot of wealth distribution from figure \ref{fig:distribution} \ref{fig:logdistribution}), and the logarithm of the Gibbs measure (equation \ref{eq:gibbs}) of every data point (\ref{fig:straightline}).}
+\caption{Logarithmic plot of wealth distribution from figure \ref{fig:distribution} is shown in figure \ref{fig:logdistribution}. Gibbs measure (equation \ref{eq:gibbs}) of every data point from the simulations plotted with logarithmic $y$-axis in figure \ref{fig:straightline}.}
 \label{fig:logplot}
 \end{figure}
 
@@ -275,7 +275,7 @@ Figure \ref{fig:paramfig1} shows two different Pareto distributions with $\alpha
   \caption{}
   \label{fig:paramfig2}
 \end{subfigure}
-\caption{Parametrization of two different wealth distributions, $\lambda=0$ and $\lambda=0.9$. Method for parametrization is found in appendix \ref{app:partriarca}. For $\lambda=0$ two Pareto power law distributions are also shown.}
+\caption{Parametrization of two different wealth distributions, $\lambda=0$ in figure \ref{fig:paramfig1} and $\lambda=0.9$ in figure \ref{fig:paramfig2}. Method for parametrization is found in appendix \ref{app:partriarca}. For $\lambda=0$ two Pareto power law fits are also shown in figure \ref{fig:paramfig1}.}
 \label{fig:paramfig}
 \end{figure}
 
@@ -296,7 +296,7 @@ The effect of ``nearest neighbhour'' interactions are summarized in figures \ref
 	\caption{}
 	\label{fig:neighbour2}
 \end{subfigure}
-\caption{The effect of different weights of propensity to trade with nearest neighbours, $\alpha$. Figure \ref{fig:neighbour1} is excludes saving ($\lambda = 0$), figure \ref{fig:neighbour2} includes saving ($\lambda = 0.5$).}
+\caption{The effect of different propensity to trade with nearest neighbours, $\alpha\in\{0.5,1.0,1.5,2.0\}$. Figure \ref{fig:neighbour1} excludes saving, $\lambda = 0$, figure \ref{fig:neighbour2} includes saving, $\lambda = 0.5$.}
 \label{fig:neighbour}
 \end{figure}
 
@@ -315,7 +315,7 @@ Figure \ref{fig:neighbourpareto} shows the simulations for nearest neighbour int
 	\caption{}
 	\label{fig:neighourpareto2}
 \end{subfigure}
-\caption{Power law fittings of neighbourhood effect wealth distributions. Figure \ref{fig:neighbourpareto1} is a linear plot, while figure \ref{fig:neighourpareto2} is double-logarithmic.}
+\caption{Pareto power law fits of wealth distributions including propensity to trade with nearest neighbour, $\alpha\in\{0.5,1.0,1.5,2.0\}$. Figure \ref{fig:neighbourpareto1} is a linear plot, while figure \ref{fig:neighourpareto2} is double-logarithmic.}
 \label{fig:neighbourpareto}
 \end{figure}
 
@@ -336,7 +336,7 @@ The last effect to consider is the former transaction effect, in combination wit
 	\caption{}
 	\label{fig:transbefore2}
 \end{subfigure}
-\caption{Wealth distributions when weighing of previous transactions, in addition, has been taken into account. Figure \ref{fig:transbefore1} weighs wealth similarity less strongly ($\alpha=1$) than figure \ref{fig:transbefore2} ($\alpha=2.0$).}
+\caption{Wealth distributions when weighing of previous transactions has been taken into account, $\gamma\in\{0.0, 1.0, 2.0, 3.0, 4.0\}$. Figure \ref{fig:transbefore1} wealth similarity is weighed less strongly ($\alpha=1$) than in figure \ref{fig:transbefore2} ($\alpha=2.0$).}
 \label{fig:transbefore}
 \end{figure}
 
@@ -354,8 +354,8 @@ Lastly, figure \ref{fig:transbeforefit} show a power law fitting of the wealth d
 \section{Discussion}
 Most part of this study was a replications of the work done by Patriaraca et al. (2004)\cite{Patriarca} and Goswami and Sen (2014)\cite{GoswamiSen} and we have more than sufficiently managed to do so, but the path to that point has regrettably involved a bit of guesswork. We found that both articles were somewhat lacking in procedural and algorithmic descriptions, which we find not to be consistent with sound science and the scientific method\footnote{We went as far as to e-mail some of the co-authors of the articles, asking (very nicely!) for descriptions of algorithms, software and methods. At the time of writing we are still without answer.}. \say{[Just] as other information should be available to those who want to learn and understand, program source code is the only means for programmers to learn the art from their predecessors. It would be unthinkable for playwrights not to allow other playwrights to read their plays (...)} (Erik Naggum)\cite{Rendering}. That being said, we have confidence that our own results are very much comparable to both of of the studies that this study is based upon. 
 
-\subsection{The ``savings rate'' and other quirks}
-In this study we call the factor $\lambda \in [0,0.9]$ the savings rate. It makes sense to employ it to the model described herein, as one would not assume that anyone would spend (potentially) their entire net worth on a single transaction. On the other hand, a savings rate would usually be defined as the fraction of income that an individual saves over a certain amount of time, e.g. a year. The term ``savings rate'' as it is used in this model can therefore lead to some confusion, mostly because there is no concept of how time progresses throughout the simulation. The only thing that happens is a series of transactions, and after a steady state is reached we have a snapshot of the monetary distribution, but no feel for the dynamics of the economy.
+\subsection{The ``savings rate'' and time dynamics}
+In this study we call the factor $\lambda \in [0,0.9]$ the savings rate. It makes sense to employ it to the model described herein, as one would not assume that anyone would spend (potentially) their entire net worth on a single transaction. On the other hand, a savings rate would usually be defined as the fraction of income that an individual saves over a certain amount of time, e.g. a year. The term ``savings rate'' as it is used in this model can therefore lead to some confusion, mostly because there is no concept of how time progresses throughout the simulation. The only thing that happens is a series of transactions, and after a steady state is reached we have a snapshot of the monetary distribution, but no feel for the dynamics of the economy and how the situation may propagate through time. Such time dynamics functionality could be useful to see the time it takes for an economic of monetary policy to take effect.
 
 \subsection{Future developments}
 
@@ -377,10 +377,11 @@ In a modern, open economy one inevitably must trade with other economies. The ma
 Y = C + G + I + (X-M).
 \end{equation}
 It would be interesting to see what opening the economy up for trade would do for wealth distribution. According to the Stolper-Samuelson theorem, opening an economy to trade should make unskilled workers producing traded goods in a high-skilled economy worse off as trade increases\cite{StolperSamuelson}. Advocates of protectionism usually use such theories to underline their argumentation. Building a model consisting of several ``countries'' with increasing amount of trade could be beneficial in this debate, especially as we been seen an increase in protectionist political rhetoric in recent times.
-
+		
 %% ---------------
 %% CONCLUSION
 \section{Summary Remarks}
+In this study we have used two previous academic articles\cite{Patriarca}\cite{GoswamiSen} as a basis to build a simple model that mimics monetary distribution in a simple economy consisting of agents that are allowed to trade with one another. The model is implemented in C++ employing Monte Carlo methods. The model is gradually expanded upon to include savings and social rigidities like wealth similarity bias and former transaction bias. We found that the wealth distribution seems to follow a Gibbs distribution for almost all simulations, with a very few number of high net worth individuals. The only situations where the simulations resulted in a wealth distribution with a relative amount of equality is with a very high savings rate($\lambda=0.9$). We also found the upper tail of the wealth distribution to be close to a Pareto distribution as has been the case since 1897\cite{Pareto}. This is confirmed visually, but remains to be statistically tested. Lastly, we suggest some possible future additions to the model, most importantly having several economies at once in a simulation with different amounts of trade, and including a some sort of time dynamics in the model. 
 
 
 \begin{thebibliography}{10}
@@ -389,6 +390,11 @@ It would be interesting to see what opening the economy up for trade would do fo
 	Gibbs versus non-Gibbs distributions in money dynamics. 
 	\emph{Physica A: Statistical Mechanics and its Applications},
 	340(1), pp. 334-339.
+	
+\bibitem{GoswamiSen} Goswami, S., \& Sen, P. (2014).
+	Agent based models for wealth distribution with preference in interaction.
+	\emph{Physica A: Statistical Mechanics and its Applications},
+	415, pp. 514-524.
 	
 \bibitem{Pareto} Pareto, V. (1897).
 	\emph{Cours d'Économique politique},
@@ -406,11 +412,6 @@ It would be interesting to see what opening the economy up for trade would do fo
 	The Forbes 400 vs. everybody else.
 	\emph{\href{https://web.archive.org/web/20110309211959/http://www.michaelmoore.com/words/must-read/forbes-400-vs-everybody-else}{michaelmoore.com}}.
 	Retrieved December 8. 2016.
-
-\bibitem{GoswamiSen} Goswami, S., \& Sen, P. (2014).
-	Agent based models for wealth distribution with preference in interaction.
-	\emph{Physica A: Statistical Mechanics and its Applications},
-	415, pp. 514-524.
 	
 \bibitem{Rendering} Pharr, M., \& Humphreys, G. (2010).
 	\emph{Physically Based Rendering}, 
@@ -437,7 +438,9 @@ It would be interesting to see what opening the economy up for trade would do fo
 	9 (1), pp. 58-73.
 	
 \end{thebibliography}
-	
+
+\vfill
+\pagebreak
 
 \begin{appendices}
 
