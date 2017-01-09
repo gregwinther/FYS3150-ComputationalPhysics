@@ -11,6 +11,6 @@ Solution to the Schrödinger's equation for two electrons in a three-dimensional
 ## Project 3: Numerical Integration
 The Euler-Cromer method and then the Velocity Verlet method is employed to solve a complex many-body problem, namely the solar system. Forces between the sun and all planets of the solar system, including Pluto, is computed. The orbits are then estimated by numerical integration.
 
-## Project4: Magnetic phase transition with Monte Carly methods
+## Project4: Magnetic phase transition with Monte Carlo methods
 
 ## Project5: Monte Carlo model applied to a simple monetary model
