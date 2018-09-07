@@ -14,9 +14,12 @@ function input_function(x)
     100*exp(-10*x)
 end
 
-
 # Steps
-n = 100
+n = 10
+
+if length(ARGS) > 0
+    n = parse(Int16,ARGS[1])
+end
 
 # Diagonal
 bVec = ones(n+2)*2
@@ -24,10 +27,10 @@ bVec = ones(n+2)*2
 # Numerical solution
 v = zeros(n+2)
 
-# Step size and Steps
+# Step size and steps
 h = 1.0 / (n + 1.0)
-hh = h*h # Don't need this??
-x = 1:n+2
+hh = h*h
+x = 0:n+1
 x = x*h
 
 # Analytic solution and right-hand side
@@ -35,7 +38,7 @@ u = zeros(n+2)
 f = zeros(n+2)
 for i in eachindex(x)
     u[i] = analytic_solution(x[i])
-    f[i] = h*h*input_function(x[i])
+    f[i] = hh*input_function(x[i])
 end
 
 fTilde = zeros(n+2)
@@ -45,12 +48,12 @@ fTilde = zeros(n+2)
 fTilde[2] = f[2]
 for i in 3:n+1
     bVec[i] -= 1/bVec[i-1]
-    fTilde[i] = (f[i] + fTilde[i-1])/bVec[i]
+    fTilde[i] = f[i] + fTilde[i-1]/bVec[i-1]
 end
 
 # Backward substitution
 v[n+1] = fTilde[n+1]/bVec[n+1]
-for i in n:-1:2
+for i in n+1:-1:2
     v[i] = (fTilde[i] + v[i+1])/bVec[i]
 end
 
