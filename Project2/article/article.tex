@@ -105,9 +105,9 @@ We now introduce the relative coordinate $\vb{r} = \vb{r}_1 - \vb{r}_2$ and the 
 \label{eq:radialschr2}
 \left(-\frac{\hbar^2}{m}\frac{d^2}{dr^2}+\frac{1}{4}kr^2+\frac{\beta e^2}{r} \right)\psi(r)=E_r\psi(r)
 \end{equation}
-when also including the repulsive Coulomb interaction, $V(r) = \beta e^2/\abs{\vb{r}_1+\vb{r}_2}= \beta e^2/r$. By once again introducing a dimensionless variable $\rho=r/\alpha$ with $\alpha=\hbar^2/(m\beta e^2)$. By, in addition, including the relative angular frequency $\omega_r^2=(\frac{2\omega}{2\hbar}\alpha^2)^2$ and an energy parameter $\lambda=\frac{m\alpha^2}{\hbar^2}E_r$, we arrive at an equation comparable to \ref{eq:schr3}
+when also including the repulsive Coulomb interaction, $V(r) = \beta e^2/\abs{\vb{r}_1+\vb{r}_2}= \beta e^2/r$. By once again introducing a dimensionless variable $\rho=r/\alpha$ with $\alpha=\hbar^2/(m\beta e^2)$. By, in addition, including the relative angular frequency $\omega_r^2=(\frac{2\omega}{2\hbar}\alpha^2)^2$ and an energy parameter $\lambda=\frac{m\alpha^2}{\hbar^2}E_r$, we arrive at an equation comparable to \ref{eq:schr2}
 \begin{equation}
--\frac{d\psi(\rho)}{d\rho^2}+\left(\omega^2_r\rho^2 + \frac{1}{\rho} \right) \psi(\rho)= \lambda\psi(\rho)
+-\frac{d^2\psi(\rho)}{d\rho^2}+\left(\omega^2_r\rho^2 + \frac{1}{\rho} \right) \psi(\rho)= \lambda\psi(\rho)
 \end{equation}
 It is easy to see that the only difference from the situation with two electrons and a single electron is that the potential is changed from $\rho^2$ to $\omega_r^2\rho^2+1/\rho$. In discretization, this is achieved by changing the diagonal of the matrix in \ref{eq:mat1} to $d_i = \frac{2}{hbar^2} \omega_r^2\rho^2+\frac{1}{\rho_i}$.
 
@@ -132,7 +132,7 @@ It can be shown that a unitary transformation $\vb{w}_i = U\vb{v}_i$, where $U$ 
 \end{align}
 which means that both the dot product and orthogonality is preserved.
 
-This proof is important to the algorithm which is described in the next section. As a result of Abel and Ruffini's theorem, regarding the impossibility of a solution to equations degree five and higher, a discretized problema s described herein is unsolvable by conventional, analytical means, and an iterative process is thus necessary.
+This proof is important to the algorithm which is described in the next section. As a result of Abel and Ruffini's theorem, regarding the impossibility of a solution to equations degree five and higher, a discretized problem as described herein is unsolvable by conventional, analytical means, and an iterative process is thus necessary.
 
 \section{Algorithm}
 
@@ -159,7 +159,7 @@ a_{11}c^2+2a_{12}cs + a_{22}s^2 & (a_{22}-a_{11})cs+a_{12}(c^2-s^2) \\
 (a_{22}-a_{11})cs + a_{12}(c^2-s^2) & a_{11}s^2-2a_{12}s+a_{22}c^2
 \end{bmatrix}
 \end{equation}
-Notice that this matrix is symmetric as well. We want to roate in such a manner that the offdiagonal elemtes of the new matrix are zero. Hence we need to solve $(a_{22}-a_{11})cs + a_{12}(c^2-s^2)=0$, which gives
+Notice that this matrix is symmetric as well. We want to roate in such a manner that the off-diagonal elements of the new matrix are zero. Hence we need to solve $(a_{22}-a_{11})cs + a_{12}(c^2-s^2)=0$, which gives
 \begin{equation}
 \tau = \cot{2\theta} = \frac{a_{11}-a_{22}}{2a_{12}}
 \end{equation}
@@ -168,7 +168,7 @@ Now we can express all the trigonometric functions in terms of $\tau$. Setting $
 \begin{equation}
 t^2-2\tau t-1 =0
 \end{equation}
-which has two roots. Of these two roots we pickk the smallest in order to ensure maximum  numerical stability. To put it another way, we rotate a tiny angle rather than a large one at each iteration.
+which has two roots. Of these two roots we pick the smallest in order to ensure maximum  numerical stability. To put it another way, we rotate a tiny angle rather than a large one at each iteration.
 
 The eigenvalues can now be expressed in terms of $t$. The diagonalized matrix will look like this
 \begin{equation}
@@ -211,7 +211,7 @@ The implementation of the algorithm was done using the armadillo library. We sta
 \subsubsection{Constructing matrix A} In order to solve the eigenvalue problem we first construct the matrix A by filling in the elements along the $n\times n$-matrix' diagonal with the constant terms as well as the potential corresponding to the case we are studying.
 \subsubsection{Diagonalizing using the Jacobi Method} We start off by making an algorithm for locating the maximum value off the diagonal in the matrix. This is done in order to check if they have gone to zero, which is what the Jacobi rotation is trying to do. When all values off the diagonal have gone to zero within a reasonable tolerance, we are finished. 
 
-The \texttt{jacobiRotation} function works by calculating equation \ref{eq:rotation} straightforward and updating all matrix elements. Lastly the eigenvectors are saved to the matrix R.
+The \texttt{jacobiRotation} function works by calculating equations \ref{eq:rotation} straightforward and updating all matrix elements. Lastly the eigenvectors are saved to the matrix R.
 
 \section{Results}
 
