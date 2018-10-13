@@ -199,6 +199,7 @@ void jacobiMethod(arma::mat &A, arma::mat &R, int n, int &minIndex) {
         jacobiRotation(A, R, k, l, n);
         max_nondiagonal = maxOffDiagonals(A, k, l, n);
         iterations++;
+        // cout << iterations << endl;
 
     }
 
