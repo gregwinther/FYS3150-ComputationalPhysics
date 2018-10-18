@@ -42,7 +42,7 @@ void Examples::threeBodyProblem() {
     threeBodySystem->setInitialCondition  (new ThreeBody());
     threeBodySystem->setFileWriting       (false);
     threeBodySystem->removeLinearMomentum ();
-    threeBodySystem->integrate            (1e5);
+    threeBodySystem->integrate            (2.5e5);
 }
 
 void Examples::multiBodyProblem() {

@@ -17,7 +17,8 @@ void ThreeBody::setupParticles(System &system) {
 
     Particle* sun = new Particle(vec3(0,0,0), vec3(0,0,0), 1.0, "Sun");
     Particle* earth = new Particle(vec3(1,0,0), vec3(0,2*M_PI,0), earth_mass, "Earth");
-    Particle* jupiter = new Particle(vec3(5.2,0,0), vec3(5.9024E-04, -7.1587E-03, 1.6542E-05)*365.2422, jupiter_mass, "Jupiter");
+    // Particle* jupiter = new Particle(vec3(5.2,0,0), vec3(5.9024E-04, -7.1587E-03, 1.6542E-05)*365.2422, jupiter_mass, "Jupiter");
+    Particle* jupiter = new Particle(vec3(5.2,0,0), vec3(0.0001, -0.001, 0)*365.2422, jupiter_mass, "Jupiter");
 
     system.addParticle(sun);
     system.addParticle(earth);
