@@ -10,7 +10,7 @@ class Ising {
         int rank;
         int world_size;
 
-        double** lattice;
+        int** lattice;
 
         double delta_energy [17];
         std::string expectations_filename;
@@ -29,7 +29,7 @@ class Ising {
         void metropolis();
 
 		int periodic_boundary_translation(int x, int dimension, int translation);
-        double get_energy_of_site(int x, int y);
+        int get_energy_of_site(int x, int y);
         void output(int current_cycle, double (&expected_values)[5]);
 
     public:

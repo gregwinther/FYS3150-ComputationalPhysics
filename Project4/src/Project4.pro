@@ -16,7 +16,9 @@ QMAKE_CXXFLAGS_RELEASE += $$system(mpicxx --showme:compile) -DMPICH_IGNORE_CXX_S
 #CONFIG -= qt
 
 INCLUDEPATH += /usr/local/include
+INCLUDEPATH += /usr/local/bin
 LIBS += -L/usr/local/lib
+LIBS += -L/usr/local/bin
 
 SOURCES += main.cpp \
 	ising.cpp \
