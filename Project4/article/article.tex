@@ -164,7 +164,7 @@ The expected energy is
 The mean magnetisation for this system is easiest to compute with equation \ref{eq:meanmagnet}, merely adding all possible states and dividing by the partition function.
 \begin{equation}
 \label{eq:2by2meanmagnet}
-\ev{\mathcal{M}}= \frac{1}{Z}(-4e^{8\beta J} - 8e^0 + 8e^0 +8e^{8\beta J}) = 0
+\ev{\mathcal{M}}= \frac{1}{Z}(-4e^{8\beta J} - 8e^0 + 8e^0 +4e^{8\beta J}) = 0
 \end{equation}
 the expected absolute magnetisation, on the other hand, becomes
 \begin{equation}
@@ -218,7 +218,7 @@ The Metropolis-Hastings algorithm can be condensed down to the following steps.
 \item The initial configuration is changed by flipping the spin of an arbitrary site. One then computes the energy of this new trial state $E_t$.
 \item The difference in energy between the two states $\Delta E = E_t - E_b$ is calculated. For the two-dimensional Ising model there are only five different possilbe values for $\Delta E$.
 \item If $ \Delta E < 0$ the new configuration is accepted, meaning that the energy is lower than it was, and the system is progressing towards an energy minimum.
-\item If $ \Delta E > 0$ one computes $w = e^(\beta \Delta E)$ and compares $w$ to a random number $r$. If $r < w$ the state is accepted, else the inital state is kept.
+\item If $ \Delta E > 0$ one computes $w = e^{\beta \Delta E}$ and compares $w$ to a random number $r$. If $r < w$ the state is accepted, else the inital state is kept.
 \item The expectation values are updated. And the steps are repeated until a sufficiently good steady state is reached.
 \end{enumerate}
 
